@@ -1,0 +1,27 @@
+.bi.bi-pencil-square {
+    color: #13a6d7;
+}
+
+.bi.bi-trash-fill {
+    color: red;
+}
+
+.ysnenabled-true,
+.ysnapproved-true {
+    background-color: green;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 3px;
+}
+
+.ysnenabled-false,
+.ysnapproved-false {
+    background-color: red;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 3px;
+}
+
+#frmAddUser {
+    transition: display 2s;
+}
