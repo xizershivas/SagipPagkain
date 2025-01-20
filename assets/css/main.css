@@ -2932,3 +2932,89 @@ section,
   padding-right: 50px;
   padding-top:  30px;
 }
+
+.donation-form {
+  max-width: 100%;
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background: rgba(255,255,255, 0.7);;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+}
+
+.donation-form label{
+  color: #5e5a5a;
+}
+.donation-form h3 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #17a2b8;
+}
+
+.donation-form h5 {
+  margin-bottom: 17px;
+  color: #5c6262;
+}
+
+.btn-custom {
+  background-color: #17a2b8;
+  color: white;
+}
+.btn-custom:hover {
+  background-color: #138f9b;
+}
+.form-check-label {
+  margin-left: 5px;
+}
+@media (max-width: 576px) {
+  .donation-form {
+      width: 80%;
+  }
+}
+
+.container-fluid{
+  width: 90%;
+}
+
+.donor-table {
+  margin: 30px auto;
+  max-width: 1200px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.table-header h2 {
+  margin: 0;
+  color: #343a40;
+}
+.btn-custom {
+  background-color: #28a745;
+  color: white;
+}
+.btn-custom:hover {
+  background-color: #218838;
+}
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-delete:hover {
+  background-color: #c82333;
+}
+@media (max-width: 576px) {
+  .table-responsive {
+      overflow-x: auto;
+  }
+  .table-header {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+}

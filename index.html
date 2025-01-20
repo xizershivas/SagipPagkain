@@ -414,71 +414,75 @@
       <div class="container" data-aos="zoom-in" data-aos-delay="100">
 
         <div class="row g-4">
+          <div class="donation-form border">
+            <h3>Choose a Donation Amount</h3>
+            <form>
+                <div class="mb-3">
+                    <div class="d-flex flex-wrap gap-2">
+                        <input type="radio" class="btn-check" name="donation-amount" id="amount50" autocomplete="off" onclick="updateAmount(50)">
+                        <label class="btn btn-outline-primary" for="amount50">₱50</label>
+        
+                        <input type="radio" class="btn-check" name="donation-amount" id="amount100" autocomplete="off" onclick="updateAmount(100)">
+                        <label class="btn btn-outline-primary" for="amount100">₱100</label>
+        
+                        <input type="radio" class="btn-check" name="donation-amount" id="amount500" autocomplete="off" onclick="updateAmount(500)">
+                        <label class="btn btn-outline-primary" for="amount500">₱500</label>
+        
+                        <input type="radio" class="btn-check" name="donation-amount" id="amount1000" autocomplete="off" onclick="updateAmount(1000)">
+                        <label class="btn btn-outline-primary" for="amount1000">₱1000</label>
+        
+                        <input type="radio" class="btn-check" name="donation-amount" id="amount2000" autocomplete="off" onclick="updateAmount(2000)">
+                        <label class="btn btn-outline-primary" for="amount2000">₱2000</label>
+        
+                        <input type="radio" class="btn-check" name="donation-amount" id="amount3000" autocomplete="off" onclick="updateAmount(3000)">
+                        <label class="btn btn-outline-primary" for="amount3000">₱3000</label>
+                    </div>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="customAmount" class="form-label">Custom Amount</label>
+                    <input type="number" class="form-control" id="customAmount" placeholder="₱0">
+                </div>
+        
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="donation-type" id="oneTime" checked>
+                    <label class="form-check-label" for="oneTime">
+                        One-time donation
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="donation-type" id="monthly">
+                    <label class="form-check-label" for="monthly">
+                        Monthly recurring donation
+                    </label>
+                </div>
+        
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="roundUp">
+                    <label class="form-check-label" for="roundUp">
+                        Round up my donation to cover processing fees
+                    </label>
+                </div>
+        
+                <h5 class="mt-4">Payment Information</h5>
+                <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="payment-method" id="gcash" checked>
+                    <label class="btn btn-outline-primary w-100" for="gcash">GCash</label>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="cardName" class="form-label">FullName:</label>
+                  <input type="text" class="form-control" id="cardName" placeholder="Account FullName">
+                </div>
+                <div class="mb-3">
+                    <label for="cardNumber" class="form-label">GCash Number</label>
+                    <input type="text" class="form-control" id="cardNumber" placeholder="09XX XXXX XXX">
+                </div>
+        
+                <button type="submit" class="btn btn-custom w-100">Donate</button>
+            </form>
+        </div>
 
-          <div class="col-lg-4">
-            <div class="donate-item">
-              <div class="icon">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-              <h4><sup>₱</sup>50<span> / Pesos</span></h4>
-              
-              <div class="text-center"><a href="#" class="buy-btn">Donate Now</a></div>
-            </div>
-          </div><!-- End donate Item -->
-
-          <div class="col-lg-4">
-            <div class="donate-item featured">
-              <div class="icon">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-
-              <h4><sup>₱</sup>100<span> / Pesos</span></h4>
-             
-              <div class="text-center"><a href="#" class="buy-btn">Donate Now</a></div>
-            </div>
-          </div><!-- End donate Item -->
-
-          <div class="col-lg-4">
-            <div class="donate-item">
-              <div class="icon">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-              <h4><sup>₱</sup>500<span> / Pesos</span></h4>
-             
-              <div class="text-center"><a href="#" class="buy-btn">Donate Now</a></div>
-            </div>
-          </div><!-- End donate Item -->
-
-          <div class="col-lg-4">
-            <div class="donate-item">
-              <div class="icon">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-              <h4><sup>₱</sup>1000<span> / Pesos</span></h4>
-              <div class="text-center"><a href="#" class="buy-btn">Donate Now</a></div>
-            </div>
-          </div><!-- End donate Item -->
-
-          <div class="col-lg-4">
-            <div class="donate-item featured" style="margin-top: 60px;">
-              <div class="icon">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-
-              <h4><sup>₱</sup>2000<span> / Pesos</span></h4>
-              <div class="text-center"><a href="#" class="buy-btn">Donate Now</a></div>
-            </div>
-          </div><!-- End donate Item -->
-
-          <div class="col-lg-4">
-            <div class="donate-item">
-              <div class="icon">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-              <h4><sup>₱</sup>3000<span> / Pesos</span></h4>
-              <div class="text-center"><a href="#" class="buy-btn">Donate Now</a></div>
-            </div>
-          </div><!-- End Pricing Item -->
 
         </div>
 
@@ -673,10 +677,6 @@
     <div class="container copyright text-center mt-4">
       <p>© <span>Copyright</span> <strong class="sitename">Sagip pagkain</strong> <span>All Rights Reserved</span></p>
       <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
         Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
       </div>
     </div>
@@ -701,6 +701,12 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script>
+    function updateAmount(amount) {
+        document.getElementById('customAmount').value = amount;
+    }
+</script>
 
 </body>
 
