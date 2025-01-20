@@ -103,7 +103,7 @@ require "src/app/user.php";
         
       </div>
       <nav class="breadcrumbs">
-        <div class="container">
+        <div class="container-fluid">
           <ol>
             <li><a href="index.html">Donor</a></li>
             <li class="current">Management</li>
@@ -115,7 +115,7 @@ require "src/app/user.php";
     <!-- Service Details Section -->
     <section id="service-details" class="service-details section">
 
-      <div class="container">
+      <div class="container-fluid">
 
         <div class="row gy-5">
 
@@ -124,8 +124,8 @@ require "src/app/user.php";
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="#" class="active"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
+                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
+                <a href="foodDonationMngmnt.php" class="foodDonationMngmnt.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
                 <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -139,63 +139,64 @@ require "src/app/user.php";
             </div>
           </div>
 
-            <!-- USER FORM (HIDDEN) -->
-            <div class="text-black mb-3 bg-light p-3 d-none" id="frmAddUser">
-              <form>
-                <div class="mb-3">
-                  <label for="user" class="form-label">User</label>
-                  <input type="text" class="form-control" id="user" placeholder="">
-                </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" placeholder="">
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" role="switch" id="enabled">
-                  <label class="form-check-label" for="enabled">Enabled</label>
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" role="switch" id="approved">
-                  <label class="form-check-label" for="approved">Approved</label>
-                </div>
-                <div class="d-flex justify-content-between mt-3">
-                  <button type="button" class="btn btn-primary" id="btnCreateUser">Create User</button>
-                  <button type="button" class="btn btn-danger" id="btnClose">Close</button>
-                </div>
-              </form>
-            </div>
-            <!-- END USER FORM -->
+             <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+               <!-- USER FORM (HIDDEN) -->
+               <div class="text-black mb-3 bg-light p-3 d-none" id="frmAddUser">
+                <form>
+                  <div class="mb-3">
+                    <label for="user" class="form-label">User</label>
+                    <input type="text" class="form-control" id="user" placeholder="">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="">
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="enabled">
+                    <label class="form-check-label" for="enabled">Enabled</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="approved">
+                    <label class="form-check-label" for="approved">Approved</label>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <button type="button" class="btn btn-primary" id="btnCreateUser">Create User</button>
+                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
+                  </div>
+                </form>
+              </div>
+              <!-- END USER FORM -->
 
-            <!-- DATA TABLE -->
-            <table id="userDataTable" class="display table table-striped" style="width: 100%">
-              <thead>
-                <tr>
-                  <th scope="col">User</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Enabled</th>
-                  <th scope="col">Approved</th>
-                  <th scope="col" colspan="2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php
-                if($result->num_rows > 0) {
-                  while($user = $result->fetch_object()) {
-                    echo "<tr><td>".$user->strUsername."</td>".
-                    "<td>".$user->strEmail."</td>".
-                    "<td>".($user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>")."</td>".
-                    "<td>".($user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>")."</td>".
-                    "<td><a class='btn-edit-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-pencil-square'></i></a></td>".
-                    "<td><a class='btn-delete-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-trash-fill'></i></a></td>".
-                    "</tr>";
+              <!-- DATA TABLE -->
+              <table id="userDataTable" class="display table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Enabled</th>
+                    <th scope="col">Approved</th>
+                    <th scope="col" colspan="2">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  if($result->num_rows > 0) {
+                    while($user = $result->fetch_object()) {
+                      echo "<tr><td>".$user->strUsername."</td>".
+                      "<td>".$user->strEmail."</td>".
+                      "<td>".($user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>")."</td>".
+                      "<td>".($user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>")."</td>".
+                      "<td><a class='btn-edit-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-pencil-square'></i></a></td>".
+                      "<td><a class='btn-delete-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-trash-fill'></i></a></td>".
+                      "</tr>";
+                    }
                   }
-                }
 
-                $conn->close();
-                ?>
-              </tbody>
-            </table>
-            <!-- END DATA TABLE -->
+                  $conn->close();
+                  ?>
+                </tbody>
+              </table>
+            </div>
           </div>
 
         </div>
