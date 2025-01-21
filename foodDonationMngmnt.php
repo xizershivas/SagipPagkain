@@ -141,7 +141,7 @@ require "src/app/user.php";
 
              <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
                <!-- USER FORM (HIDDEN) -->
-               <div class="text-black mb-3 bg-light p-3 d-none" id="frmAddUser">
+               <div class="text-black mb-3 bg-light p-3" id="frmUser">
                 <form>
                   <div class="mb-3">
                     <label for="user" class="form-label">User</label>
@@ -180,8 +180,8 @@ require "src/app/user.php";
                 </thead>
                 <tbody>
                   <?php
-                  if($result->num_rows > 0) {
-                    while($user = $result->fetch_object()) {
+                  if($allUserData->num_rows > 0) {
+                    while($user = $allUserData->fetch_object()) {
                       echo "<tr><td>".$user->strUsername."</td>".
                       "<td>".$user->strEmail."</td>".
                       "<td>".($user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>")."</td>".
