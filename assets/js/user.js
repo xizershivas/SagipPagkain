@@ -1,6 +1,7 @@
 // User Form Variables
 const frmUser = document.querySelector('#frmUser');
 const btnEditUserList = document.getElementsByClassName('btn-edit-user');
+const btnDeleteUserList = document.getElementsByClassName('btn-delete-user');
 const btnSave = document.querySelector('#btnSave');
 const btnClose = document.querySelector('#btnClose');
 const txtUser = frmUser.children[0].elements.user;
@@ -41,10 +42,6 @@ function editUser(e) {
     xmlhttp.send();
 }
 
-for (let btnEdit of btnEditUserList) {
-    btnEdit.addEventListener('click', editUser);
-}
-
 function updateUser() {
     const userData = {
         intUserId: intUserId,
@@ -63,9 +60,40 @@ function updateUser() {
         }
     }
 
-    xmlhttp.open('POST', 'request.php', true);
+    xmlhttp.open('PUT', 'request.php', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send(JSON.stringify(userData));
+}
+
+function deleteUser(e) {
+    const intUserId = e.currentTarget.getAttribute('value');
+    const ysnConfirmed = window.confirm('Are you sure you want to delete this user?');
+
+    if (ysnConfirmed) {
+        const xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                window.location.reload();
+                // document.querySelector(`.btn-delete-user[value="${intUserId}]"`);
+                console.log(this.responseText);
+            }
+        }
+
+        xmlhttp.open('DELETE', `request.php`, true);
+        xmlhttp.setRequestHeader('Content-Type', 'application/json');
+        xmlhttp.send(JSON.stringify({ intUserId: intUserId }));
+    }
+}
+
+// Attach Event Handler for Editing User
+for (let btnEdit of btnEditUserList) {
+    btnEdit.addEventListener('click', editUser);
+}
+
+// Attach Event Handler for Deleting User
+for (let btnDelete of btnDeleteUserList) {
+    btnDelete.addEventListener('click', deleteUser);
 }
 
 btnClose.addEventListener('click', toggleFormAddUser);

@@ -1,6 +1,11 @@
 <?php
+function closeResource($conn, $query) {
+    if (!$conn) $conn->close();
+    if (!query) $query->close();
+}
+
 function getUserData($conn) {
-    $GLOBALS['allUserData'] = $conn->query("SELECT * FROM tbluser");
+    $GLOBALS['allUserData'] = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
 }
 
 function sanitize($input) {
@@ -24,8 +29,10 @@ function editUser($conn, $intUserId) {
     if ($result->num_rows < 1) {
         return "User does not exist";
     }
-    
-    return $result->fetch_object();
+
+    $user = $result->fetch_object();
+
+    return $user;
 }
 
 function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved) {
@@ -41,13 +48,28 @@ function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ys
                 "enabled" => $ysnEnabled,
                 "approved" => $ysnApproved
             ];
+            closeResource($conn, $query);
             return $data;
         } else {
+            closeResource($conn, $query);
             return "Error: " . $query->error;
         }
     } else {
+        closeResource($conn, $query);
         return "Error updating user: " . $query->error;
     }
+}
+
+function deleteUser($conn, $intUserId) {
+    $query = $conn->prepare("DELETE FROM tbluser WHERE intUserId = ?");
+    $query->bind_param("i", $intUserId);
+    $result = $query->execute();
+
+    if (!$result) {
+        return "Error deleting user";
+    }
+    closeResource($conn, $query);
+    return "User was successfully deleted";
 }
 
 // Load Records into the Data Table

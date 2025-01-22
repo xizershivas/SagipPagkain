@@ -265,7 +265,7 @@ require "request.php";
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
-  <script src="assets/js//user.js"></script>
+  <script src="assets/js/user.js"></script>
   <script>
     $(document).ready(function() {
       $('#userDataTable').DataTable();

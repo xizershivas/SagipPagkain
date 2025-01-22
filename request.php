@@ -2,22 +2,20 @@
 require "src/config/db_connection.php";
 require "src/app/user.php";
 
-if (isset($_REQUEST['intUserId'])) {
-    $intUserId = sanitize($_REQUEST['intUserId']);
-    
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    $intUserId = intval(sanitize($_GET['intUserId']));
+
+    // Validate that the intUserId is a valid integer
     if (!filter_var($intUserId, FILTER_VALIDATE_INT)) {
-        echo json_encode(['error' => 'Invalid request']);
-    } else {
-        // echo json_encode(['intUserId' => $intUserId]);
-        $result = editUser($conn, $intUserId);
-        echo json_encode($result);
+        echo json_encode(["Error" => "Invalid request"]);
     }
 
-    $conn->close();
+    $result = editUser($conn, $intUserId);
+    echo json_encode($result);
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the raw POST data
+if ($_SERVER["REQUEST_METHOD"] == "PUT") {
+    // Get the RAW PUT data
     $inputData = file_get_contents('php://input');
 
     // Decode the JSON data into an associative array
@@ -33,8 +31,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $result = updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved);
         echo json_encode($result);
-    }
-    
-    $conn->close();
+    }       
+
+    echo json_encode(["Error: " => $e->getMessage()]);
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
+    // Get the RAW DELETE data
+    $inputData = file_get_contents('php://input');
+
+    // Decode the JSON data into an associative array
+    $userData = json_decode($inputData, true);
+
+    $result = deleteUser($conn, $userData['intUserId']);
+
+    echo json_encode($result);
 }
 ?>
