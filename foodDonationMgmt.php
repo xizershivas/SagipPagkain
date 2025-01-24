@@ -1,5 +1,6 @@
 <?php
-require "src/app/user.php";
+include "app/config/db_connection.php";
+include "app/functions/user.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,8 +34,8 @@ require "src/app/user.php";
   <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
 
   <!-- Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
-  <link href="assets/css/user.css" rel="stylesheet">
+  <link href="app/css/app.css" rel="stylesheet">
+  <link href="app/css/user.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -141,26 +142,26 @@ require "src/app/user.php";
 
              <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
                <!-- USER FORM (HIDDEN) -->
-               <div class="text-black mb-3 bg-light p-3" id="frmUser">
+               <div class="text-black mb-3 bg-light p-3 d-none" id="frmUser">
                 <form>
                   <div class="mb-3">
                     <label for="user" class="form-label">User</label>
-                    <input type="text" class="form-control" id="user" placeholder="">
+                    <input type="text" class="form-control" name="user" id="user" value="" disabled>
                   </div>
                   <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="">
+                    <input type="email" class="form-control" name="email" id="email" value="">
                   </div>
                   <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="enabled">
+                    <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
                     <label class="form-check-label" for="enabled">Enabled</label>
                   </div>
                   <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="approved">
+                    <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
                     <label class="form-check-label" for="approved">Approved</label>
                   </div>
-                  <div class="d-flex justify-content-between mt-3">
-                    <button type="button" class="btn btn-primary" id="btnCreateUser">Create User</button>
+                  <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-success me-1" id="btnSave">Save</button>
                     <button type="button" class="btn btn-danger" id="btnClose">Close</button>
                   </div>
                 </form>
@@ -264,8 +265,8 @@ require "src/app/user.php";
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
-  <script src="assets/js/user.js"></script>
+  <script src="app/js/app.js"></script>
+  <script src="app/js/user.js"></script>
   <script>
     $(document).ready(function() {
       $('#userDataTable').DataTable();
