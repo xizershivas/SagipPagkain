@@ -1,6 +1,5 @@
 <?php
-require "src/config/db_connection.php";
-require "src/app/user.php";
+include "../functions/user.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $intUserId = intval(sanitize($_GET['intUserId']));

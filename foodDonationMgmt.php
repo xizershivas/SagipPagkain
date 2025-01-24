@@ -1,5 +1,6 @@
 <?php
-require "request.php";
+include "app/config/db_connection.php";
+include "app/functions/user.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,8 +34,8 @@ require "request.php";
   <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
 
   <!-- Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
-  <link href="assets/css/user.css" rel="stylesheet">
+  <link href="app/css/app.css" rel="stylesheet">
+  <link href="app/css/user.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -264,8 +265,8 @@ require "request.php";
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
-  <script src="assets/js/user.js"></script>
+  <script src="app/js/app.js"></script>
+  <script src="app/js/user.js"></script>
   <script>
     $(document).ready(function() {
       $('#userDataTable').DataTable();

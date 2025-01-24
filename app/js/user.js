@@ -37,7 +37,7 @@ function editUser(e) {
         }
     }
 
-    xmlhttp.open('GET', `request.php?intUserId=${intUserId}`, true);
+    xmlhttp.open('GET', `app/controllers/user.php?intUserId=${intUserId}`, true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send();
 }
@@ -60,7 +60,7 @@ function updateUser() {
         }
     }
 
-    xmlhttp.open('PUT', 'request.php', true);
+    xmlhttp.open('PUT', 'app/controllers/user.php', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send(JSON.stringify(userData));
 }
@@ -80,7 +80,7 @@ function deleteUser(e) {
             }
         }
 
-        xmlhttp.open('DELETE', `request.php`, true);
+        xmlhttp.open('DELETE', `app/controllers/user.php`, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json');
         xmlhttp.send(JSON.stringify({ intUserId: intUserId }));
     }
