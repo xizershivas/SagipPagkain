@@ -43,7 +43,7 @@ include "app/functions/user.php";
   <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+      <a href="index.php" class="logo d-flex align-items-center me-auto me-xl-0">
 
         <img src="assets/img/sagip-pagkain-logo.JPEG" alt="Sagip Logo" oncontextmenu="return false;" draggable="false">
         <div>
@@ -54,35 +54,35 @@ include "app/functions/user.php";
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="index.html#about">
+          <li><a href="index.php#about">
             <div>
               <h6>Our Role in</h6>
               <h5>FOOD SYSTEMS<span></h5>
             </div>
           </a></li>
-          <li><a href="index.html#system">
+          <li><a href="index.php#system">
             <div>
               <h6>Our</h6>
               <h5>APPROACH</h5>
             </div>
           </a></li>
-          <li><a href="index.html#stats">
+          <li><a href="index.php#stats">
             <div>
               <h5>IMPACT</h5>
             </div>
           </a></li>
-          <li><a href="index.html#services">
+          <li><a href="index.php#services">
             <div>
               <h6>About</h6>
               <h6>Sagip pagkain</h6>
             </div>
           </a></li>
-          <li><a href="index.html#recent-posts">
+          <li><a href="index.php#recent-posts">
             <div>
               <h5>COMMUNITY-LED</h5>
             </div>
           </a></li>
-          <li><a href="index.html#contact">
+          <li><a href="index.php#contact">
             <div>
             <h5>OUR SUPPORT</h5>
           </div>
@@ -91,7 +91,7 @@ include "app/functions/user.php";
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="index.html#donate">DONATE</a>
+      <a class="btn-getstarted" href="index.php#donate">DONATE</a>
 
     </div>
   </header>
@@ -106,7 +106,7 @@ include "app/functions/user.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><a href="index.html">Donor</a></li>
+            <li><a href="index.php">Donor</a></li>
             <li class="current">Management</li>
           </ol>
         </div>
@@ -213,7 +213,7 @@ include "app/functions/user.php";
     <div class="container footer-top">
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center">
+          <a href="index.php" class="logo d-flex align-items-center">
             <span class="sitename">Sagip pagkain</span>
           </a>
           <p>Dummy footer</p>
