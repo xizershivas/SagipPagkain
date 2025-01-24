@@ -700,7 +700,7 @@
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
+  <script src="app/js/app.js"></script>
 
   <script>
     function updateAmount(amount) {
