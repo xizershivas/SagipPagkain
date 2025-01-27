@@ -38,10 +38,35 @@
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <label class="form-label mb-1" for="birthdate"><strong>Date of Birth</strong></label>
-                                <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                                    <div class="">
-                                        <input type="date" class="form-control form-control-lg" name="birthdate" id="birthdate" placeholder="">
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <label class="form-label mb-1" for="male"><strong>Gender</strong></label>
+                                    <div class="container">
+                                        <div class="row">
+
+                                            <div class="col-6 col-sm-4 col-md-6 form-check">
+                                                <input class="form-check-input" type="radio" name="gender" id="male" value="M">
+                                                <label class="form-check-label" for="male">
+                                                    Male
+                                                </label>
+                                            </div>
+                                            <div class="col-6 col-sm-4 col-md-6 form-check">
+                                                <input class="form-check-input" type="radio" name="gender" id="female" value="F">
+                                                <label class="form-check-label" for="female">
+                                                    Female
+                                                </label>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col">
+                                    <label class="form-label mb-1" for="dateOfBirth"><strong>Date of Birth</strong></label>
+                                    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                                        <div class="">
+                                            <input type="date" class="form-control form-control-lg" name="dateOfBirth" id="dateOfBirth" placeholder="">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -130,13 +155,13 @@
                         </div>
                         <div class="row my-2">
                             <div class="col-12 col-sm-12 col-md-8 col-lg-6">
-                                <label class="form-label" for="signature"><strong>Select Signature</strong> (Image: JPG/PNG)</label>
+                                <label class="form-label" for=""><strong>Select Signature</strong> (Image: JPG/PNG)</label>
                                 <input class="form-control" type="file" id="signature" name="signature">
                             </div>
                         </div>
                         <div class="row my-4">
                             <div class="col-12">
-                                <label class="form-label" for="signature"><strong>Verification</strong></label>
+                                <label class="form-label" for=""><strong>Verification</strong></label>
                                 Captcha
                             </div>
                         </div>
