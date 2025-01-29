@@ -1,0 +1,13 @@
+.form{
+    padding: 30px;
+    border-radius: 10px;
+    background-color: rgba(240, 240, 240, 0.85);
+    color: #333;
+}
+
+.main{
+ background-image: url("../../assets/img/volunteer/volunteerImage.jpeg");
+ background-color: #cccccc;
+ background-repeat: no-repeat;
+ background-size: 100% 100%;
+}
