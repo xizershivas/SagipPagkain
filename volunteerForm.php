@@ -38,33 +38,29 @@
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <div class="col-12 col-sm-12 col-md-4">
-                                    <label class="form-label mb-1" for="male"><strong>Gender</strong></label>
-                                    <div class="container">
-                                        <div class="row">
-
-                                            <div class="col-6 col-sm-4 col-md-6 form-check">
-                                                <input class="form-check-input" type="radio" name="gender" id="male" value="M">
-                                                <label class="form-check-label" for="male">
-                                                    Male
-                                                </label>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label mb-1" for="male"><strong>Gender</strong></label>
+                                            <div class="container">
+                                                <div class="row justify-content-start">
+                                                    <div class="col-3 col-md-4 col-lg-3 form-check">
+                                                        <input class="form-check-input" type="radio" name="gender" id="male" value="M">
+                                                        <label class="form-check-label" for="male">
+                                                            Male
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-3 col-md-4 col-lg-3 form-check">
+                                                        <input class="form-check-input" type="radio" name="gender" id="female" value="F">
+                                                        <label class="form-check-label" for="female">
+                                                            Female
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-6 col-sm-4 col-md-6 form-check">
-                                                <input class="form-check-input" type="radio" name="gender" id="female" value="F">
-                                                <label class="form-check-label" for="female">
-                                                    Female
-                                                </label>
-                                            </div>
-                                            
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row my-2">
-                                <div class="col">
-                                    <label class="form-label mb-1" for="dateOfBirth"><strong>Date of Birth</strong></label>
-                                    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                                        <div class="">
+                                        <div class="col-md-6">
+                                            <label class="form-label mb-1" for="dateOfBirth"><strong>Date of Birth</strong></label>
                                             <input type="date" class="form-control form-control-lg" name="dateOfBirth" id="dateOfBirth" placeholder="">
                                         </div>
                                     </div>
