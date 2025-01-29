@@ -45,7 +45,7 @@
                                             <div class="container">
                                                 <div class="row justify-content-start">
                                                     <div class="col-3 col-md-4 col-lg-3 form-check">
-                                                        <input class="form-check-input" type="radio" name="gender" id="male" value="M">
+                                                        <input class="form-check-input" type="radio" name="gender" id="male" value="M" checked>
                                                         <label class="form-check-label" for="male">
                                                             Male
                                                         </label>
@@ -87,7 +87,7 @@
                                 <div class="col-12 col-sm-12 col-md-6">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" name="city" id="city" placeholder="">
-                                        <label class="form-label" for="city">City</label>
+                                        <label class="form-label" for="city">City/Municipality</label>
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-12 col-md-6">
@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="col-12 col-sm-12 col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" name="country" id="country" placeholder="">
+                                        <input type="text" class="form-control" name="country" id="country" value="Philippines" placeholder="">
                                         <label class="form-label" for="country">Country</label>
                                     </div>
                                 </div>
