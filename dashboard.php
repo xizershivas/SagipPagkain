@@ -35,7 +35,7 @@ include "app/functions/user.php";
 
   <!-- Main CSS File -->
   <link href="app/css/app.css" rel="stylesheet">
-  <link href="app/css/foodDonationMgmt.css" rel="stylesheet">
+  <link href="app/css/dashboard.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -125,8 +125,8 @@ include "app/functions/user.php";
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="foodDonationMgmt.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
+                <a href="dashboard.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
+                <a href="foodDonationMgmt.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
                 <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -168,35 +168,68 @@ include "app/functions/user.php";
               </div>
               <!-- END USER FORM -->
 
-              <!-- DATA TABLE -->
-              <table id="userDataTable" class="display table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">User</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Enabled</th>
-                    <th scope="col">Approved</th>
-                    <th scope="col" colspan="2">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  if($allUserData->num_rows > 0) {
-                    while($user = $allUserData->fetch_object()) {
-                      echo "<tr><td>".$user->strUsername."</td>".
-                      "<td>".$user->strEmail."</td>".
-                      "<td>".($user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>")."</td>".
-                      "<td>".($user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>")."</td>".
-                      "<td><a class='btn-edit-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-pencil-square'></i></a></td>".
-                      "<td><a class='btn-delete-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-trash-fill'></i></a></td>".
-                      "</tr>";
-                    }
-                  }
-
-                  $conn->close();
-                  ?>
-                </tbody>
-              </table>
+              <!-- DATA GRAPH -->
+              <div class="card p-3 shadow-sm">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="card p-3 shadow-sm">
+                            <h5>Total Partner Establishments</h5>
+                            <h3>45</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card p-3 shadow-sm">
+                            <h5>Total Surplus Items</h5>
+                            <h3>53</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card p-3 shadow-sm">
+                            <h5>Total Surplus Items</h5>
+                            <h3>53</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card p-3 shadow-sm">
+                            <h5>Total Food Donated</h5>
+                            <h3>50</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="card p-3 shadow-sm" style="width: 95%;left: 12px;">
+                                <h5 class="text-center">Surplus Food Distribution Status</h5>
+                                <div class="chart-container" style="height: 150px;">
+                                    <canvas id="surplusDistributionChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-6" style="margin-top: 10px;">
+                            <div class="card p-3 shadow-sm">
+                                <h5>Avg, Redistribution</h5>
+                                <h3>5,125 min(s)</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-6" style="margin-top: 10px;">
+                            <div class="card p-3 shadow-sm">
+                                <h5>Avg, Surplus value</h5>
+                                <h3>20k</h3>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-3 shadow-sm">
+                            <h5 class="text-center">Forecasted Surplus Availability</h5>
+                            <div class="chart-container" style="height: 290px;">
+                                <canvas id="forecastedSurplusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              <!-- END DATA GRAPH>
             </div>
           </div>
 
@@ -264,14 +297,50 @@ include "app/functions/user.php";
    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- Main JS File -->
   <script src="app/js/app.js"></script>
   <script src="app/js/user.js"></script>
   <script>
-    $(document).ready(function() {
-      $('#userDataTable').DataTable();
-    });
-  </script>
+        // Surplus Food Distribution Status
+        const surplusCtx = document.getElementById('surplusDistributionChart').getContext('2d');
+        new Chart(surplusCtx, {
+            type: 'pie',
+            data: {
+                labels: ['46.47%', '23.06%', '20.77%', '9.7%'],
+                datasets: [{
+                    data: [46.47, 23.06, 20.77, 9.7],
+                    backgroundColor: ['purple', 'orange', 'red', 'green']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Forecasted Surplus Availability
+        const forecastCtx = document.getElementById('forecastedSurplusChart').getContext('2d');
+        new Chart(forecastCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025'],
+                datasets: [{
+                    label: 'Forecasted Surplus Availability',
+                    data: [266, 8686, 3750, 11890, 15030, 17990, 21535, 24660, 30150, 37930],
+                    borderColor: 'blue',
+                    fill: true,
+                    backgroundColor: 'rgba(0, 0, 255, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+
 </body>
 
 </html>
