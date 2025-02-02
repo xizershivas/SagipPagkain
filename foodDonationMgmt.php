@@ -106,8 +106,8 @@ include "app/functions/user.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><a href="index.php">Donor</a></li>
-            <li class="current">Management</li>
+            <li><a href="">Donor Management</a></li>
+            <li class="current">Food Donation Management</li>
           </ol>
         </div>
       </nav>
@@ -127,7 +127,7 @@ include "app/functions/user.php";
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
                 <a href="foodDonationMgmt.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
-                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
+                <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
             </div><!-- End Services List -->

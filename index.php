@@ -29,7 +29,6 @@
 </head>
 
 <body class="index-page">
-
   <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
@@ -98,15 +97,9 @@
           <div class="col-lg-10">
             <h2 data-aos="fade-up" data-aos-delay="100">Welcome to Sagip Pagkain</h2>
             <p data-aos="fade-up" data-aos-delay="200">Food banking is key to the solution</p>
+             <button type="button" class="btn btn-warning" style="font-size: 20px !important;"><a href="./login.php" style="color: #ffffff;">Login</a></button>
           </div>
-          <div class="col-lg-5" data-aos="fade-up" data-aos-delay="300">
-            <form action="forms/newsletter.php" method="post" class="php-email-form">
-              <div class="sign-up-form"><input type="email" name="email"><input type="submit" value="Subscribe" style="background: #F5A623;"></div>
-              <div class="loading">Loading</div>
-              <div class="error-message"></div>
-              <div class="sent-message">Your subscription request has been sent. Thank you!</div>
-            </form>
-          </div>
+         
         </div>
       </div>
 
