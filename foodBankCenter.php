@@ -30,12 +30,18 @@ include "app/functions/user.php";
 
   <!-- Data Table CSS CDN -->
   <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
-  <!-- <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
 
   <!-- Main CSS File -->
   <link href="app/css/app.css" rel="stylesheet">
   <link href="app/css/dashboard.css" rel="stylesheet">
+
+  <style>
+        #map { height: 420px; }
+    </style>
 </head>
 
 <body class="services-details-page">
@@ -107,7 +113,7 @@ include "app/functions/user.php";
         <div class="container-fluid">
           <ol>
             <li><a href="">Donor Management</a></li>
-            <li class="current">Dashboard</li>
+            <li class="current">Food Bank Center</li>
           </ol>
         </div>
       </nav>
@@ -125,9 +131,9 @@ include "app/functions/user.php";
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="dashboard.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
+                <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
                 <a href="foodDonationMgmt.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
-                <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
+                <a href="foodBankCenter.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
             </div><!-- End Services List -->
@@ -167,69 +173,14 @@ include "app/functions/user.php";
                 </form>
               </div>
               <!-- END USER FORM -->
-
+                  <h2 class="text-center" style="color: 3333;">Item Stock Map</h2>
               <!-- DATA GRAPH -->
               <div class="card p-3 shadow-sm">
-                <div class="row text-center">
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Partner Establishments</h6>
-                            <h4>45</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Surplus Items</h6>
-                            <h4>53</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Surplus Items</h6>
-                            <h4>53</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Food Donated</h6>
-                            <h4>50</h4>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="card p-3 shadow-sm" style="width: 95%;left: 12px;">
-                                <h6 class="text-center">Surplus Food Distribution Status</h6>
-                                <div class="chart-container" style="height: 150px;">
-                                    <canvas id="surplusDistributionChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                            <div class="card p-3 shadow-sm">
-                                <h6>Avg, Redistribution</h6>
-                                <h4>5,125 min(s)</h4>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                            <div class="card p-3 shadow-sm" style="height: 123px;">
-                                <h6>Avg, Surplus value</h6>
-                                <h4>20k</h4>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card p-3 shadow-sm">
-                            <h5 class="text-center">Forecasted Surplus Availability</h5>
-                            <div class="chart-container" style="height: 280px;">
-                                <canvas id="forecastedSurplusChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-              <!-- END DATA GRAPH>
+  
+                <div id="map"></div>
+
+              </div>
+              <!-- END MAP GRAPH>
             </div>
           </div>
 
@@ -301,45 +252,40 @@ include "app/functions/user.php";
 
   <!-- Main JS File -->
   <script src="app/js/app.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-        // Surplus Food Distribution Status
-        const surplusCtx = document.getElementById('surplusDistributionChart').getContext('2d');
-        new Chart(surplusCtx, {
-            type: 'pie',
-            data: {
-                labels: ['46.47%', '23.06%', '20.77%', '9.7%'],
-                datasets: [{
-                    data: [46.47, 23.06, 20.77, 9.7],
-                    backgroundColor: ['purple', 'orange', 'red', 'green']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+    // Initialize map
+    var map = L.map('map').setView([14.5995, 120.9842], 10); // Center on Philippines
 
-        // Forecasted Surplus Availability
-        const forecastCtx = document.getElementById('forecastedSurplusChart').getContext('2d');
-        new Chart(forecastCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025'],
-                datasets: [{
-                    label: 'Forecasted Surplus Availability',
-                    data: [266, 8686, 3750, 11890, 15030, 17990, 21535, 24660, 30150, 37930],
-                    borderColor: 'blue',
-                    fill: true,
-                    backgroundColor: 'rgba(0, 0, 255, 0.2)'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    </script>
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
+    // Sample data (ID, Location, Latitude, Longitude, Stock)
+    var stockLocations = [
+        { id: 1, location: "Rizal", lat: 14.599512, lng: 121.036079, stock: 20 },
+        { id: 2, location: "Manila", lat: 14.6091, lng: 120.9822, stock: 5 },
+        { id: 3, location: "Quezon City", lat: 14.6760, lng: 121.0437, stock: 50 }
+    ];
+
+    // Function to determine marker color based on stock
+    function getColor(stock) {
+        return stock > 30 ? "green" : stock > 10 ? "orange" : "red";
+    }
+
+    // Loop through locations and add markers
+    stockLocations.forEach(function (data) {
+        var marker = L.circleMarker([data.lat, data.lng], {
+            color: getColor(data.stock),
+            radius: 10,
+            fillOpacity: 0.8
+        }).addTo(map);
+
+        // Popup info
+        marker.bindPopup(`<b>${data.location}</b><br>Stock: ${data.stock}`);
+    });
+</script>
 </body>
 
 </html>
