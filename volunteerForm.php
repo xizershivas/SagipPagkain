@@ -114,7 +114,7 @@
                 <div class="tab-content" id="nav-tabContent">
                     <!-- 01. PERSONAL -->
                     <div class="tab-pane fade show active" id="nav-personal" role="tabpanel" aria-labelledby="nav-personal-tab" tabindex="0">
-                        <form action="">
+                        <form id="volunteerForm">
                             <label class="form-label mb-1" for="firstname"><strong>Name</strong></label>
                             <div class="row g-2">
                                 <div class="col-12 col-sm-12 col-md-6">
@@ -160,10 +160,10 @@
                                 </div>
                             </div>
                             <div class="row my-2">
-                                <label class="form-label mb-1" for="address1"><strong>Address</strong></label>
+                                <label class="form-label mb-1" for="street"><strong>Address</strong></label>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control form-control-lg" name="address1" id="address1" placeholder="">
+                                        <input type="text" class="form-control form-control-lg" name="street" id="street" placeholder="">
                                         <label class="form-label" for="lastname">Street Address</label>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@
                             <div class="row my-2">
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control form-control-lg" name="address2" id="address2" placeholder="">
+                                        <input type="text" class="form-control form-control-lg" name="address" id="address" placeholder="">
                                         <label class="form-label" for="lastname">Street Address Line 2</label>
                                     </div>
                                 </div>
@@ -235,8 +235,8 @@
                             <div class="col-12">
                                 <label class="form-label mb-1"><strong>Terms of Volunteering</strong></label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="ysnTerms">
-                                    <label class="form-check-label" for="ysnTerms">
+                                    <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
+                                    <label class="form-check-label" for="terms">
                                         I agree to the terms of volunteering.
                                     </label>
                                 </div>
@@ -244,8 +244,8 @@
                         </div>
                         <div class="row my-2">
                             <div class="col-12 col-sm-12 col-md-8 col-lg-6">
-                                <label class="form-label" for=""><strong>Select Signature</strong> (Image: JPG/PNG)</label>
-                                <input class="form-control" type="file" id="signature" name="signature">
+                                <label class="form-label" for=""><strong>Select Signature</strong> (Image: JPG/PNG Max: 3MB)</label>
+                                <input class="form-control" type="file" name="signature" id="signature" required>
                             </div>
                         </div>
                         <div class="row my-4">

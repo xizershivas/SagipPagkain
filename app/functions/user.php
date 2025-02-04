@@ -6,10 +6,6 @@ function closeResource($conn, $query) {
     if (!query) $query->close();
 }
 
-function getUserData($conn) {
-    $GLOBALS['allUserData'] = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
-}
-
 function sanitize($input) {
     $input = trim($input);
     $input = stripslashes($input);
@@ -20,6 +16,10 @@ function sanitize($input) {
 function sanitizeEmail($email) {
     $email = filter_var($email, FILTER_SANITIZE_EMAIL);
     return $email;
+}
+
+function getUserData($conn) {
+    $GLOBALS['allUserData'] = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
 }
 
 function editUser($conn, $intUserId) {
