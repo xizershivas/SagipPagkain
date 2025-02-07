@@ -1,5 +1,7 @@
 <?php
+include "../config/db_connection.php";
 include "../functions/user.php";
+include "../utils/sanitize.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $intUserId = intval(sanitize($_GET['intUserId']));

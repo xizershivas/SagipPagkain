@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
+  header("Location: dashboard.php");
+  exit();
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0) {
+  header("Location: index.php");
+  exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +44,7 @@
   <link href="app/css/login.css" rel="stylesheet">
 
 </head>
-<body onload="UserSelectionChanged()">
+<body>
 <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
@@ -109,23 +120,23 @@
                 <div class="login-img"></div>
                 <div class="login-form">
                     <h3 class="mb-3 signin">Sign In</h3>
-                    <form class="was-validated">
+                    <form class="was-validated" id="frmLogin">
                         <div class="mb-3">
                             <label class="form-label" >Username</label>
-                            <input type="text" id="uname" required class="form-control" placeholder="Username">
+                            <input class="form-control" type="text" name="username" id="username" placeholder="Username" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input type="password" id="pword" required class="form-control" placeholder="Password">
+                            <input class="form-control" type="password" name="password" id="password" placeholder="Password" required>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label class="form-label">Login As</label>
                             <select class="form-select" id="userRole" onchange="UserSelectionChanged()">
                                 <option value="admin">Admin</option>
                                 <option value="donor">Donor</option>
                             </select>
-                        </div>
-                        <button type="submit" class="btn btn-warning w-100" id="signIn">Sign In</button>
+                        </div> -->
+                        <button type="submit" class="btn btn-warning w-100" id="btnSignIn">Sign In</button>
                         <div class="d-flex justify-content-between mt-2">
                             <div>
                                 <input type="checkbox"> Remember Me
@@ -199,7 +210,6 @@
 
 <!-- Main JS File -->
 <script src="app/js/app.js"></script>
-<script src="app/js/user.js"></script>
 <script>
 $(document).ready(function() {
   $('#userDataTable').DataTable();
@@ -207,33 +217,34 @@ $(document).ready(function() {
 </script>
 
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script src="app/js/login.js"></script>
+    <!-- <script>
 
-      function UserSelectionChanged(){
-        var getValue = document.getElementById("userRole").value;
+      // function UserSelectionChanged(){
+      //   var getValue = document.getElementById("userRole").value;
 
-        if(getValue === "admin"){
-          $(".signin").html("Login as Admin");
-        }else{
-          $(".signin").html("Login as Donor");
-        }
-      }
+      //   if(getValue === "admin"){
+      //     $(".signin").html("Login as Admin");
+      //   }else{
+      //     $(".signin").html("Login as Donor");
+      //   }
+      // }
 
-    document.getElementById("signIn").onclick = function () {
-        var getUname = document.getElementById("uname").value;
-        var getPword = document.getElementById("pword").value;
+    // document.getElementById("signIn").onclick = function () {
+    //     var getUname = document.getElementById("uname").value;
+    //     var getPword = document.getElementById("pword").value;
 
-        if(getUname === "admin" && getPword === "admin")
-        {
-          alert("Login success");
-          document.body.innerHTML += ``;
-          location.href = "./dashboard.php";
-        }else
-        {
-          alert("Login fail");
-        document.body.innerHTML += ``;
-        }
-    };
-    </script>
+    //     if(getUname === "admin" && getPword === "admin")
+    //     {
+    //       alert("Login success");
+    //       document.body.innerHTML += ``;
+    //       location.href = "./dashboard.php";
+    //     }else
+    //     {
+    //       alert("Login fail");
+    //     document.body.innerHTML += ``;
+    //     }
+    // };
+    </script> -->
 </body>
 </html>

@@ -333,7 +333,6 @@
 
 <!-- Main JS File -->
 <script src="app/js/app.js"></script>
-<script src="app/js/user.js"></script>
 <script>
 $(document).ready(function() {
   $('#userDataTable').DataTable();

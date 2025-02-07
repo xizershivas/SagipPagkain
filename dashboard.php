@@ -1,6 +1,12 @@
 <?php
+session_start();
 include "app/config/db_connection.php";
 include "app/functions/user.php";
+
+if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
+  header("Location: login.php");
+  exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -92,6 +98,7 @@ include "app/functions/user.php";
       </nav>
 
       <a class="btn-getstarted" href="index.php#donate">DONATE</a>
+      <a class="btn btn-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'">Logout</a>
 
     </div>
   </header>
@@ -122,6 +129,7 @@ include "app/functions/user.php";
 
           <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
 
+            
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
@@ -141,6 +149,7 @@ include "app/functions/user.php";
           </div>
 
              <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          
                <!-- USER FORM (HIDDEN) -->
                <div class="text-black mb-3 bg-light p-3 d-none" id="frmUser">
                 <form>

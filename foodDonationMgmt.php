@@ -92,6 +92,7 @@ include "app/functions/user.php";
       </nav>
 
       <a class="btn-getstarted" href="index.php#donate">DONATE</a>
+      <a class="btn btn-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'">Logout</a>
 
     </div>
   </header>

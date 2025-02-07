@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,6 +85,11 @@
 
       <a class="btn-getstarted" href="index.php#donate">DONATE</a>
 
+
+      <?php if (isset($_SESSION["intUserId"])) { ?>
+        <a class="btn btn-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'">Logout</a>
+      <?php } ?>
+
     </div>
   </header>
 
@@ -97,7 +105,9 @@
           <div class="col-lg-10">
             <h2 data-aos="fade-up" data-aos-delay="100">Welcome to Sagip Pagkain</h2>
             <p data-aos="fade-up" data-aos-delay="200">Food banking is key to the solution</p>
+            <?php if (!isset($_SESSION["intUserId"])) { ?>
              <button type="button" class="btn btn-warning" style="font-size: 20px !important;"><a href="./login.php" style="color: #ffffff;">Login</a></button>
+            <?php } ?>
           </div>
          
         </div>

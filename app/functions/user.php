@@ -1,23 +1,6 @@
 <?php
 include "../config/db_connection.php";
 
-function closeResource($conn, $query) {
-    if (!$conn) $conn->close();
-    if (!query) $query->close();
-}
-
-function sanitize($input) {
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = htmlspecialchars($input);
-    return $input;
-}
-
-function sanitizeEmail($email) {
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-    return $email;
-}
-
 function getUserData($conn) {
     $GLOBALS['allUserData'] = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
 }
