@@ -81,28 +81,30 @@ session_start();
           </a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-    
-     
+      </nav>    
+   
       <div class="dropdown">
-      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-        Menu
-      </button>
-       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><a class="dropdown-item" href="index.php#donate">DONATE</a></li>
-        <li><a class="dropdown-item" href="dashboard.php">Dashboard</a></li>
-        <li>
-        <?php if (isset($_SESSION["intUserId"])) { ?>  
-          <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'">Logout</a>
-        <?php } ?>
-      </li>
-      </ul>
-    </div>
+          <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; font-size: 24px; color: #ffffff;">
+            &#x22EE;
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background: rgba(255, 255, 255, 0.3); border: none;">
+          <li><a class="dropdown-item" href="index.php#donate" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">DONATE</a></li>
+          <?php if (isset($_SESSION["intUserId"])) { ?>  
+            <li>
+              <a class="dropdown-item" href="dashboard.php" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">Dashboard</a>
+            </li>
+            <li>
+              <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#ffffff'">Logout</a>
+            </li>
+          <?php } ?>
+          </ul>
+        </div>
+       </div>
       
     </div>
   </header>
 
- 
+
 
   <main class="main">
 
