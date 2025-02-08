@@ -136,7 +136,7 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
                 <a href="dashboard.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
                 <a href="foodDonationMgmt.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
-                <a href="#"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
+                <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
             </div><!-- End Services List -->
 
