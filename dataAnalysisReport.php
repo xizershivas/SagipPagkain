@@ -93,8 +93,16 @@ include "app/functions/user.php";
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="index.php#donate">DONATE</a>
-      <a class="btn btn-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'">Logout</a>
+      <div class="dropdown">
+      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        Menu
+      </button>
+       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li><a class="dropdown-item" href="index.php#donate">DONATE</a></li>
+        <li><a class="dropdown-item" href="dashboard.php">Dashboard</a></li>
+        <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'">Logout</a></li>
+      </ul>
+    </div>
 
     </div>
   </header>
