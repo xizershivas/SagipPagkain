@@ -27,6 +27,8 @@ include "app/functions/user.php";
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Data Table CSS CDN -->
   <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
@@ -35,7 +37,7 @@ include "app/functions/user.php";
 
   <!-- Main CSS File -->
   <link href="app/css/app.css" rel="stylesheet">
-  <link href="app/css/foodDonationMgmt.css" rel="stylesheet">
+  <link href="app/css/dataAnalysisReport.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -127,9 +129,9 @@ include "app/functions/user.php";
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="foodDonationMgmt.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
+                <a href="foodDonationMgmt.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
-                <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
+                <a href="dataAnalysisReport.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -141,66 +143,65 @@ include "app/functions/user.php";
             </div>
           </div>
 
-             <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
-               <!-- USER FORM (HIDDEN) -->
-               <div class="text-black mb-3 bg-light p-3 d-none" id="frmUser">
-                <form>
-                  <div class="mb-3">
-                    <label for="user" class="form-label">User</label>
-                    <input type="text" class="form-control" name="user" id="user" value="" disabled>
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" value="">
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
-                    <label class="form-check-label" for="enabled">Enabled</label>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
-                    <label class="form-check-label" for="approved">Approved</label>
-                  </div>
-                  <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-success me-1" id="btnSave">Save</button>
-                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
-                  </div>
-                </form>
-              </div>
-              <!-- END USER FORM -->
-
-              <!-- DATA TABLE -->
-              <table id="userDataTable" class="display table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">User</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Enabled</th>
-                    <th scope="col">Approved</th>
-                    <th scope="col" colspan="2">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  if($allUserData->num_rows > 0) {
-                    while($user = $allUserData->fetch_object()) {
-                      echo "<tr><td>".$user->strUsername."</td>".
-                      "<td>".$user->strEmail."</td>".
-                      "<td>".($user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>")."</td>".
-                      "<td>".($user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>")."</td>".
-                      "<td><a class='btn-edit-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-pencil-square'></i></a></td>".
-                      "<td><a class='btn-delete-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-trash-fill'></i></a></td>".
-                      "</tr>";
-                    }
-                  }
-
-                  $conn->close();
-                  ?>
-                </tbody>
-              </table>
+             <div class="col-lg-8 ps-lg-5 tbl grid-report">
+                    <div class="row">
+                        <!-- Sidebar -->
+                        <div class="col-md-3 bg-light p-3">
+                            <h5>Total Donations Received</h5>
+                            <select class="form-select">
+                                <option>All</option>
+                            </select>
+                            <h5 class="mt-3">Beneficiaries</h5>
+                            <select class="form-select">
+                                <option>Individual</option>
+                            </select>
+                            <h5 class="mt-3">Municipalities</h5>
+                            <select class="form-select">
+                                <option>Santa Maria</option>
+                            </select>
+                            <h5 class="mt-3">Barangay</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked> Bagong Pook
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked> Coralan
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked> Calangay
+                            </div>
+                            <h5 class="mt-3">Forecast</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"> 2 years
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"> 3 years
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"> 4 years
+                            </div>
+                        </div>
+                        
+                        <!-- Main Content -->
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6" style="padding-left: 5%;">
+                                    <canvas id="distributionChart" style="max-width: 400px; max-height: 350px;"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="map" style="height: 350px;"></div>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <canvas id="demandChart"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <canvas id="foodChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                </div>
             </div>
-          </div>
-
         </div>
 
       </div>
@@ -258,7 +259,8 @@ include "app/functions/user.php";
   <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
   <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Data Table JS CDN -->
    <!-- <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
@@ -269,10 +271,50 @@ include "app/functions/user.php";
   <script src="app/js/app.js"></script>
   <script src="app/js/user.js"></script>
   <script>
-    $(document).ready(function() {
-      $('#userDataTable').DataTable();
-    });
-  </script>
+        const ctx1 = document.getElementById('distributionChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels: ['Bagong Pook', 'Coralan', 'Calangay', 'Cabuoan', 'Kayhacat'],
+                datasets: [{
+                    data: [90, 60, 85, 80, 95],
+                    backgroundColor: ['yellow', 'blue', 'red', 'green', 'purple']
+                }]
+            }
+        });
+
+        const ctx2 = document.getElementById('demandChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', '2024', '2025'],
+                datasets: [{
+                    label: 'Predicted Demand',
+                    data: [10, 20, 30, 40, 35, 25, 30],
+                    borderColor: 'red',
+                    fill: false
+                }]
+            }
+        });
+
+        const ctx3 = document.getElementById('foodChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['Vegetables', 'Canned Goods', 'Surplus Food', 'Cooked Meals', 'Fish'],
+                datasets: [{
+                    label: 'Food Type Contributions',
+                    data: [100, 40, 20, 10, 100],
+                    backgroundColor: 'orange'
+                }]
+            }
+        });
+
+        var map = L.map('map').setView([14.676, 121.044], 10); // Adjust coordinates as needed
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    </script>
 </body>
 
 </html>
