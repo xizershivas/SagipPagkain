@@ -82,28 +82,28 @@ session_start();
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>    
-   
-      <div class="dropdown">
-          <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; font-size: 24px; color: #ffffff;">
-            &#x22EE;
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background: rgba(255, 255, 255, 0.3); border: none;">
-          <li><a class="dropdown-item" href="index.php#donate" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">DONATE</a></li>
-          <?php if (isset($_SESSION["intUserId"])) { ?>  
-            <li>
-              <a class="dropdown-item" href="dashboard.php" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">Dashboard</a>
-            </li>
-            <li>
-              <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#ffffff'">Logout</a>
-            </li>
-          <?php } ?>
-          </ul>
-        </div>
-       </div>
       
+      <?php if (isset($_SESSION["intUserId"])) { ?>  
+        <div class="dropdown">
+            <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; font-size: 24px; color: #ffffff;">
+              &#x22EE;
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background: rgba(255, 255, 255, 0.3); border: none;">
+              <li><a class="dropdown-item" href="index.php#donate" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">DONATE</a></li>
+              <li>
+                <a class="dropdown-item" href="dashboard.php" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">Dashboard</a>
+              </li>
+              <li>
+                <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#ffffff'">Logout</a>
+              </li>
+            </ul>
+        </div>
+      <?php } else { ?>
+        <a class="btn-getstarted" href="index.php#donate">DONATE</a>
+    <?php } ?>
+
     </div>
   </header>
-
 
 
   <main class="main">
