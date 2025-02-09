@@ -35,7 +35,7 @@ include "app/functions/user.php";
 
   <!-- Main CSS File -->
   <link href="app/css/app.css" rel="stylesheet">
-  <link href="app/css/foodDonationMgmt.css" rel="stylesheet">
+  <link href="app/css/user.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -135,7 +135,7 @@ include "app/functions/user.php";
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="foodDonationMgmt.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
+                <a href="user.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -190,15 +190,20 @@ include "app/functions/user.php";
                 </thead>
                 <tbody>
                   <?php
+                  $allUserData = getUserData($conn);
+
                   if($allUserData->num_rows > 0) {
                     while($user = $allUserData->fetch_object()) {
-                      echo "<tr><td>".$user->strUsername."</td>".
-                      "<td>".$user->strEmail."</td>".
-                      "<td>".($user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>")."</td>".
-                      "<td>".($user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>")."</td>".
-                      "<td><a class='btn-edit-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-pencil-square'></i></a></td>".
-                      "<td><a class='btn-delete-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-trash-fill'></i></a></td>".
-                      "</tr>";
+                      ?>
+                      <tr>
+                        <td><?php echo $user->strUsername; ?></td>
+                        <td><?php echo $user->strEmail; ?></td>
+                        <td><?php echo $user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>"; ?></td>
+                        <td><?php echo $user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>";  ?></td>
+                        <td><a class="btn-edit-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
+                        <td><a class="btn-delete-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class="bi bi-trash-fill"></i></a></td>
+                      </tr>
+                      <?php
                     }
                   }
 

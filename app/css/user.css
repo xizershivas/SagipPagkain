@@ -1,14 +1,21 @@
+.dt-layout-table{
+    width: 100%;
+    height: 410px;
+    overflow: auto;
+}
+
 .bi.bi-pencil-square {
-    color: #13a6d7;
+    color: #0dcaf0;
 }
 
 .bi.bi-trash-fill {
-    color: red;
+    color: #dc3545;
 }
 
 .ysnenabled-true,
 .ysnapproved-true {
-    background-color: green;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
     color: white;
     padding: 3px 10px;
     border-radius: 3px;
@@ -16,7 +23,7 @@
 
 .ysnenabled-false,
 .ysnapproved-false {
-    background-color: red;
+    background-color: #dc3545;
     color: white;
     padding: 3px 10px;
     border-radius: 3px;
@@ -25,4 +32,3 @@
 #frmAddUser {
     transition: display 2s;
 }
-

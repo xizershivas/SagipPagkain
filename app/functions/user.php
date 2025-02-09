@@ -1,8 +1,7 @@
 <?php
-include "../config/db_connection.php";
-
 function getUserData($conn) {
-    $GLOBALS['allUserData'] = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
+    $allUserData = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
+    return $allUserData;
 }
 
 function editUser($conn, $intUserId) {
@@ -33,6 +32,7 @@ function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ys
                 "enabled" => $ysnEnabled,
                 "approved" => $ysnApproved
             ];
+            
             closeResource($conn, $query);
             return $data;
         } else {
@@ -56,7 +56,4 @@ function deleteUser($conn, $intUserId) {
     closeResource($conn, $query);
     return "User was successfully deleted";
 }
-
-// Load Records into the Data Table
-getUserData($conn);
 ?>

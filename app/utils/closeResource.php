@@ -1,6 +1,10 @@
 <?php
-function closeResource($conn, $query) {
-    if ($conn) $conn->close();
-    if ($query) $query->close();
+function closeResource($conn, $query = null) {
+    if ($conn && method_exists($conn, 'close')) {
+        $conn->close();
+    }
+    if ($query && method_exists($query, 'close')) {
+        $query->close();
+    }
 }
 ?>
