@@ -8,7 +8,7 @@ include "app/functions/user.php";
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Services Details - Append Bootstrap Template</title>
+  <title>Sagip Pagkain - User</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -115,8 +115,8 @@ include "app/functions/user.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><a href="">Donor Management</a></li>
-            <li class="current">Food Donation Management</li>
+            <li><a href="dashboard.php">Dashboard</a></li>
+            <li class="current">User Management</li>
           </ol>
         </div>
       </nav>
@@ -135,7 +135,7 @@ include "app/functions/user.php";
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="user.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
+                <a href="user.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -151,40 +151,65 @@ include "app/functions/user.php";
 
              <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
                <!-- USER FORM (HIDDEN) -->
-               <div class="text-black mb-3 bg-light p-3 d-none" id="frmUser">
-                <form>
-                  <div class="mb-3">
-                    <label for="user" class="form-label">User</label>
-                    <input type="text" class="form-control" name="user" id="user" value="" disabled>
+              <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+
+                    <div class="text-black mb-3 bg-light p-3 d-none" id="frmEditUser">
+                      <form id="frmUser">
+                        <div class="mb-3">
+                          <label for="user" class="form-label">User</label>
+                          <input type="text" class="form-control" name="user" id="user" value="" disabled>
+                        </div>
+                        <div class="mb-3">
+                          <label for="email" class="form-label">Email</label>
+                          <input type="email" class="form-control" name="email" id="email" value="">
+                        </div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
+                          <label class="form-check-label" for="enabled">Enabled</label>
+                        </div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
+                          <label class="form-check-label" for="approved">Approved</label>
+                        </div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin">
+                          <label class="form-check-label" for="admin">Admin access</label>
+                        </div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" name="donor" id="donor">
+                          <label class="form-check-label" for="donor">Donor access</label>
+                        </div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" name="other" id="other">
+                          <label class="form-check-label" for="other">Other access</label>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary me-1" id="btnSave">Save</button>
+                      <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
+                    </div>
+
                   </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" value="">
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
-                    <label class="form-check-label" for="enabled">Enabled</label>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
-                    <label class="form-check-label" for="approved">Approved</label>
-                  </div>
-                  <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-success me-1" id="btnSave">Save</button>
-                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
-                  </div>
-                </form>
+                </div>
               </div>
               <!-- END USER FORM -->
 
+
               <!-- DATA TABLE -->
-              <table id="userDataTable" class="display table table-striped">
+              <table id="userDataTable" class="display table table-striped mt-5">
                 <thead>
                   <tr>
                     <th scope="col">User</th>
                     <th scope="col">Email</th>
                     <th scope="col">Enabled</th>
                     <th scope="col">Approved</th>
+                    <th scope="col">Admin</th>
+                    <th scope="col">Donor</th>
+                    <th scope="col">Other</th>
                     <th scope="col" colspan="2">Action</th>
                   </tr>
                 </thead>
@@ -198,9 +223,12 @@ include "app/functions/user.php";
                       <tr>
                         <td><?php echo $user->strUsername; ?></td>
                         <td><?php echo $user->strEmail; ?></td>
-                        <td><?php echo $user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>"; ?></td>
-                        <td><?php echo $user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>";  ?></td>
-                        <td><a class="btn-edit-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
+                        <td><?php echo $user->ysnEnabled ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>"; ?></td>
+                        <td><?php echo $user->ysnApproved ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnAdmin ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnDonor ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnOther ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><a class="btn-edit-user" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
                         <td><a class="btn-delete-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class="bi bi-trash-fill"></i></a></td>
                       </tr>
                       <?php

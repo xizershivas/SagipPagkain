@@ -29,8 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "PUT") {
         $strEmail = sanitizeEmail($userData['strEmail']) ?? '';
         $ysnEnabled = $userData['ysnEnabled'] ?? 0;
         $ysnApproved = $userData['ysnApproved'] ?? 0;
+        $ysnAdmin = $userData['ysnAdmin'] ?? 0;
+        $ysnDonor = $userData['ysnDonor'] ?? 0;
+        $ysnOther = $userData['ysnOther'] ?? 0;
 
-        $result = updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved);
+        $result = updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnOther);
         echo json_encode($result);
     }       
 

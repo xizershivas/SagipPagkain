@@ -1,18 +1,22 @@
 // User Form Variables
+const frmEditUser = document.querySelector('#frmEditUser');
 const frmUser = document.querySelector('#frmUser');
 const btnEditUserList = document.getElementsByClassName('btn-edit-user');
 const btnDeleteUserList = document.getElementsByClassName('btn-delete-user');
 const btnSave = document.querySelector('#btnSave');
 const btnClose = document.querySelector('#btnClose');
-const txtUser = frmUser.children[0].elements.user;
-const txtEmail = frmUser.children[0].elements.email;
-const chkEnabled = frmUser.children[0].elements.enabled;
-const chkApproved = frmUser.children[0].elements.approved;
+const txtUser = frmUser.elements.user;
+const txtEmail = frmUser.elements.email;
+const chkEnabled = frmUser.elements.enabled;
+const chkApproved = frmUser.elements.approved;
+const chkAdmin = frmUser.elements.admin;
+const chkDonor = frmUser.elements.donor;
+const chkOther = frmUser.elements.other;
 let intUserId = 0;
 
 // Show/Hide User Form
 function toggleFormAddUser() {
-    frmUser.classList.toggle('d-none');
+    frmEditUser.classList.toggle('d-none');
 }
 
 function setFormData(response) {
@@ -21,10 +25,13 @@ function setFormData(response) {
     txtEmail.value = data.strEmail;
     chkEnabled.checked = data.ysnEnabled ? true : false;
     chkApproved.checked = data.ysnApproved ? true : false;
+    chkAdmin.checked = data.ysnAdmin ? true : false;
+    chkDonor.checked = data.ysnDonor ? true : false;
+    chkOther.checked = data.ysnOther ? true : false;
 }
 
 function editUser(e) {
-    if (frmUser.classList.contains('d-none')) {
+    if (frmEditUser.classList.contains('d-none')) {
         toggleFormAddUser();
     }
 
@@ -48,7 +55,10 @@ function updateUser() {
         strUsername: txtUser.value,
         strEmail: txtEmail.value,
         ysnEnabled: chkEnabled.checked ? true : false,
-        ysnApproved: chkApproved.checked ? true : false
+        ysnApproved: chkApproved.checked ? true : false,
+        ysnAdmin: chkAdmin.checked ? true : false,
+        ysnDonor: chkDonor.checked ? true : false,
+        ysnOther: chkOther.checked ? true : false,
     };
 
     const xmlhttp = new XMLHttpRequest();

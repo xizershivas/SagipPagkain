@@ -121,7 +121,6 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><a href="">Donor Management</a></li>
             <li class="current">Dashboard</li>
           </ol>
         </div>
@@ -142,7 +141,7 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
+                <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -156,98 +155,70 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
             </div>
           </div>
 
-             <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
-          
-               <!-- USER FORM (HIDDEN) -->
-               <div class="text-black mb-3 bg-light p-3 d-none" id="frmUser">
-                <form>
-                  <div class="mb-3">
-                    <label for="user" class="form-label">User</label>
-                    <input type="text" class="form-control" name="user" id="user" value="" disabled>
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" value="">
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
-                    <label class="form-check-label" for="enabled">Enabled</label>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
-                    <label class="form-check-label" for="approved">Approved</label>
-                  </div>
-                  <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-success me-1" id="btnSave">Save</button>
-                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
-                  </div>
-                </form>
-              </div>
-              <!-- END USER FORM -->
+          <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
 
-              <!-- DATA GRAPH -->
-              <div class="card p-3 shadow-sm">
-                <div class="row text-center">
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Partner Establishments</h6>
-                            <h4>45</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Surplus Items</h6>
-                            <h4>53</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Surplus Items</h6>
-                            <h4>53</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Total Food Donated</h6>
-                            <h4>50</h4>
-                        </div>
+          <!-- DATA GRAPH -->
+          <div class="card p-3 shadow-sm">
+            <div class="row text-center">
+                <div class="col-md-3 mb-3">
+                    <div class="card p-3 shadow-sm">
+                        <h6>Total Partner Establishments</h6>
+                        <h4>45</h4>
                     </div>
                 </div>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="card p-3 shadow-sm" style="width: 95%;left: 12px;">
-                                <h6 class="text-center">Surplus Food Distribution Status</h6>
-                                <div class="chart-container" style="height: 150px;">
-                                    <canvas id="surplusDistributionChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                            <div class="card p-3 shadow-sm">
-                                <h6>Avg, Redistribution</h6>
-                                <h4>5,125 min(s)</h4>
+                <div class="col-md-3 mb-3">
+                    <div class="card p-3 shadow-sm">
+                        <h6>Total Surplus Items</h6>
+                        <h4>53</h4>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card p-3 shadow-sm">
+                        <h6>Total Surplus Items</h6>
+                        <h4>53</h4>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card p-3 shadow-sm">
+                        <h6>Total Food Donated</h6>
+                        <h4>50</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="card p-3 shadow-sm" style="width: 95%;left: 12px;">
+                            <h6 class="text-center">Surplus Food Distribution Status</h6>
+                            <div class="chart-container" style="height: 150px;">
+                                <canvas id="surplusDistributionChart"></canvas>
                             </div>
                         </div>
                         <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                            <div class="card p-3 shadow-sm" style="height: 123px;">
-                                <h6>Avg, Surplus value</h6>
-                                <h4>20k</h4>
-                            </div>
-                        </div>
+                        <div class="card p-3 shadow-sm">
+                            <h6>Avg, Redistribution</h6>
+                            <h4>5,125 min(s)</h4>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card p-3 shadow-sm">
-                            <h5 class="text-center">Forecasted Surplus Availability</h5>
-                            <div class="chart-container" style="height: 280px;">
-                                <canvas id="forecastedSurplusChart"></canvas>
-                            </div>
+                    <div class="col-md-6 mb-6" style="margin-top: 10px;">
+                        <div class="card p-3 shadow-sm" style="height: 123px;">
+                            <h6>Avg, Surplus value</h6>
+                            <h4>20k</h4>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-3 shadow-sm">
+                        <h5 class="text-center">Forecasted Surplus Availability</h5>
+                        <div class="chart-container" style="height: 280px;">
+                            <canvas id="forecastedSurplusChart"></canvas>
                         </div>
                     </div>
                 </div>
-              <!-- END DATA GRAPH>
             </div>
+          <!-- END DATA GRAPH> -->
           </div>
 
         </div>

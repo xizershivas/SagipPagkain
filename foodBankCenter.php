@@ -121,7 +121,7 @@ include "app/functions/user.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><a href="">Donor Management</a></li>
+            <li><a href="dashboard.php">Dashboard</a></li>
             <li class="current">Food Bank Center</li>
           </ol>
         </div>
@@ -141,7 +141,7 @@ include "app/functions/user.php";
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
+                <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
                 <a href="foodBankCenter.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -155,42 +155,13 @@ include "app/functions/user.php";
             </div>
           </div>
 
-             <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
-               <!-- USER FORM (HIDDEN) -->
-               <div class="text-black mb-3 bg-light p-3 d-none" id="frmUser">
-                <form>
-                  <div class="mb-3">
-                    <label for="user" class="form-label">User</label>
-                    <input type="text" class="form-control" name="user" id="user" value="" disabled>
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" value="">
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
-                    <label class="form-check-label" for="enabled">Enabled</label>
-                  </div>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
-                    <label class="form-check-label" for="approved">Approved</label>
-                  </div>
-                  <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-success me-1" id="btnSave">Save</button>
-                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
-                  </div>
-                </form>
-              </div>
-              <!-- END USER FORM -->
-                  <h2 class="text-center" style="color: 3333;">Item Stock Map</h2>
-              <!-- DATA GRAPH -->
-              <div class="card p-3 shadow-sm">
-  
-                <div id="map"></div>
-
-              </div>
-              <!-- END MAP GRAPH>
+          <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+            <h2 class="text-center" style="color: 3333;">Item Stock Map</h2>
+            <!-- DATA GRAPH -->
+            <div class="card p-3 shadow-sm">
+              <div id="map"></div>
             </div>
+            <!-- END MAP GRAPH> -->
           </div>
 
         </div>

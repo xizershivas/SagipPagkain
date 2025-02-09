@@ -12,8 +12,7 @@
     color: #dc3545;
 }
 
-.ysnenabled-true,
-.ysnapproved-true {
+.ysn-true {
     background-color: #5cb85c;
     border-color: #5cb85c;
     color: white;
@@ -21,8 +20,7 @@
     border-radius: 3px;
 }
 
-.ysnenabled-false,
-.ysnapproved-false {
+.ysn-false {
     background-color: #dc3545;
     color: white;
     padding: 3px 10px;
