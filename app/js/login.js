@@ -21,7 +21,7 @@ function login(e) {
                 const response = JSON.parse(this.responseText);
             }
         }
-    }
+    };
 
     xmlhttp.open('POST', 'app/controllers/login.php', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');

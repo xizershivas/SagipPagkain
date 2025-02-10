@@ -1,6 +1,7 @@
 <?php
+session_start();
 include "app/config/db_connection.php";
-include "app/functions/user.php";
+include "app/functions/donationManagement.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +9,7 @@ include "app/functions/user.php";
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Sagip Pagkain - User Management</title>
+  <title>Sagip Pagkain - Donation Management</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -35,7 +36,7 @@ include "app/functions/user.php";
 
   <!-- Main CSS File -->
   <link href="app/css/app.css" rel="stylesheet">
-  <link href="app/css/user.css" rel="stylesheet">
+  <link href="app/css/donationManagement.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -116,7 +117,7 @@ include "app/functions/user.php";
         <div class="container-fluid">
           <ol>
             <li><a href="dashboard.php">Dashboard</a></li>
-            <li class="current">User Management</li>
+            <li class="current">Donation Management</li>
           </ol>
         </div>
       </nav>
@@ -135,8 +136,8 @@ include "app/functions/user.php";
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="user.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
-                <a href="donationManagement.php"><i class="bi bi-arrow-right-circle"></i><span>Donation Management</span></a>
+                <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
+                <a href="donationManagement.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Donation Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -150,97 +151,103 @@ include "app/functions/user.php";
             </div>
           </div>
 
-             <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
-               <!-- USER FORM (HIDDEN) -->
-              <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
+          <!-- DONATION FORM (HIDDEN) -->
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
 
-                    <div class="text-black mb-3 bg-light p-3">
-                      <form id="frmUser">
-                        <div class="mb-3">
-                          <label for="user" class="form-label">User</label>
-                          <input type="text" class="form-control" name="user" id="user" value="" disabled>
-                        </div>
-                        <div class="mb-3">
-                          <label for="email" class="form-label">Email</label>
-                          <input type="email" class="form-control" name="email" id="email" value="">
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
-                          <label class="form-check-label" for="enabled">Enabled</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
-                          <label class="form-check-label" for="approved">Approved</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin">
-                          <label class="form-check-label" for="admin">Admin access</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="donor" id="donor">
-                          <label class="form-check-label" for="donor">Donor access</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="other" id="other">
-                          <label class="form-check-label" for="other">Other access</label>
-                        </div>
-                      </form>
+                <div class="text-black mb-3 bg-light p-3" id="frmEditDonation">
+                  <form id="frmDonation">
+                    <div class="mb-3">
+                      <label for="donor" class="form-label">Donor</label>
+                      <input type="text" class="form-control" name="donor" id="donor">
                     </div>
-
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-primary me-1" id="btnSave">Save</button>
-                      <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
+                    <div class="mb-3">
+                      <label for="date" class="form-label">Date</label>
+                      <input type="date" class="form-control" name="date" id="date">
                     </div>
-
-                  </div>
+                    <div class="mb-3">
+                      <label for="title" class="form-label">Title</label>
+                      <input type="text" class="form-control" name="title" id="title">
+                    </div>
+                    <div class="mb-3">
+                      <label for="description" class="form-label">Description</label>
+                      <input type="text" class="form-control" name="description" id="description">
+                    </div>
+                    <div class="mb-3">
+                      <label for="pickupLocation" class="form-label">Pickup Location</label>
+                      <input type="text" class="form-control" name="pickupLocation" id="pickupLocation">
+                    </div>
+                    <div class="mb-3">
+                      <label for="uploadDocumentation" class="form-label">Upload Documentation</label>
+                      <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" name="status" id="status">
+                      <label class="form-check-label" for="status">Status</label>
+                    </div>
+                    <div class="mb-3">
+                      <label for="remarks" class="form-label">Remarks</label>
+                      <input type="text" class="form-control" name="remarks" id="remarks">
+                    </div>
+                  </form>
                 </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary me-1" id="btnSave">Save</button>
+                  <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
+                </div>
+
               </div>
-              <!-- END USER FORM -->
-
-
-              <!-- DATA TABLE -->
-              <table id="userDataTable" class="display table table-striped mt-5">
-                <thead>
-                  <tr>
-                    <th scope="col">User</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Enabled</th>
-                    <th scope="col">Approved</th>
-                    <th scope="col">Admin</th>
-                    <th scope="col">Donor</th>
-                    <th scope="col">Other</th>
-                    <th scope="col" colspan="2">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $allUserData = getUserData($conn);
-
-                  if($allUserData->num_rows > 0) {
-                    while($user = $allUserData->fetch_object()) {
-                      ?>
-                      <tr>
-                        <td><?php echo $user->strUsername; ?></td>
-                        <td><?php echo $user->strEmail; ?></td>
-                        <td><?php echo $user->ysnEnabled ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>"; ?></td>
-                        <td><?php echo $user->ysnApproved ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnAdmin ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnDonor ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnOther ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><a class="btn-edit-user" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
-                        <td><a class="btn-delete-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class="bi bi-trash-fill"></i></a></td>
-                      </tr>
-                      <?php
-                    }
-                  }
-
-                  $conn->close();
-                  ?>
-                </tbody>
-              </table>
             </div>
+          </div><!-- END DONATION FORM -->
+
+          <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+            <!-- DATA TABLE -->
+            <table id="donationDataTable" class="display table table-striped mt-5">
+              <thead>
+                <tr>
+                  <th scope="col">Donor</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Pickup Location</th>
+                  <th scope="col">Upload Documentation</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Remarks</th>
+                  <th scope="col" colspan="2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              <?php
+              $allDonationData = getDonationData($conn);
+
+              if ($allDonationData->num_rows > 0) {
+                while ($data = $allDonationData->fetch_object()) {
+                  ?>
+                  <tr>
+                    <td><?php echo $data->strDonorName; ?></td>
+                    <td><?php echo $data->dtmDate; ?></td>
+                    <td><?php echo $data->strTitle; ?></td>
+                    <td><?php echo $data->strDescription; ?></td>
+                    <td><?php echo $data->strPickupLocation; ?></td>
+                    <td><?php echo $data->strUploadDocumentation; ?></td>
+                    <td><?php echo $data->ysnStatus ? "<span class='ysn-true'>Received</span>" : "<span class='ysn-false'>Pending</span>"; ?></td>
+                    <td><?php echo $data->strRemarks; ?></td>
+                    <td><a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $data->intDonationId; ?>"><i class='bi bi-pencil-square'></i></a></td>
+                    <td><a class="btn-delete-donation" href="javascript:void(0)" value="<?php echo $data->intDonationId; ?>"><i class="bi bi-trash-fill"></i></a></td>
+                  </tr>
+                  <?php
+                }
+              }
+
+              $conn->close();
+              ?>
+              </tbody>
+            </table><!-- END DATA TABLE -->
+          </div>
+
+        </div>
           </div>
 
         </div>
@@ -309,10 +316,10 @@ include "app/functions/user.php";
 
   <!-- Main JS File -->
   <script src="app/js/app.js"></script>
-  <script src="app/js/user.js"></script>
+  <script src="app/js/donationManagement.js"></script>
   <script>
     $(document).ready(function() {
-      $('#userDataTable').DataTable();
+      $('#donationDataTable').DataTable();
     });
   </script>
 </body>

@@ -4,51 +4,45 @@ include "../functions/user.php";
 include "../utils/sanitize.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $intUserId = intval(sanitize($_GET['intUserId']));
+    $intUserId = intval(sanitize($_GET["intUserId"]));
+    editUser($conn, $intUserId);
 
-    // Validate that the intUserId is a valid integer
-    if (!filter_var($intUserId, FILTER_VALIDATE_INT)) {
-        echo json_encode(["Error" => "Invalid request"]);
-    }
-
-    $result = editUser($conn, $intUserId);
-    echo json_encode($result);
+    $conn->close();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "PUT") {
     // Get the RAW PUT data
     $inputData = file_get_contents('php://input');
 
-    // Decode the JSON data into an associative array
-    $userData = json_decode($inputData, true);
+    // Decode the JSON data into an object
+    $userData = json_decode($inputData);
 
     // Check if JSON decoding was successful
     if (json_last_error() === JSON_ERROR_NONE) {
-        $intUserId = $userData['intUserId'];
-        $strUsername = sanitize($userData['strUsername']);
-        $strEmail = sanitizeEmail($userData['strEmail']) ?? '';
-        $ysnEnabled = $userData['ysnEnabled'] ?? 0;
-        $ysnApproved = $userData['ysnApproved'] ?? 0;
-        $ysnAdmin = $userData['ysnAdmin'] ?? 0;
-        $ysnDonor = $userData['ysnDonor'] ?? 0;
-        $ysnOther = $userData['ysnOther'] ?? 0;
+        $intUserId = $userData->intUserId;
+        $strUsername = sanitize($userData->strUsername);
+        $strEmail = sanitizeEmail($userData->strEmail) ?? '';
+        $ysnEnabled = $userData->ysnEnabled ?? 0;
+        $ysnApproved = $userData->ysnApproved ?? 0;
+        $ysnAdmin = $userData->ysnAdmin ?? 0;
+        $ysnDonor = $userData->ysnDonor ?? 0;
+        $ysnOther = $userData->ysnOther ?? 0;
 
-        $result = updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnOther);
-        echo json_encode($result);
-    }       
+        updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnOther);
+    }
 
-    echo json_encode(["Error: " => $e->getMessage()]);
+    $conn->close();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
     // Get the RAW DELETE data
     $inputData = file_get_contents('php://input');
 
-    // Decode the JSON data into an associative array
-    $userData = json_decode($inputData, true);
+    // Decode the JSON data into an object
+    $userData = json_decode($inputData);
 
-    $result = deleteUser($conn, $userData['intUserId']);
+    deleteUser($conn, $userData->intUserId);
 
-    echo json_encode($result);
+    $conn->close();
 }
 ?>
