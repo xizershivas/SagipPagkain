@@ -153,42 +153,51 @@ include "app/functions/donationManagement.php";
 
           <!-- DONATION FORM (HIDDEN) -->
           <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
               <div class="modal-content">
 
                 <div class="text-black mb-3 bg-light p-3" id="frmEditDonation">
-                  <form id="frmDonation">
-                    <div class="mb-3">
-                      <label for="donor" class="form-label">Donor</label>
-                      <input type="text" class="form-control" name="donor" id="donor">
+                  <form class="" id="frmDonation">
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-6">
+                        <label for="donor" class="form-label">Donor</label>
+                        <input type="text" class="form-control" name="donor" id="donor">
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" name="date" id="date">
+                      </div>
+                    </div>
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-6">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="title" id="title">
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" name="description" id="description">
+                      </div>
+                    </div>
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-6">
+                        <label for="pickupLocation" class="form-label">Pickup Location</label>
+                        <input type="text" class="form-control" name="pickupLocation" id="pickupLocation">
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <input type="text" class="form-control" name="remarks" id="remarks">
+                      </div>
                     </div>
                     <div class="mb-3">
-                      <label for="date" class="form-label">Date</label>
-                      <input type="date" class="form-control" name="date" id="date">
-                    </div>
-                    <div class="mb-3">
-                      <label for="title" class="form-label">Title</label>
-                      <input type="text" class="form-control" name="title" id="title">
-                    </div>
-                    <div class="mb-3">
-                      <label for="description" class="form-label">Description</label>
-                      <input type="text" class="form-control" name="description" id="description">
-                    </div>
-                    <div class="mb-3">
-                      <label for="pickupLocation" class="form-label">Pickup Location</label>
-                      <input type="text" class="form-control" name="pickupLocation" id="pickupLocation">
-                    </div>
-                    <div class="mb-3">
-                      <label for="uploadDocumentation" class="form-label">Upload Documentation</label>
+                      <label for="" class="form-label">Upload Documentation</label>
+                      <div class="mt-2 mb-3">
+                      <span>doc1.pdf,&nbsp;</span><span>doc2.docx,&nbsp;</span><span>doc3.xlsx</span>
+                      </div>
                       <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
                     </div>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" role="switch" name="status" id="status">
-                      <label class="form-check-label" for="status">Status</label>
-                    </div>
-                    <div class="mb-3">
-                      <label for="remarks" class="form-label">Remarks</label>
-                      <input type="text" class="form-control" name="remarks" id="remarks">
+                      <label class="form-check-label" for="status">Transport Status</label>
                     </div>
                   </form>
                 </div>
