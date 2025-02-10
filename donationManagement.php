@@ -197,7 +197,7 @@ include "app/functions/donationManagement.php";
                     </div>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" role="switch" name="status" id="status">
-                      <label class="form-check-label" for="status">Transport Status</label>
+                      <label class="form-check-label" for="status" id="labelStatus">Transport Status</label>
                     </div>
                   </form>
                 </div>

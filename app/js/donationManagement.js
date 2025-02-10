@@ -1,6 +1,16 @@
 const frmDonation = document.querySelector('#frmDonation');
 const btnEditDonationList = document.getElementsByClassName('btn-edit-donation');
+const status = document.querySelector('#status');
+const labelStatus = document.querySelector('#labelStatus');
 let intDonationId = 0;
+
+function statusChange() {
+    if (status.checked) {
+        labelStatus.innerHTML = 'Status <span class="ysn-true">Received</span>';
+    } else {
+        labelStatus.innerHTML = 'Status <span class="ysn-false">Pending</span>';
+    }
+}
 
 function setFormData({ data }) {
     frmDonation.elements.donor.value = data.strDonorName;
@@ -10,8 +20,8 @@ function setFormData({ data }) {
     frmDonation.elements.pickupLocation.value = data.strPickupLocation;
     // NOTE: TO BE ADDED FILE HANDLING
     frmDonation.elements.status.checked = data.ysnStatus ? true : false;
+    labelStatus.innerHTML = data.ysnStatus ? 'Status <span class="ysn-true">Received</span>' : 'Status <span class="ysn-false">Pending</span>';
     frmDonation.elements.remarks.value = data.strRemarks;
-
 }
 
 function editDonation(e) {
@@ -38,3 +48,5 @@ function editDonation(e) {
 for (let btnEdit of btnEditDonationList) {
     btnEdit.addEventListener('click', editDonation);
 }
+
+status.addEventListener('change', statusChange);
