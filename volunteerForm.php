@@ -51,7 +51,7 @@
           <li><a href="index.php#about">
             <div>
               <h6>Our Role in</h6>
-              <h5>FOOD SYSTEMS<span></h5>
+              <h5><span>FOOD SYSTEMS</span></h5>
             </div>
           </a></li>
           <li><a href="index.php#system">

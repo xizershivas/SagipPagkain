@@ -31,7 +31,7 @@ function apply(e) {
                 alert(JSON.parse(this.responseText).message);
             }
         }
-    }
+    };
     
     xmlhttp.open('POST', 'app/controllers/volunteerForm.php', true);
     xmlhttp.send(formData);

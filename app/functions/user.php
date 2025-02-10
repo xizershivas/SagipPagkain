@@ -5,18 +5,37 @@ function getUserData($conn) {
 }
 
 function editUser($conn, $intUserId) {
-    $query = $conn->prepare("SELECT * FROM tbluser WHERE intUserId = ?");
-    $query->bind_param('i', $intUserId);
-    $query->execute();
-    $result = $query->get_result();
+    if (!filter_var($intUserId, FILTER_VALIDATE_INT)) {
+        http_response_code(400);
+        echo json_encode(array("data" => array("message" => "Invalid request")));
+        exit();
+    } else {
+        $query = $conn->prepare("SELECT * FROM tbluser WHERE intUserId = ?");
 
-    if ($result->num_rows < 1) {
-        return "User does not exist";
+        if (!$query) {
+            http_response_code(500);
+            echo json_encode(array("data" => array("message" => "Database operation failed")));
+            exit();
+        }
+
+        $query->bind_param('i', $intUserId);
+        $query->execute();
+        $result = $query->get_result();
+
+        if ($result->num_rows == 0) {
+            http_response_code(404);
+            echo json_encode(array("data" => array("message" => "User does not exist")));
+            $query->close();
+            exit();
+        }
+
+        $user = $result->fetch_object();
+
+        http_response_code(200);
+        echo json_encode(array("data" => $user));
+        $query->close();
+        exit();
     }
-
-    $user = $result->fetch_object();
-
-    return $user;
 }
 
 function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnOther) {
@@ -25,38 +44,45 @@ function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ys
 
     if ($query->execute()) {
         if ($query->affected_rows > 0) {
-            $data = [
+            $data = array(
                 "userId" => $intUserId,
                 "username" => $strUsername,
                 "email" => $strEmail,
                 "enabled" => $ysnEnabled,
                 "approved" => $ysnApproved,
                 "admin" => $ysnAdmin,
-                "donor" => $donor,
-                "other" => $other
-            ];
+                "donor" => $ysnDonor,
+                "other" => $ysnOther
+            );
             
-            closeResource($conn, $query);
-            return $data;
+            http_response_code(200);
+            echo json_encode(array("data" => $data));
         } else {
-            closeResource($conn, $query);
-            return "Error: " . $query->error;
+            http_response_code(400);
+            echo json_encode(array("data" => array("message" => "No rows were affected")));
         }
     } else {
-        closeResource($conn, $query);
-        return "Error updating user: " . $query->error;
+        http_response_code(400);
+        echo json_encode(array("data" => array("message" => $query->error)));
     }
+
+    $query->close();
+    exit();
 }
 
 function deleteUser($conn, $intUserId) {
     $query = $conn->prepare("DELETE FROM tbluser WHERE intUserId = ?");
     $query->bind_param("i", $intUserId);
-    $result = $query->execute();
 
-    if (!$result) {
-        return "Error deleting user";
+    if ($query->execute()) {
+        http_response_code(200);
+        echo json_encode(array("data" => array("message" => "User was successfully deleted")));
+    } else {
+        http_response_code(400);
+        echo json_encode(array("data" => array("message" => $query->error)));
     }
-    closeResource($conn, $query);
-    return "User was successfully deleted";
+
+    $query->close();
+    exit();
 }
 ?>

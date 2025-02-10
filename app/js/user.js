@@ -1,74 +1,66 @@
 // User Form Variables
-const frmEditUser = document.querySelector('#frmEditUser');
 const frmUser = document.querySelector('#frmUser');
 const btnEditUserList = document.getElementsByClassName('btn-edit-user');
 const btnDeleteUserList = document.getElementsByClassName('btn-delete-user');
 const btnSave = document.querySelector('#btnSave');
 const btnClose = document.querySelector('#btnClose');
-const txtUser = frmUser.elements.user;
-const txtEmail = frmUser.elements.email;
-const chkEnabled = frmUser.elements.enabled;
-const chkApproved = frmUser.elements.approved;
-const chkAdmin = frmUser.elements.admin;
-const chkDonor = frmUser.elements.donor;
-const chkOther = frmUser.elements.other;
 let intUserId = 0;
 
-// Show/Hide User Form
-function toggleFormAddUser() {
-    frmEditUser.classList.toggle('d-none');
-}
-
-function setFormData(response) {
-    const data = JSON.parse(response);
-    txtUser.value = data.strUsername;
-    txtEmail.value = data.strEmail;
-    chkEnabled.checked = data.ysnEnabled ? true : false;
-    chkApproved.checked = data.ysnApproved ? true : false;
-    chkAdmin.checked = data.ysnAdmin ? true : false;
-    chkDonor.checked = data.ysnDonor ? true : false;
-    chkOther.checked = data.ysnOther ? true : false;
+function setFormData({ data }) {
+    frmUser.elements.user.value = data.strUsername;
+    frmUser.elements.email.value = data.strEmail;
+    frmUser.elements.enabled.checked = data.ysnEnabled ? true : false;
+    frmUser.elements.approved.checked = data.ysnApproved ? true : false;
+    frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
+    frmUser.elements.donor.checked = data.ysnDonor ? true : false;
+    frmUser.elements.other.checked = data.ysnOther ? true : false;
 }
 
 function editUser(e) {
-    if (frmEditUser.classList.contains('d-none')) {
-        toggleFormAddUser();
-    }
-
     intUserId = e.currentTarget.getAttribute('value');
     const xmlhttp = new XMLHttpRequest();
 
     xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            setFormData(this.responseText);
+        if (this.readyState == 4) {
+            const response = JSON.parse(this.responseText);
+
+            if (this.status == 200) {
+                setFormData(response);
+            } else {
+                // alert(response.data.message);
+            }
         }
-    }
+    };
 
     xmlhttp.open('GET', `app/controllers/user.php?intUserId=${intUserId}`, true);
-    xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send();
 }
 
 function updateUser() {
     const userData = {
         intUserId: intUserId,
-        strUsername: txtUser.value,
-        strEmail: txtEmail.value,
-        ysnEnabled: chkEnabled.checked ? true : false,
-        ysnApproved: chkApproved.checked ? true : false,
-        ysnAdmin: chkAdmin.checked ? true : false,
-        ysnDonor: chkDonor.checked ? true : false,
-        ysnOther: chkOther.checked ? true : false,
+        strUsername: frmUser.elements.user.value,
+        strEmail: frmUser.elements.email.value,
+        ysnEnabled: frmUser.elements.enabled.checked ? true : false,
+        ysnApproved: frmUser.elements.approved.checked ? true : false,
+        ysnAdmin: frmUser.elements.admin.checked ? true : false,
+        ysnDonor: frmUser.elements.donor.checked ? true : false,
+        ysnOther: frmUser.elements.other.checked ? true : false,
     };
 
     const xmlhttp = new XMLHttpRequest();
 
     xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            toggleFormAddUser();
-            window.location.reload(); // Refresh to reload Data Table
+        if (this.readyState == 4) {
+            const response = JSON.parse(this.responseText);
+
+            if (this.status == 200) {
+                window.location.reload(); // Refresh to reload Data Table
+            } else {
+                // alert(response.data.message);
+            }
         }
-    }
+    };
 
     xmlhttp.open('PUT', 'app/controllers/user.php', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
@@ -83,12 +75,16 @@ function deleteUser(e) {
         const xmlhttp = new XMLHttpRequest();
 
         xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                window.location.reload();
-                // document.querySelector(`.btn-delete-user[value="${intUserId}]"`);
-                console.log(this.responseText);
+            if (this.readyState == 4) {
+                const response = JSON.parse(this.responseText);
+    
+                if (this.status == 200) {
+                    window.location.reload(); // Refresh to reload Data Table
+                } else {
+                    // alert(response.data.message);
+                }
             }
-        }
+        };
 
         xmlhttp.open('DELETE', `app/controllers/user.php`, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json');
@@ -106,5 +102,4 @@ for (let btnDelete of btnDeleteUserList) {
     btnDelete.addEventListener('click', deleteUser);
 }
 
-btnClose.addEventListener('click', toggleFormAddUser);
 btnSave.addEventListener('click', updateUser);
