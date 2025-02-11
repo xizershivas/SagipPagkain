@@ -1,0 +1,32 @@
+.form {
+    padding: 30px;
+    border-radius: 10px;
+    background-color: rgba(240, 240, 240, 0.85);
+    color: #333;
+}
+
+.main {
+    background-image: url("../../assets/img/vegetables-img1.jpg");
+    background-color: #cccccc;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.signup-form-label,
+.signup-form-icon {
+    color: #0a6dca;
+}
+
+.signup-form-icon {
+    font-size: 1.25em;
+}
+
+.signup-heading {
+    text-align: center;
+    color: #0a6dca;
+    font-weight: bold;
+}
+
+.signup-form-icon > i.show-hide-password {
+    cursor: pointer;
+}
