@@ -58,7 +58,7 @@ function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ys
             http_response_code(200);
             echo json_encode(array("data" => $data));
         } else {
-            http_response_code(400);
+            http_response_code(202);
             echo json_encode(array("data" => array("message" => "No rows were affected")));
         }
     } else {

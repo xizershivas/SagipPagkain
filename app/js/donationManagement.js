@@ -1,14 +1,16 @@
 const frmDonation = document.querySelector('#frmDonation');
 const btnEditDonationList = document.getElementsByClassName('btn-edit-donation');
-const status = document.querySelector('#status');
-const labelStatus = document.querySelector('#labelStatus');
+const btnDeleteDonationList = document.getElementsByClassName('btn-delete-donation');
+const transportStatus = document.querySelector('#transportStatus');
+const labelTransportStatus = document.querySelector('#labelTransportStatus');
+const btnSave = document.querySelector('#btnSave');
 let intDonationId = 0;
 
 function statusChange() {
-    if (status.checked) {
-        labelStatus.innerHTML = 'Status <span class="ysn-true">Received</span>';
+    if (transportStatus.checked) {
+        labelTransportStatus.innerHTML = 'Status <span class="ysn-true">Received</span>';
     } else {
-        labelStatus.innerHTML = 'Status <span class="ysn-false">Pending</span>';
+        labelTransportStatus.innerHTML = 'Status <span class="ysn-false">Pending</span>';
     }
 }
 
@@ -19,8 +21,8 @@ function setFormData({ data }) {
     frmDonation.elements.description.value = data.strDescription;
     frmDonation.elements.pickupLocation.value = data.strPickupLocation;
     // NOTE: TO BE ADDED FILE HANDLING
-    frmDonation.elements.status.checked = data.ysnStatus ? true : false;
-    labelStatus.innerHTML = data.ysnStatus ? 'Status <span class="ysn-true">Received</span>' : 'Status <span class="ysn-false">Pending</span>';
+    frmDonation.elements.transportStatus.checked = data.ysnStatus ? true : false;
+    labelTransportStatus.innerHTML = data.ysnStatus ? 'Status <span class="ysn-true">Received</span>' : 'Status <span class="ysn-false">Pending</span>';
     frmDonation.elements.remarks.value = data.strRemarks;
 }
 
@@ -44,9 +46,62 @@ function editDonation(e) {
     xmlhttp.send();
 }
 
+function updateDonation(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    formData.append("donationId", intDonationId);
+
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            const response = JSON.parse(this.responseText);
+
+            if (this.status == 200 || this.status == 202) {
+                window.location.reload();
+            } else {
+                alert(response.data.message);
+            }
+        }
+    };
+
+    xmlhttp.open('POST', 'app/controllers/donationManagement.php', true);
+    xmlhttp.send(formData);
+}
+
+function deleteDonation(e) {
+    intDonationId = parseInt(e.currentTarget.getAttribute('value'));
+    const ysnConfirmed = window.confirm('Are you sure you want to delete this donation record?');
+
+    if (ysnConfirmed) {
+        const xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                const response = JSON.parse(this.responseText);
+
+                if (this.status == 200) {
+                    window.location.reload(); // Refresh to reload Data Table
+                } else {
+                    // alert(response.data.message);
+                }
+            }
+        };
+
+        xmlhttp.open('DELETE', `app/controllers/donationManagement.php`, true);
+        xmlhttp.setRequestHeader('Content-Type', 'application/json');
+        xmlhttp.send(JSON.stringify({ intDonationId: intDonationId }));
+    }
+}
+
 // Attach Event Handler for Editing Donation
 for (let btnEdit of btnEditDonationList) {
     btnEdit.addEventListener('click', editDonation);
 }
 
-status.addEventListener('change', statusChange);
+for (let btnDelete of btnDeleteDonationList) {
+    btnDelete.addEventListener('click', deleteDonation);
+}
+
+transportStatus.addEventListener('change', statusChange);
+frmDonation.addEventListener('submit', updateDonation);

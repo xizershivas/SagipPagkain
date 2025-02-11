@@ -157,11 +157,11 @@ include "app/functions/donationManagement.php";
               <div class="modal-content">
 
                 <div class="text-black mb-3 bg-light p-3" id="frmEditDonation">
-                  <form class="" id="frmDonation">
+                  <form class="" id="frmDonation" enctype="multipart/form-data">
                     <div class="row g-3">
                       <div class="mb-3 col col-md-6">
                         <label for="donor" class="form-label fw-bold">Donor</label>
-                        <input type="text" class="form-control" name="donor" id="donor">
+                        <input type="text" class="form-control" name="donor" id="donor" required>
                       </div>
                       <div class="mb-3 col col-md-6">
                         <label for="date" class="form-label fw-bold">Date</label>
@@ -171,7 +171,7 @@ include "app/functions/donationManagement.php";
                     <div class="row g-3">
                       <div class="mb-3 col col-md-6">
                         <label for="title" class="form-label fw-bold">Title</label>
-                        <input type="text" class="form-control" name="title" id="title">
+                        <input type="text" class="form-control" name="title" id="title" required>
                       </div>
                       <div class="mb-3 col col-md-6">
                         <label for="description" class="form-label fw-bold">Description</label>
@@ -181,7 +181,7 @@ include "app/functions/donationManagement.php";
                     <div class="row g-3">
                       <div class="mb-3 col col-md-6">
                         <label for="pickupLocation" class="form-label fw-bold">Pickup Location</label>
-                        <input type="text" class="form-control" name="pickupLocation" id="pickupLocation">
+                        <input type="text" class="form-control" name="pickupLocation" id="pickupLocation" required>
                       </div>
                       <div class="mb-3 col col-md-6">
                         <label for="remarks" class="form-label fw-bold">Remarks</label>
@@ -190,20 +190,18 @@ include "app/functions/donationManagement.php";
                     </div>
                     <div class="mb-3">
                       <label for="" class="form-label fw-bold">Upload Documentation</label>
-                      <div class="mt-2 mb-3">
-                      <span>doc1.pdf,&nbsp;</span><span>doc2.docx,&nbsp;</span><span>doc3.xlsx</span>
-                      </div>
+                      <span>(PDF/WORD Max: 5MB)</span><br>
                       <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
                     </div>
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch" name="status" id="status">
-                      <label class="form-check-label fw-bold" for="status" id="labelStatus">Transport Status</label>
+                      <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
+                      <label class="form-check-label fw-bold" for="transportStatus" id="labelTransportStatus">Transport Status</label>
                     </div>
                   </form>
                 </div>
-
+                
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-primary me-1" id="btnSave">Save</button>
+                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmDonation">Save</button>
                   <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
                 </div>
 
@@ -240,7 +238,7 @@ include "app/functions/donationManagement.php";
                     <td><?php echo $data->strTitle; ?></td>
                     <td><?php echo $data->strDescription; ?></td>
                     <td><?php echo $data->strPickupLocation; ?></td>
-                    <td><?php echo $data->strUploadDocumentation; ?></td>
+                    <td><?php echo basename($data->strDocFilePath); ?></td>
                     <td><?php echo $data->ysnStatus ? "<span class='ysn-true'>Received</span>" : "<span class='ysn-false'>Pending</span>"; ?></td>
                     <td><?php echo $data->strRemarks; ?></td>
                     <td><a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $data->intDonationId; ?>"><i class='bi bi-pencil-square'></i></a></td>

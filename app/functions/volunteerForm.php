@@ -1,6 +1,4 @@
 <?php
-include "../config/db_connection.php";
-
 function processSignFileUpload() {
     if (isset($_FILES['signature']) && $_FILES['signature']['error'] == 0) {
         $fileTmpPath = $_FILES['signature']['tmp_name'];
@@ -12,7 +10,7 @@ function processSignFileUpload() {
             . DIRECTORY_SEPARATOR . "SagipPagkain" 
             . DIRECTORY_SEPARATOR . "app" 
             . DIRECTORY_SEPARATOR . "storage" 
-            . DIRECTORY_SEPARATOR . "uploads/";
+            . DIRECTORY_SEPARATOR . "images/";
 
         $uploadFilePath = $targetDir . basename($fileName);
 
@@ -37,5 +35,4 @@ function processSignFileUpload() {
         }
     }
 }
-
 ?>

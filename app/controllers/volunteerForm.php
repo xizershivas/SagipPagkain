@@ -48,22 +48,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($query->execute()) {
                 http_response_code(200);
-                echo json_encode(["message" => "Volunteer Form submitted successfully"]);
+                echo json_encode(["data" => ["message" => "Volunteer Form submitted successfully"]]);
             } else {
                 http_response_code(500);
-                echo json_encode(["message" => $query->error]);
+                echo json_encode(["data" => ["message" => $query->error]]);
             }
 
             $query->close();
             $conn->close();
         } else {
             http_response_code(500);
-            echo json_encode(["message" => "Server encountered an error, submit failed."]);
+            echo json_encode(["data" => ["message" => "Volunteer's signature is required"]]);
         }
     } else {
         http_response_code(500);
-        echo json_encode(["message" => $query->error]);
+        echo json_encode(["data" => ["message" => "Server encountered an error, submit failed."]]);
     }
-}
 
+    exit();
+}
 ?>

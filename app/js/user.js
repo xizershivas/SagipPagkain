@@ -68,7 +68,7 @@ function updateUser() {
 }
 
 function deleteUser(e) {
-    const intUserId = e.currentTarget.getAttribute('value');
+    const intUserId = parseInt(e.currentTarget.getAttribute('value'));
     const ysnConfirmed = window.confirm('Are you sure you want to delete this user?');
 
     if (ysnConfirmed) {
