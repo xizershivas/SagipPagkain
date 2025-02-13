@@ -131,7 +131,7 @@ include "app/functions/user.php";
 
         <div class="row gy-5">
 
-          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
 
             <div class="service-box">
               <h4>Services List</h4>
@@ -152,7 +152,7 @@ include "app/functions/user.php";
             </div>
           </div>
 
-             <div class="col-lg-8 ps-lg-5 tbl grid-report">
+             <div class="col-lg-9 ps-lg-5 tbl grid-report">
                     <div class="row">
                         <!-- Sidebar -->
                         <div class="col-md-3 bg-light p-3">

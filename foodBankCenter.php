@@ -135,7 +135,7 @@ include "app/functions/user.php";
 
         <div class="row gy-5">
 
-          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
 
             <div class="service-box">
               <h4>Services List</h4>
@@ -156,7 +156,7 @@ include "app/functions/user.php";
             </div>
           </div>
 
-          <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
             <h2 class="text-center" style="color: 3333;">Item Stock Map</h2>
             <!-- DATA GRAPH -->
             <div class="card p-3 shadow-sm">

@@ -130,7 +130,7 @@ include "app/functions/donationManagement.php";
 
         <div class="row gy-5">
 
-          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
 
             <div class="service-box">
               <h4>Services List</h4>
@@ -207,9 +207,10 @@ include "app/functions/donationManagement.php";
 
               </div>
             </div>
-          </div><!-- END DONATION FORM -->
+          </div>
+          <!-- END DONATION FORM -->
 
-          <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
             <!-- DATA TABLE -->
             <table id="donationDataTable" class="display table table-striped mt-5">
               <thead>
@@ -227,40 +228,46 @@ include "app/functions/donationManagement.php";
               </thead>
               <tbody>
               <?php
-              $allDonationData = getDonationData($conn);
+                $allDonationData = getDonationData($conn);
 
-              if ($allDonationData->num_rows > 0) {
-                while ($data = $allDonationData->fetch_object()) {
-                  ?>
-                  <tr>
-                    <td><?php echo $data->strDonorName; ?></td>
-                    <td><?php echo $data->dtmDate; ?></td>
-                    <td><?php echo $data->strTitle; ?></td>
-                    <td><?php echo $data->strDescription; ?></td>
-                    <td><?php echo $data->strPickupLocation; ?></td>
-                    <td><?php echo basename($data->strDocFilePath); ?></td>
-                    <td><?php echo $data->ysnStatus ? "<span class='ysn-true'>Received</span>" : "<span class='ysn-false'>Pending</span>"; ?></td>
-                    <td><?php echo $data->strRemarks; ?></td>
-                    <td><a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $data->intDonationId; ?>"><i class='bi bi-pencil-square'></i></a></td>
-                    <td><a class="btn-delete-donation" href="javascript:void(0)" value="<?php echo $data->intDonationId; ?>"><i class="bi bi-trash-fill"></i></a></td>
-                  </tr>
-                  <?php
+                if ($allDonationData && $allDonationData->num_rows > 0) {
+                    while ($data = $allDonationData->fetch_object()) { 
+                      ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($data->strDonorName); ?></td>
+                            <td><?php echo htmlspecialchars($data->dtmDate); ?></td>
+                            <td><?php echo htmlspecialchars($data->strTitle); ?></td>
+                            <td><?php echo htmlspecialchars($data->strDescription); ?></td>
+                            <td><?php echo htmlspecialchars($data->strPickupLocation); ?></td>
+                            <td><?php echo htmlspecialchars(basename($data->strDocFilePath)); ?></td>
+                            <td>
+                                <?php echo $data->ysnStatus ? "<span class='ysn-true'>Received</span>" : "<span class='ysn-false'>Pending</span>"; ?>
+                            </td>
+                            <td><?php echo htmlspecialchars($data->strRemarks); ?></td>
+                            <td>
+                                <a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
+                                  href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
+                                  <i class='bi bi-pencil-square'></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn-delete-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php }
                 }
-              }
 
-              $conn->close();
-              ?>
+                $conn->close();
+                ?>
               </tbody>
             </table><!-- END DATA TABLE -->
           </div>
+          
 
         </div>
-          </div>
-
-        </div>
-
       </div>
-
     </section><!-- /Service Details Section -->
 
   </main>
