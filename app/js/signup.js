@@ -1,6 +1,7 @@
-const userType = document.querySelector('#userType');
+const frmSignUp = document.querySelector('#frmSignUp');
+const accountType = document.querySelector('#accountType');
 const divOther = document.querySelector('#divOther');
-const inputSpecify = document.querySelector('#inputSpecify');
+const specifyOther = document.querySelector('#specifyOther');
 const btnShowHideList = document.getElementsByClassName('show-hide-password');
 const password = document.querySelector('#password');
 const confirmPassword = document.querySelector('#confirmPassword');
@@ -13,11 +14,11 @@ function accountTypeSelect(e) {
         case 'donor':
         case 'ngo': 
             divOther.classList.add('d-none'); 
-            inputSpecify.removeAttribute('required');
+            specifyOther.removeAttribute('required');
             break;
         case 'other': 
             divOther.classList.remove('d-none');
-            inputSpecify.required = true;
+            specifyOther.required = true;
         break;
     }
 }
@@ -46,8 +47,32 @@ function showHidePassword(e) {
     }
 }
 
-userType.addEventListener('change', accountTypeSelect);
+function signUp(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    const xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            const response = JSON.parse(this.responseText);
+
+            if (this.status == 200) {
+                alert(response.data.message);
+                window.location.href = './login.php';
+            } else {
+                alert(response.data.message);
+            }
+        }
+    };
+
+    xmlhttp.open('POST', 'app/controllers/signup.php', true);
+    xmlhttp.send(formData);
+}
 
 for (let btnShowHide of btnShowHideList) {
     btnShowHide.addEventListener('click', showHidePassword);
 }
+
+accountType.addEventListener('change', accountTypeSelect);
+frmSignUp.addEventListener('submit', signUp);

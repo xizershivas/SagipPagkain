@@ -38,9 +38,9 @@ function editUser($conn, $intUserId) {
     }
 }
 
-function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnOther) {
-    $query = $conn->prepare("UPDATE tbluser SET strEmail = ?, ysnEnabled = ?, ysnApproved = ?, ysnAdmin = ?, ysnDonor = ?, ysnOther = ? WHERE intUserId = ? AND strUsername = ?");
-    $query->bind_param("siiiiiis", $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnOther, $intUserId, $strUsername);
+function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnNgo, $ysnOther) {
+    $query = $conn->prepare("UPDATE tbluser SET strEmail = ?, ysnEnabled = ?, ysnApproved = ?, ysnAdmin = ?, ysnDonor = ?, ysnNgo = ?, ysnOther = ? WHERE intUserId = ? AND strUsername = ?");
+    $query->bind_param("siiiiiiis", $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnNgo, $ysnOther, $intUserId, $strUsername);
 
     if ($query->execute()) {
         if ($query->affected_rows > 0) {
@@ -52,6 +52,7 @@ function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ys
                 "approved" => $ysnApproved,
                 "admin" => $ysnAdmin,
                 "donor" => $ysnDonor,
+                "ngo" => $ysnNgo,
                 "other" => $ysnOther
             );
             

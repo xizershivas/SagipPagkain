@@ -13,6 +13,8 @@ function setFormData({ data }) {
     frmUser.elements.approved.checked = data.ysnApproved ? true : false;
     frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
     frmUser.elements.donor.checked = data.ysnDonor ? true : false;
+    debugger;
+    frmUser.elements.ngo.checked = data.ysnNgo ? true : false;
     frmUser.elements.other.checked = data.ysnOther ? true : false;
 }
 
@@ -45,6 +47,7 @@ function updateUser() {
         ysnApproved: frmUser.elements.approved.checked ? true : false,
         ysnAdmin: frmUser.elements.admin.checked ? true : false,
         ysnDonor: frmUser.elements.donor.checked ? true : false,
+        ysnNgo: frmUser.elements.ngo.checked ? true : false,
         ysnOther: frmUser.elements.other.checked ? true : false,
     };
 

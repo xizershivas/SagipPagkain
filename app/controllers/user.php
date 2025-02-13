@@ -26,9 +26,10 @@ if ($_SERVER["REQUEST_METHOD"] == "PUT") {
         $ysnApproved = $userData->ysnApproved ?? 0;
         $ysnAdmin = $userData->ysnAdmin ?? 0;
         $ysnDonor = $userData->ysnDonor ?? 0;
+        $ysnNgo = $userData->ysnNgo ?? 0;
         $ysnOther = $userData->ysnOther ?? 0;
 
-        updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnOther);
+        updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnEnabled, $ysnApproved, $ysnAdmin, $ysnDonor, $ysnNgo, $ysnOther);
     }
 
     $conn->close();

@@ -100,6 +100,7 @@ session_start();
         </div>
       <?php } else { ?>
         <a class="btn-getstarted" href="index.php#donate">DONATE</a>
+        <a class="btn btn-primary" href="signup.php">Sign Up</a>
     <?php } ?>
 
     </div>

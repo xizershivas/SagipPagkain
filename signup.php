@@ -101,7 +101,7 @@
     <div class="row justify-content-center">
       <div class="col-md-6 form">
         <h1 class="signup-heading">Sign Up</h1>
-        <form class="row g-3">
+        <form class="row g-3 needs-validation" id="frmSignUp" novalidate>
           <div class="col-12">
             <label class="form-label fw-bold signup-form-label" for="fullname">Full Name</label>
             <div class="input-group">
@@ -147,17 +147,17 @@
             </div>
           </div>
           <div class="col-12">
-            <label class="form-label fw-bold signup-form-label" for="userType">Account Type</label>
-            <select class="form-select" aria-label="Large select example" id="userType" required>
-              <option selected>-- Select account type --</option>
+            <label class="form-label fw-bold signup-form-label" for="accountType">Account Type</label>
+            <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
+              <option selected disabled value="">-- Select account type --</option>
               <option value="donor">Donor</option>
               <option value="ngo">Non-Governmental Organization (NGO)</option>
               <option value="other">Other</option>
             </select>
           </div>
           <div class="col-12 d-none" id="divOther">
-            <label class="form-label fw-bold signup-form-label" for="inputSpecify">Please specify</label>
-            <input class="form-control" type="text" name="inputSpecify" id="inputSpecify" placeholder="">
+            <label class="form-label fw-bold signup-form-label" for="specifyOther">Please specify</label>
+            <input class="form-control" type="text" name="specifyOther" id="specifyOther" placeholder="">
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary w-100" id="btnSignUp">Submit</button>
@@ -226,6 +226,7 @@
 <!-- Main JS File -->
 <script src="app/js/app.js"></script>
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="app/js/formValidation.js"></script>
 <script src="app/js/signup.js"></script>
 </body>
 </html>
