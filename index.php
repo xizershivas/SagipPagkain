@@ -100,7 +100,6 @@ session_start();
         </div>
       <?php } else { ?>
         <a class="btn-getstarted" href="index.php#donate">DONATE</a>
-        <a class="btn btn-primary" href="signup.php">Sign Up</a>
     <?php } ?>
 
     </div>
@@ -119,8 +118,15 @@ session_start();
           <div class="col-lg-10">
             <h2 data-aos="fade-up" data-aos-delay="100">Welcome to Sagip Pagkain</h2>
             <p data-aos="fade-up" data-aos-delay="200">Food banking is key to the solution</p>
-            <?php if (!isset($_SESSION["intUserId"])) { ?>
-             <button type="button" class="btn btn-warning" style="font-size: 20px !important;"><a href="./login.php" style="color: #ffffff;">Login</a></button>
+            <?php if (!isset($_SESSION["intUserId"])) { ?>    
+             <div class="col-lg-5" data-aos="fade-up" data-aos-delay="300">
+            <form action="forms/newsletter.php" method="post" class="php-email-form">
+              <div class="sign-up-form"><input type="email" name="email" value="Subscribe Now!!" readonly style="font-size: 24px; color: #545151">
+                <button type="button" class="btn btn-warning" style="font-size: 20px;width: 155px;">
+                <a href="./login.php" style="color: #ffffff;"><span>Login</span></button>
+              </div>
+            </form>
+          </div>
             <?php } ?>
           </div>
          
@@ -192,7 +198,7 @@ session_start();
 
           <div class="col-xl-12 content">
             <h1><b>Our Role in Food Systems</b></h1>
-            <p style="font-size: 24px; color: rgb(233, 240, 239);">Food system are complex, interconnected webs of actions that impact
+            <p style="font-size: 17px; color: rgb(233, 240, 239);">Food system are complex, interconnected webs of actions that impact
               everyone. They need intentional solutions to transform them for the future.
               advancing community-led food banks is key to thesos solutions.
             </p>

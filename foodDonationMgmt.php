@@ -1,12 +1,6 @@
 <?php
-session_start();
 include "app/config/db_connection.php";
 include "app/functions/user.php";
-
-if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
-  header("Location: login.php");
-  exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +35,7 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
 
   <!-- Main CSS File -->
   <link href="app/css/app.css" rel="stylesheet">
-  <link href="app/css/dashboard.css" rel="stylesheet">
+  <link href="app/css/foodDonationMgmt.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -63,7 +57,7 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
           <li><a href="index.php#about">
             <div>
               <h6>Our Role in</h6>
-              <h5><span>FOOD SYSTEMS</span></h5>
+              <h5>FOOD SYSTEMS<span></h5>
             </div>
           </a></li>
           <li><a href="index.php#system">
@@ -121,7 +115,8 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current">Dashboard</li>
+            <li><a href="">Donor Management</a></li>
+            <li class="current">Food Donation Management</li>
           </ol>
         </div>
       </nav>
@@ -134,15 +129,13 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
 
         <div class="row gy-5">
 
-          <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
 
-            
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="dashboard.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
-                <a href="donationManagement.php"><i class="bi bi-arrow-right-circle"></i><span>Donation Management</span></a>
+                <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
+                <a href="foodDonationMgmt.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -156,70 +149,64 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
             </div>
           </div>
 
-          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+             <div class="col-lg-8 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+               <!-- USER FORM (HIDDEN) -->
+               <div class="text-black mb-3 bg-light p-3 d-none" id="frmUser">
+                <form>
+                  <div class="mb-3">
+                    <label for="user" class="form-label">User</label>
+                    <input type="text" class="form-control" name="user" id="user" value="" disabled>
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" value="">
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
+                    <label class="form-check-label" for="enabled">Enabled</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
+                    <label class="form-check-label" for="approved">Approved</label>
+                  </div>
+                  <div class="d-flex justify-content-center mt-3">
+                    <button type="button" class="btn btn-success me-1" id="btnSave">Save</button>
+                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
+                  </div>
+                </form>
+              </div>
+              <!-- END USER FORM -->
 
-          <!-- DATA GRAPH -->
-          <div class="card p-3 shadow-sm">
-            <div class="row text-center">
-                <div class="col-md-3 mb-3">
-                    <div class="card p-3 shadow-sm">
-                        <h6>Total Partner Establishments</h6>
-                        <h4>45</h4>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card p-3 shadow-sm">
-                        <h6>Total Surplus Items</h6>
-                        <h4>53</h4>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card p-3 shadow-sm">
-                        <h6>Total Surplus Items</h6>
-                        <h4>53</h4>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card p-3 shadow-sm">
-                        <h6>Total Food Donated</h6>
-                        <h4>50</h4>
-                    </div>
-                </div>
+              <!-- DATA TABLE -->
+              <table id="userDataTable" class="display table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Enabled</th>
+                    <th scope="col">Approved</th>
+                    <th scope="col" colspan="2">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  if($allUserData->num_rows > 0) {
+                    while($user = $allUserData->fetch_object()) {
+                      echo "<tr><td>".$user->strUsername."</td>".
+                      "<td>".$user->strEmail."</td>".
+                      "<td>".($user->ysnEnabled ? "<span class='ysnenabled-true'>True</span>" : "<span class='ysnenabled-false'>False</span>")."</td>".
+                      "<td>".($user->ysnApproved ? "<span class='ysnapproved-true'>True</span>" : "<span class='ysnapproved-false'>False</span>")."</td>".
+                      "<td><a class='btn-edit-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-pencil-square'></i></a></td>".
+                      "<td><a class='btn-delete-user' href='javascript:void(0)' value='".$user->intUserId."'><i class='bi bi-trash-fill'></i></a></td>".
+                      "</tr>";
+                    }
+                  }
+
+                  $conn->close();
+                  ?>
+                </tbody>
+              </table>
             </div>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="card p-3 shadow-sm" style="width: 95%;left: 12px;">
-                            <h6 class="text-center">Surplus Food Distribution Status</h6>
-                            <div class="chart-container" style="height: 300px;">
-                                <canvas id="surplusDistributionChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Avg, Redistribution</h6>
-                            <h4>5,125 min(s)</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Avg, Surplus value</h6>
-                            <h4>20k</h4>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card p-3 shadow-sm">
-                        <h5 class="text-center">Forecasted Surplus Availability</h5>
-                        <div class="chart-container" style="height: 400px;">
-                            <canvas id="forecastedSurplusChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          <!-- END DATA GRAPH> -->
           </div>
 
         </div>
@@ -286,49 +273,14 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
-   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <!-- Main JS File -->
   <script src="app/js/app.js"></script>
+  <script src="app/js/user.js"></script>
   <script>
-        // Surplus Food Distribution Status
-        const surplusCtx = document.getElementById('surplusDistributionChart').getContext('2d');
-        new Chart(surplusCtx, {
-            type: 'pie',
-            data: {
-                labels: ['46.47%', '23.06%', '20.77%', '9.7%'],
-                datasets: [{
-                    data: [46.47, 23.06, 20.77, 9.7],
-                    backgroundColor: ['purple', 'orange', 'red', 'green']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-
-        // Forecasted Surplus Availability
-        const forecastCtx = document.getElementById('forecastedSurplusChart').getContext('2d');
-        new Chart(forecastCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025'],
-                datasets: [{
-                    label: 'Forecasted Surplus Availability',
-                    data: [266, 8686, 3750, 11890, 15030, 17990, 21535, 24660, 30150, 37930],
-                    borderColor: 'blue',
-                    fill: true,
-                    backgroundColor: 'rgba(0, 0, 255, 0.2)'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    </script>
-
+    $(document).ready(function() {
+      $('#userDataTable').DataTable();
+    });
+  </script>
 </body>
 
 </html>
