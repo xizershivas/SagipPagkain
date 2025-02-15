@@ -8,8 +8,8 @@
   <meta name="keywords" content="">
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="../../../assets/img/favicon.png" rel="icon">
+  <link href="../../../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -17,11 +17,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../../../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../../../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
   <!-- Data Table CSS CDN -->
   <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
@@ -29,17 +29,17 @@
   <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
 
   <!-- Main CSS File -->
-  <link href="app/css/app.css" rel="stylesheet">
-  <link href="app/css/signup.css" rel="stylesheet">
+  <link href="../../../app/css/app.css" rel="stylesheet">
+  <link href="../../../app/css/signup.css" rel="stylesheet">
 
 </head>
 <body>
 <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
-      <a href="index.php" class="logo d-flex align-items-center me-auto me-xl-0">
+      <a href="../../../index.php" class="logo d-flex align-items-center me-auto me-xl-0">
 
-        <img src="assets/img/sagip-pagkain-logo.JPEG" alt="Sagip Logo" oncontextmenu="return false;" draggable="false">
+        <img src="../../../assets/img/sagip-pagkain-logo.JPEG" alt="Sagip Logo" oncontextmenu="return false;" draggable="false">
         <div>
           <h2 class="sitename" style="padding-left: 10px;"><b>SAGIP</b><span>.</span></h2>
           <h4 class="sitename subtitle" style="padding-left: -10px; letter-spacing: 10.5px;">PAGKAIN</h4>
@@ -48,35 +48,35 @@
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="index.php#about">
+          <li><a href="../../../index.php#about">
             <div>
               <h6>Our Role in</h6>
               <h5><span>FOOD SYSTEMS</span></h5>
             </div>
           </a></li>
-          <li><a href="index.php#system">
+          <li><a href="../../../index.php#system">
             <div>
               <h6>Our</h6>
               <h5>APPROACH</h5>
             </div>
           </a></li>
-          <li><a href="index.php#stats">
+          <li><a href="../../../index.php#stats">
             <div>
               <h5>IMPACT</h5>
             </div>
           </a></li>
-          <li><a href="index.php#services">
+          <li><a href="../../../index.php#services">
             <div>
               <h6>About</h6>
               <h6>Sagip pagkain</h6>
             </div>
           </a></li>
-          <li><a href="index.php#recent-posts">
+          <li><a href="../../../index.php#recent-posts">
             <div>
               <h5>COMMUNITY-LED</h5>
             </div>
           </a></li>
-          <li><a href="index.php#contact">
+          <li><a href="../../../index.php#contact">
             <div>
             <h5>OUR SUPPORT</h5>
           </div>
@@ -208,14 +208,14 @@
 <div id="preloader"></div>
 
 <!-- Vendor JS Files -->
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/php-email-form/validate.js"></script>
-<script src="assets/vendor/aos/aos.js"></script>
-<script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-<script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../../assets/vendor/php-email-form/validate.js"></script>
+<script src="../../../assets/vendor/aos/aos.js"></script>
+<script src="../../../assets/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="../../../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="../../../assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+<script src="../../../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="../../../assets/vendor/swiper/swiper-bundle.min.js"></script>
 
 <!-- Data Table JS CDN -->
 <!-- <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
@@ -224,9 +224,9 @@
 <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
 <!-- Main JS File -->
-<script src="app/js/app.js"></script>
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="app/js/formValidation.js"></script>
-<script src="app/js/signup.js"></script>
+<script src="../../../app/js/app.js"></script>
+<script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../../app/js/formValidation.js"></script>
+<script src="../../../app/js/signup.js"></script>
 </body>
 </html>

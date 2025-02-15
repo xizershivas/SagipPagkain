@@ -26,3 +26,8 @@
     padding: 3px 10px;
     border-radius: 3px;
 }
+
+table.dataTable.row-border > tbody > tr > *, table.dataTable.display > tbody > tr > * {
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 12px !important;
+}

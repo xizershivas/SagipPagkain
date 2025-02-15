@@ -16,14 +16,14 @@ function login(e) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 const response = JSON.parse(this.responseText);
-                window.location.href = './dashboard.php';
+                window.location.href = '../app/dashboard.php';
             } else {
                 const response = JSON.parse(this.responseText);
             }
         }
     };
 
-    xmlhttp.open('POST', 'app/controllers/login.php', true);
+    xmlhttp.open('POST', '../../../app/controllers/login.php', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send(data);
 }
