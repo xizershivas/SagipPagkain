@@ -91,10 +91,10 @@ session_start();
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background: rgba(255, 255, 255, 0.3); border: none;">
               <li><a class="dropdown-item" href="index.php#donate" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">DONATE</a></li>
               <li>
-                <a class="dropdown-item" href="dashboard.php" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">Dashboard</a>
+                <a class="dropdown-item" href="src/web/app/dashboard.php" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='white'">Dashboard</a>
               </li>
               <li>
-                <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='logout.php'" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#ffffff'">Logout</a>
+                <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='src/web/forms/logout.php'" style="color: white;" onmouseover="this.style.color='#333'" onmouseout="this.style.color='#ffffff'">Logout</a>
               </li>
             </ul>
         </div>
