@@ -68,6 +68,65 @@ include "../../../app/functions/donationManagement.php";
             </div>
           </div>
 
+          <!-- DONATION FORM (HIDDEN) -->
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+
+                <div class="text-black mb-3 bg-light p-3" id="frmEditDonation">
+                  <form class="" id="frmDonation" enctype="multipart/form-data">
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-6">
+                        <label for="donor" class="form-label fw-bold">Donor</label>
+                        <input type="text" class="form-control" name="donor" id="donor" required>
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="date" class="form-label fw-bold">Date</label>
+                        <input type="date" class="form-control" name="date" id="date">
+                      </div>
+                    </div>
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-6">
+                        <label for="title" class="form-label fw-bold">Title</label>
+                        <input type="text" class="form-control" name="title" id="title" required>
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="description" class="form-label fw-bold">Description</label>
+                        <input type="text" class="form-control" name="description" id="description">
+                      </div>
+                    </div>
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-6">
+                        <label for="pickupLocation" class="form-label fw-bold">Pickup Location</label>
+                        <input type="text" class="form-control" name="pickupLocation" id="pickupLocation" required>
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="remarks" class="form-label fw-bold">Remarks</label>
+                        <input type="text" class="form-control" name="remarks" id="remarks">
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="" class="form-label fw-bold">Upload Documentation</label>
+                      <span>(PDF/WORD Max: 5MB)</span><br>
+                      <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
+                      <label class="form-check-label fw-bold" for="transportStatus" id="labelTransportStatus">Status</label>
+                    </div>
+                  </form>
+                </div>
+                
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmDonation">Save</button>
+                  <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- END DONATION FORM -->
+
           <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
             <!-- DATA TABLE -->
             <table id="donationDataTable" class="display table table-striped mt-5">

@@ -14,6 +14,7 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
     
     // Password pattern
     $pattern = "/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/";
+    $strSalt;
 
     // Check password match
     if ($strPassword != $strConfirmPassword) {
@@ -29,8 +30,8 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
         echo json_encode(array("data" => array("message" => "Password must contain at least 1 capital letter, 1 number and 1 special character")));
         exit();
     } else {
-        $salt = bin2hex(random_bytes(22));
-        $strPassword = crypt($strPassword, $salt);
+        $strSalt = bin2hex(random_bytes(22));
+        $strPassword = crypt($strPassword, $strSalt);
     }
 
     $query;
@@ -39,22 +40,22 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
 
     switch ($strAccountType) {
         case "donor":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, ysnDonor) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("sssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $ysn);
-            break;
-        case "ngo":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, ysnNgo) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("sssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $ysn);
-            break;
-        case "other":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, ysnOther, strSpecifyOther) 
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnDonor) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("sssssis", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $ysn, $strSpecifyOther);
+            $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
+            break;
+        case "ngo":
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnNgo) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
+            break;
+        case "other":
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnOther, strSpecifyOther) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssssssis", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $strSpecifyOther);
             break;
     }
 

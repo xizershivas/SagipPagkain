@@ -16,7 +16,11 @@ function login(e) {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 const response = JSON.parse(this.responseText);
-                window.location.href = '../app/dashboard.php';
+                if (response.data.ysnAdmin) {
+                    window.location.href = '../app/dashboard.php';
+                } else {
+                    window.location.href = '../donor/dashboard.php';
+                }
             } else {
                 const response = JSON.parse(this.responseText);
             }

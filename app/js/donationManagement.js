@@ -27,7 +27,7 @@ function setFormData({ data }) {
 }
 
 function editDonation(e) {
-    intDonationId = e.currentTarget.getAttribute('value');
+    intDonationId = e.currentTarget.getAttribute('data-id');
     const xmlhttp = new XMLHttpRequest();
 
     xmlhttp.onreadystatechange = function() {
@@ -42,7 +42,7 @@ function editDonation(e) {
         }
     };
 
-    xmlhttp.open('GET', `app/controllers/donationManagement.php?intDonationId=${intDonationId}`, true);
+    xmlhttp.open('GET', `../../../app/controllers/donationManagement.php?intDonationId=${intDonationId}`, true);
     xmlhttp.send();
 }
 
@@ -65,12 +65,12 @@ function updateDonation(e) {
         }
     };
 
-    xmlhttp.open('POST', 'app/controllers/donationManagement.php', true);
+    xmlhttp.open('POST', '../../../app/controllers/donationManagement.php', true);
     xmlhttp.send(formData);
 }
 
 function deleteDonation(e) {
-    intDonationId = parseInt(e.currentTarget.getAttribute('value'));
+    intDonationId = parseInt(e.currentTarget.getAttribute('data-id'));
     const ysnConfirmed = window.confirm('Are you sure you want to delete this donation record?');
 
     if (ysnConfirmed) {
@@ -88,7 +88,7 @@ function deleteDonation(e) {
             }
         };
 
-        xmlhttp.open('DELETE', `app/controllers/donationManagement.php`, true);
+        xmlhttp.open('DELETE', `../../../app/controllers/donationManagement.php`, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json');
         xmlhttp.send(JSON.stringify({ intDonationId: intDonationId }));
     }

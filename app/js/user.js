@@ -13,7 +13,6 @@ function setFormData({ data }) {
     frmUser.elements.approved.checked = data.ysnApproved ? true : false;
     frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
     frmUser.elements.donor.checked = data.ysnDonor ? true : false;
-    debugger;
     frmUser.elements.ngo.checked = data.ysnNgo ? true : false;
     frmUser.elements.other.checked = data.ysnOther ? true : false;
 }
@@ -34,7 +33,7 @@ function editUser(e) {
         }
     };
 
-    xmlhttp.open('GET', `app/controllers/user.php?intUserId=${intUserId}`, true);
+    xmlhttp.open('GET', `../../../app/controllers/user.php?intUserId=${intUserId}`, true);
     xmlhttp.send();
 }
 
@@ -65,7 +64,7 @@ function updateUser() {
         }
     };
 
-    xmlhttp.open('PUT', 'app/controllers/user.php', true);
+    xmlhttp.open('PUT', '../../../app/controllers/user.php', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send(JSON.stringify(userData));
 }
@@ -89,7 +88,7 @@ function deleteUser(e) {
             }
         };
 
-        xmlhttp.open('DELETE', `app/controllers/user.php`, true);
+        xmlhttp.open('DELETE', `../../../app/controllers/user.php`, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json');
         xmlhttp.send(JSON.stringify({ intUserId: intUserId }));
     }

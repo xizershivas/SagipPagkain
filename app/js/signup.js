@@ -66,7 +66,7 @@ function signUp(e) {
         }
     };
 
-    xmlhttp.open('POST', 'app/controllers/signup.php', true);
+    xmlhttp.open('POST', '../../../app/controllers/signup.php', true);
     xmlhttp.send(formData);
 }
 

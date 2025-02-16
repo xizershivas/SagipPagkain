@@ -3,10 +3,13 @@ session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
 
-if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
-  header("Location: login.php");
-  exit();
-}
+// if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
+//   header("Location: ../../../dashboard.php");
+//   exit();
+// } else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0) {
+//   header("Location: ../donor/dashboard.php");
+//   exit();
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
