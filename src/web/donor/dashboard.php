@@ -40,7 +40,8 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current">Dashboard</li>
+          <li class="current">Donor</li>
+            <li><a href="dashboard.php">dashboard</a></li>
           </ol>
         </div>
       </nav>

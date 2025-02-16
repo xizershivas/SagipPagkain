@@ -40,7 +40,8 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current">Dashboard</li>
+            <li class="current">Donor</li>
+            <li><a href="reward.php">Reward</a></li>
           </ol>
         </div>
       </nav>
@@ -73,7 +74,7 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
           </div>
 
           <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
-            <p></p>
+            <h1 style="color: #333;">Reward System is not yet available, to confirm.</h1>
           </div>
           <!-- DATA GRAPH -->
         
