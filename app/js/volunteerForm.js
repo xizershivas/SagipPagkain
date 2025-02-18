@@ -24,16 +24,18 @@ function apply(e) {
 
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4) {
+            const response = JSON.parse(this.responseText);
+
             if (this.status == 200) {
-                alert(JSON.parse(this.responseText).message);
-                window.location.href = 'volunteerForm.php';
+                // alert(response.data.message);
+                window.location.href = 'volunteerSubmitted.php';
             } else {
-                alert(JSON.parse(this.responseText).message);
+                alert(response.data.message);
             }
         }
     };
     
-    xmlhttp.open('POST', 'app/controllers/volunteerForm.php', true);
+    xmlhttp.open('POST', '../../../app/controllers/volunteerForm.php', true);
     xmlhttp.send(formData);
 }
 

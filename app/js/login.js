@@ -14,15 +14,16 @@ function login(e) {
 
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4) {
+            const response = JSON.parse(this.responseText);
+
             if (this.status == 200) {
-                const response = JSON.parse(this.responseText);
                 if (response.data.ysnAdmin) {
                     window.location.href = '../app/dashboard.php';
                 } else {
                     window.location.href = '../donor/dashboard.php';
                 }
             } else {
-                const response = JSON.parse(this.responseText);
+                alert(response.data.message);
             }
         }
     };

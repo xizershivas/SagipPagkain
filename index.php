@@ -125,6 +125,9 @@ session_start();
                 <button type="button" class="btn btn-warning" style="font-size: 20px;width: 155px;">
                 <a href="src/web/forms/login.php" style="color: #ffffff;"><span>Login</span></button>
               </div>
+              <div>
+                <a class="btn btn-primary btn-lg" href="src/web/forms/volunteerForm.php">Be A Volunteer</a>
+              </div>
             </form>
           </div>
             <?php } ?>

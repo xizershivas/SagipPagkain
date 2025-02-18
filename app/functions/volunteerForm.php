@@ -18,19 +18,19 @@ function processSignFileUpload() {
 
         if (!in_array($fileType, $allowedTypes)) {
             http_response_code(400);
-            echo json_encode(["message" => "Invalid image type"]);
+            echo json_encode(["data" => ["message" => "Invalid image type"]]);
         } else if ($fileSize > 3000000) {
             http_response_code(400);
-            echo json_encode(["message" => "Image is too large"]);
+            echo json_encode(["data" => ["message" => "Image is too large"]]);
         } else if (file_exists($uploadFilePath)) {
             http_response_code(400);
-            echo json_encode(["message" => "File already exist"]);
+            echo json_encode(["data" => ["message" => "File already exist"]]);
         } else {
             if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
                 return $uploadFilePath;
             } else {
                 http_response_code(500);
-                echo json_encode(["message" => "Server encountered an error, upload failed."]);
+                echo json_encode(["data" => ["message" => "Server encountered an error, upload failed."]]);
             }
         }
     }

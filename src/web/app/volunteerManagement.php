@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/donationManagement.php";
+include "../../../app/functions/volunteerManagement.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +21,7 @@ include "../../../app/functions/donationManagement.php";
   <!-- <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
 
-  <link href="../../../app/css/donationManagement.css" rel="stylesheet">
+  <!-- <link href="../../../app/css/donationManagement.css" rel="stylesheet"> -->
 </head>
 
 <body class="services-details-page">
@@ -40,7 +40,7 @@ include "../../../app/functions/donationManagement.php";
         <div class="container-fluid">
           <ol>
             <li><a href="dashboard.php">Dashboard</a></li>
-            <li class="current">Donation Management</li>
+            <li class="current">Volunteer Management</li>
           </ol>
         </div>
       </nav>
@@ -60,8 +60,8 @@ include "../../../app/functions/donationManagement.php";
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
                 <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
-                <a href="donationManagement.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Donation Management</span></a>
-                <a href="volunteerManagement.php" class=""><i class="bi bi-arrow-right-circle"></i><span>Volunteer Management</span></a>
+                <a href="donationManagement.php" class=""><i class="bi bi-arrow-right-circle"></i><span>Donation Management</span></a>
+                <a href="volunteerManagement.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Volunteer Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
               </div>
@@ -139,52 +139,24 @@ include "../../../app/functions/donationManagement.php";
             <table id="donationDataTable" class="display table table-striped mt-5">
               <thead>
                 <tr>
-                  <th scope="col">Donor</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Title</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Pickup Location</th>
-                  <th scope="col">Upload Documentation</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Remarks</th>
+                  <th scope="col">First Name</th>
+                  <th scope="col">Last Name</th>
+                  <th scope="col">Gender</th>
+                  <th scope="col">Birthdate</th>
+                  <th scope="col">Street</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">City</th>
+                  <th scope="col">Region</th>
+                  <th scope="col">Zip Code</th>
+                  <th scope="col">Country</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Terms of Volunteering</th>
+                  <th scope="col">Signature</th>
                   <th scope="col" colspan="2">Action</th>
                 </tr>
               </thead>
               <tbody>
-              <?php
-                $allDonationData = getDonationData($conn);
-
-                if ($allDonationData && $allDonationData->num_rows > 0) {
-                    while ($data = $allDonationData->fetch_object()) { 
-                      ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($data->strDonorName); ?></td>
-                            <td><?php echo htmlspecialchars($data->dtmDate); ?></td>
-                            <td><?php echo htmlspecialchars($data->strTitle); ?></td>
-                            <td><?php echo htmlspecialchars($data->strDescription); ?></td>
-                            <td><?php echo htmlspecialchars($data->strPickupLocation); ?></td>
-                            <td><?php echo htmlspecialchars(basename($data->strDocFilePath)); ?></td>
-                            <td>
-                                <?php echo $data->ysnStatus ? "<span class='ysn-true'>Received</span>" : "<span class='ysn-false'>Pending</span>"; ?>
-                            </td>
-                            <td><?php echo htmlspecialchars($data->strRemarks); ?></td>
-                            <td>
-                                <a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
-                                  href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
-                                  <i class='bi bi-pencil-square'></i>
-                                </a>
-                            </td>
-                            <td>
-                                <a class="btn-delete-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
-                                    <i class="bi bi-trash-fill"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php }
-                }
-
-                $conn->close();
-                ?>
               </tbody>
             </table><!-- END DATA TABLE -->
           </div>
@@ -214,7 +186,7 @@ include "../../../app/functions/donationManagement.php";
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
-  <script src="../../../app/js/donationManagement.js"></script>
+  <!-- <script src="../../../app/js/donationManagement.js"></script> -->
   <script>
   $(document).ready(function() {
     new DataTable('#donationDataTable', {
