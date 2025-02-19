@@ -1,0 +1,39 @@
+.container-custom {
+    max-width: 900px;
+    margin: auto;
+    padding: 50px 20px;
+}
+.search-box {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    width: 100%;
+}
+.radio-group label {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+.search-btn {
+    background-color: #62006d;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+}
+.search-btn:hover {
+    background-color: #4d0054;
+}
+
+.text-purple{
+    color: #62006d;
+}
+
+.form-check{
+color: #333;
+}
+
+.align-items-center{
+    color: #333;
+}

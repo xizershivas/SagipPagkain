@@ -60,12 +60,12 @@ include "../../../app/functions/donationManagement.php";
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
                 <a href="user.php"><i class="bi bi-arrow-right-circle"></i><span>User Management</span></a>
-                <a href="donationManagement.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Donation Management</span></a>
+                <a href="donationManagement.php" ><i class="bi bi-arrow-right-circle"></i><span>Donation Management</span></a>
                 <a href="volunteerManagement.php" class=""><i class="bi bi-arrow-right-circle"></i><span>Volunteer Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-arrow-right-circle"></i><span>Data Analysis And Reporting</span></a>
                 <a href="findFood.php"><i class="bi bi-arrow-right-circle"></i><span>Request Food</span></a>
-                <a href="manageBeneficiary.php"><i class="bi bi-arrow-right-circle"></i><span>Manage Beneficiaries</span></a>
+                <a href="manageBeneficiary.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Manage Beneficiaries</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -86,42 +86,23 @@ include "../../../app/functions/donationManagement.php";
                   <form class="" id="frmDonation" enctype="multipart/form-data">
                     <div class="row g-3">
                       <div class="mb-3 col col-md-6">
-                        <label for="donor" class="form-label fw-bold">Donor</label>
-                        <input type="text" class="form-control" name="donor" id="donor" required>
+                        <label for="donor" class="form-label fw-bold">Name</label>
+                        <input type="text" class="form-control" name="Name" id="Name" required>
                       </div>
                       <div class="mb-3 col col-md-6">
-                        <label for="date" class="form-label fw-bold">Date</label>
-                        <input type="date" class="form-control" name="date" id="date">
+                        <label for="Email" class="form-label fw-bold">Email</label>
+                        <input type="Email" class="form-control" name="Email" id="Email">
                       </div>
                     </div>
                     <div class="row g-3">
                       <div class="mb-3 col col-md-6">
-                        <label for="title" class="form-label fw-bold">Title</label>
-                        <input type="text" class="form-control" name="title" id="title" required>
+                        <label for="text" class="form-label fw-bold">Contact</label>
+                        <input type="text" class="form-control" name="Contact" id="Contact" required>
                       </div>
                       <div class="mb-3 col col-md-6">
-                        <label for="description" class="form-label fw-bold">Description</label>
-                        <input type="text" class="form-control" name="description" id="description">
+                        <label for="Address" class="form-label fw-bold">Address</label>
+                        <input type="text" class="form-control" name="Address" id="Address">
                       </div>
-                    </div>
-                    <div class="row g-3">
-                      <div class="mb-3 col col-md-6">
-                        <label for="pickupLocation" class="form-label fw-bold">Pickup Location</label>
-                        <input type="text" class="form-control" name="pickupLocation" id="pickupLocation" required>
-                      </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="remarks" class="form-label fw-bold">Remarks</label>
-                        <input type="text" class="form-control" name="remarks" id="remarks">
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="" class="form-label fw-bold">Upload Documentation</label>
-                      <span>(PDF/WORD Max: 5MB)</span><br>
-                      <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
-                    </div>
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
-                      <label class="form-check-label fw-bold" for="transportStatus" id="labelTransportStatus">Status</label>
                     </div>
                   </form>
                 </div>
@@ -141,35 +122,26 @@ include "../../../app/functions/donationManagement.php";
             <table id="donationDataTable" class="display table table-striped mt-5">
               <thead>
                 <tr>
-                  <th scope="col">Donor</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Title</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Pickup Location</th>
-                  <th scope="col">Upload Documentation</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Remarks</th>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Address</th>
                   <th scope="col" colspan="2">Action</th>
                 </tr>
               </thead>
               <tbody>
               <?php
                 $allDonationData = getDonationData($conn);
-
                 if ($allDonationData && $allDonationData->num_rows > 0) {
                     while ($data = $allDonationData->fetch_object()) { 
                       ?>
                         <tr>
+                            <td>1</td>
                             <td><?php echo htmlspecialchars($data->strDonorName); ?></td>
-                            <td><?php echo htmlspecialchars($data->dtmDate); ?></td>
-                            <td><?php echo htmlspecialchars($data->strTitle); ?></td>
+                            <td>test@gmail.com</td>
+                            <td>09999999999</td>
                             <td><?php echo htmlspecialchars($data->strDescription); ?></td>
-                            <td><?php echo htmlspecialchars($data->strPickupLocation); ?></td>
-                            <td><?php echo htmlspecialchars(basename($data->strDocFilePath)); ?></td>
-                            <td>
-                                <?php echo $data->ysnStatus ? "<span class='ysn-true'>Received</span>" : "<span class='ysn-false'>Pending</span>"; ?>
-                            </td>
-                            <td><?php echo htmlspecialchars($data->strRemarks); ?></td>
                             <td>
                                 <a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
                                   href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
@@ -182,7 +154,7 @@ include "../../../app/functions/donationManagement.php";
                                 </a>
                             </td>
                         </tr>
-                    <?php }
+                        <?php }        
                 }
 
                 $conn->close();

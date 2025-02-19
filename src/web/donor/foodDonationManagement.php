@@ -17,7 +17,7 @@ include "../../../app/functions/donationManagement.php";
   <!-- Include global stylesheet -->
   <?php include '../global/stylesheet.php'; ?>
 
-  <link href="../../../app/css/foodDonationManagementUnsigned.css" rel="stylesheet">
+  <link href="../../../app/css/donorFoodDonationManagement.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -111,8 +111,8 @@ include "../../../app/functions/donationManagement.php";
                       <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
                     </div>
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
-                      <label class="form-check-label fw-bold" for="transportStatus" id="labelTransportStatus">Status</label>
+                      <input class="form-check-input disabledFoodDonation" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
+                      <label class="form-check-label fw-bold disabledFoodDonation" for="transportStatus" id="labelTransportStatus">Status</label>
                     </div>
                   </form>
                 </div>

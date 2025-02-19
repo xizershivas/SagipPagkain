@@ -3,7 +3,7 @@ session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
 
-if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
+if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 0) {
   header("Location: login.php");
   exit();
 }

@@ -99,7 +99,10 @@ session_start();
             </ul>
         </div>
       <?php } else { ?>
-        <a class="btn-getstarted" href="index.php#donate">DONATE</a>
+        <div>
+        <a class="btn btn-warning" style="color: #ffffff;" href="index.php#donate">DONATE</a>
+        <a class="btn btn-light" href="src/web/forms/login.php">Login</a>
+        </div>
     <?php } ?>
 
     </div>
@@ -121,12 +124,9 @@ session_start();
             <?php if (!isset($_SESSION["intUserId"])) { ?>    
              <div class="col-lg-5" data-aos="fade-up" data-aos-delay="300">
             <form action="forms/newsletter.php" method="post" class="php-email-form">
-              <div class="sign-up-form"><input type="email" name="email" value="Subscribe Now!!" readonly style="font-size: 24px; color: #545151">
+              <div class="sign-up-form"><input type="email" name="email" value="Be A Volunteer" readonly style="font-size: 24px; color: #545151">
                 <button type="button" class="btn btn-warning" style="font-size: 20px;width: 155px;">
-                <a href="src/web/forms/login.php" style="color: #ffffff;"><span>Login</span></button>
-              </div>
-              <div>
-                <a class="btn btn-primary btn-lg" href="src/web/forms/volunteerForm.php">Be A Volunteer</a>
+                <a href="src/web/forms/volunteerForm.php" style="color: #ffffff;"><span>Click now</span></button>
               </div>
             </form>
           </div>
