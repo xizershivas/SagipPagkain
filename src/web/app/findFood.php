@@ -40,7 +40,7 @@ include "../../../app/functions/donationManagement.php";
         <div class="container-fluid">
           <ol>
             <li><a href="dashboard.php">Dashboard</a></li>
-            <li class="current">Donation Management</li>
+            <li class="current">Find Food</li>
           </ol>
         </div>
       </nav>
