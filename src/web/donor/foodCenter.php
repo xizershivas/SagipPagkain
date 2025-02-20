@@ -63,6 +63,7 @@ include "../../../app/functions/user.php";
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
+                <a href="donate.php" class=""><i class="bi bi-arrow-right-circle"></i><span>Donate</span></a>
                 <a href="foodDonationManagement.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
                 <a href="foodCenter.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
                 <a href="reward.php"><i class="bi bi-arrow-right-circle"></i><span>Reward System</span></a>

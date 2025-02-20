@@ -95,12 +95,8 @@ include "../../../app/functions/user.php";
                           <input type="email" class="form-control" name="email" id="email" value="">
                         </div>
                         <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="enabled" id="enabled">
-                          <label class="form-check-label" for="enabled">Enabled</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="approved" id="approved">
-                          <label class="form-check-label" for="approved">Approved</label>
+                          <input class="form-check-input" type="checkbox" role="switch" name="active" id="active">
+                          <label class="form-check-label" for="active">Active</label>
                         </div>
                         <div class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin">
@@ -113,10 +109,6 @@ include "../../../app/functions/user.php";
                         <div class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" role="switch" name="ngo" id="ngo">
                           <label class="form-check-label" for="ngo">NGO access</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="other" id="other">
-                          <label class="form-check-label" for="other">Other access</label>
                         </div>
                       </form>
                     </div>
@@ -138,12 +130,10 @@ include "../../../app/functions/user.php";
                   <tr>
                     <th scope="col">User</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Enabled</th>
-                    <th scope="col">Approved</th>
+                    <th scope="col">Active</th>
                     <th scope="col">Admin</th>
                     <th scope="col">Donor</th>
                     <th scope="col">NGO</th>
-                    <th scope="col">Other</th>
                     <th scope="col" colspan="2">Action</th>
                   </tr>
                 </thead>
@@ -157,12 +147,10 @@ include "../../../app/functions/user.php";
                       <tr>
                         <td><?php echo $user->strUsername; ?></td>
                         <td><?php echo $user->strEmail; ?></td>
-                        <td><?php echo $user->ysnEnabled ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>"; ?></td>
-                        <td><?php echo $user->ysnApproved ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnActive ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>"; ?></td>
                         <td><?php echo $user->ysnAdmin ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><?php echo $user->ysnDonor ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><?php echo $user->ysnNgo ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnOther ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><a class="btn-edit-user" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
                         <td><a class="btn-delete-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class="bi bi-trash-fill"></i></a></td>
                       </tr>

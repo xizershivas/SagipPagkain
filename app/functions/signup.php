@@ -1,5 +1,5 @@
 <?php
-function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strSpecifyOther) {
+function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType) {
     // Check if User already exists
     $sql = $conn->prepare("SELECT strUsername FROM tbluser WHERE strUsername = ?");
     $sql->bind_param("s", $strUsername);
@@ -51,12 +51,6 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
             break;
-        case "other":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnOther, strSpecifyOther) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssssis", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $strSpecifyOther);
-            break;
     }
 
     if ($stmt->execute()) {
@@ -69,7 +63,6 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
                 "contact" => $strContact,
                 "username" => $strUsername,
                 "accountType" => $strAccountType,
-                "specifyOther" => $strSpecifyOther,
                 "success" => true
             )
         ));

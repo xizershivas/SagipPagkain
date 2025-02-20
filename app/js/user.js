@@ -9,12 +9,10 @@ let intUserId = 0;
 function setFormData({ data }) {
     frmUser.elements.user.value = data.strUsername;
     frmUser.elements.email.value = data.strEmail;
-    frmUser.elements.enabled.checked = data.ysnEnabled ? true : false;
-    frmUser.elements.approved.checked = data.ysnApproved ? true : false;
+    frmUser.elements.active.checked = data.ysnActive ? true : false;
     frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
     frmUser.elements.donor.checked = data.ysnDonor ? true : false;
     frmUser.elements.ngo.checked = data.ysnNgo ? true : false;
-    frmUser.elements.other.checked = data.ysnOther ? true : false;
 }
 
 function editUser(e) {
@@ -42,12 +40,10 @@ function updateUser() {
         intUserId: intUserId,
         strUsername: frmUser.elements.user.value,
         strEmail: frmUser.elements.email.value,
-        ysnEnabled: frmUser.elements.enabled.checked ? true : false,
-        ysnApproved: frmUser.elements.approved.checked ? true : false,
+        ysnActive: frmUser.elements.active.checked ? true : false,
         ysnAdmin: frmUser.elements.admin.checked ? true : false,
         ysnDonor: frmUser.elements.donor.checked ? true : false,
         ysnNgo: frmUser.elements.ngo.checked ? true : false,
-        ysnOther: frmUser.elements.other.checked ? true : false,
     };
 
     const xmlhttp = new XMLHttpRequest();
@@ -59,7 +55,7 @@ function updateUser() {
             if (this.status == 200) {
                 window.location.reload(); // Refresh to reload Data Table
             } else {
-                // alert(response.data.message);
+                alert(response.data.message);
             }
         }
     };

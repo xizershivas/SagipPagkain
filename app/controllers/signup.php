@@ -11,9 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $strPassword = sanitize($_POST["password"]);
     $strConfirmPassword = sanitize($_POST["confirmPassword"]);
     $strAccountType = sanitize($_POST["accountType"]);
-    $strSpecifyOther = sanitize($_POST["specifyOther"]);
 
-    register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strSpecifyOther);
+    register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType);
 
     $conn->close();
 }

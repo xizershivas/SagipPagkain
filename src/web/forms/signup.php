@@ -151,13 +151,8 @@
             <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
               <option selected disabled value="">-- Select account type --</option>
               <option value="donor">Donor</option>
-              <option value="ngo">Non-Governmental Organization (NGO)</option>
-              <option value="other">Other</option>
+              <option value="ngo">NGO, Cooperative, Youth Org.</option>
             </select>
-          </div>
-          <div class="col-12 d-none" id="divOther">
-            <label class="form-label fw-bold signup-form-label" for="specifyOther">Please specify</label>
-            <input class="form-control" type="text" name="specifyOther" id="specifyOther" placeholder="">
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary w-100" id="btnSignUp">Submit</button>

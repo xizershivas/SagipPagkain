@@ -1,27 +1,8 @@
 const frmSignUp = document.querySelector('#frmSignUp');
 const accountType = document.querySelector('#accountType');
-const divOther = document.querySelector('#divOther');
-const specifyOther = document.querySelector('#specifyOther');
 const btnShowHideList = document.getElementsByClassName('show-hide-password');
 const password = document.querySelector('#password');
 const confirmPassword = document.querySelector('#confirmPassword');
-
-// To show input text if Other is selected and hide if not
-function accountTypeSelect(e) {
-    const accountType = e.target.value;
-
-    switch (accountType) {
-        case 'donor':
-        case 'ngo': 
-            divOther.classList.add('d-none'); 
-            specifyOther.removeAttribute('required');
-            break;
-        case 'other': 
-            divOther.classList.remove('d-none');
-            specifyOther.required = true;
-        break;
-    }
-}
 
 function showHidePassword(e) {
     if (e.target.classList.contains('bi-eye-fill')) {
@@ -74,5 +55,4 @@ for (let btnShowHide of btnShowHideList) {
     btnShowHide.addEventListener('click', showHidePassword);
 }
 
-accountType.addEventListener('change', accountTypeSelect);
 frmSignUp.addEventListener('submit', signUp);
