@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/donationManagement.php";
+include "../../../app/functions/manageBeneficiary.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,11 +17,8 @@ include "../../../app/functions/donationManagement.php";
  <?php include '../global/stylesheet.php'; ?>
 
   <!-- Data Table CSS CDN -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
-  <!-- <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
-
-  <link href="../../../app/css/donationManagement.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" /> -->
+  <link href="../../../app/css/manageBeneficiary.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -77,47 +74,114 @@ include "../../../app/functions/donationManagement.php";
             </div>
           </div>
 
-          <!-- DONATION FORM (HIDDEN) -->
-          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <!-- ADD BENEFICIARY FORM (HIDDEN) -->
+          <div class="modal fade" id="modalFrmAddBeneficiary" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
 
-                <div class="text-black mb-3 bg-light p-3" id="frmEditDonation">
-                  <form class="" id="frmDonation" enctype="multipart/form-data">
-                    <div class="row g-3">
+                <div class="text-black mb-3 bg-light p-3">
+                  <form class="" id="frmAddBeneficiary">
+                    <div class="row g-2">
                       <div class="mb-3 col col-md-6">
-                        <label for="donor" class="form-label fw-bold">Name</label>
-                        <input type="text" class="form-control" name="Name" id="Name" required>
+                        <label for="name" class="form-label fw-bold">Name</label>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" name="name" id="name" required>
+                          <label for="name" class="form-label">Beneficiary's Full Name</label>
+                        </div>
                       </div>
                       <div class="mb-3 col col-md-6">
-                        <label for="Email" class="form-label fw-bold">Email</label>
-                        <input type="Email" class="form-control" name="Email" id="Email">
+                        <label for="email" class="form-label fw-bold">Email</label>
+                        <div class="form-floating">
+                          <input type="email" class="form-control" name="email" id="email">
+                          <label for="email" class="form-label">Email Address</label>
+                        </div>
                       </div>
                     </div>
-                    <div class="row g-3">
+                    <div class="row g-2">
                       <div class="mb-3 col col-md-6">
-                        <label for="text" class="form-label fw-bold">Contact</label>
-                        <input type="text" class="form-control" name="Contact" id="Contact" required>
+                        <label for="contact" class="form-label fw-bold">Contact</label>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" name="contact" id="contact">
+                          <label for="contact" class="form-label">(Mobile No. / Phone No.)</label>
+                        </div>
                       </div>
                       <div class="mb-3 col col-md-6">
-                        <label for="Address" class="form-label fw-bold">Address</label>
-                        <input type="text" class="form-control" name="Address" id="Address">
+                        <label for="address" class="form-label fw-bold">Address</label>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" name="address" id="address">
+                          <label for="address" class="form-label">Complete Address</label>
+                        </div>
                       </div>
                     </div>
                   </form>
                 </div>
                 
                 <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmDonation">Save</button>
+                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmAddBeneficiary">Save</button>
                   <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
                 </div>
 
               </div>
             </div>
           </div>
-          <!-- END DONATION FORM -->
+          <!-- END ADD BENEFICIARY FORM-->
 
+          <!-- BENEFICIARY FORM (HIDDEN) -->
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+
+                <div class="text-black mb-3 bg-light p-3" id="frmEditBeneficiary">
+                  <form class="" id="frmBeneficiary">
+                    <div class="row g-2">
+                      <div class="mb-3 col col-md-6">
+                        <label for="name" class="form-label fw-bold">Name</label>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" name="name" id="name" required>
+                          <label for="name" class="form-label">Beneficiary's Full Name</label>
+                        </div>
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="email" class="form-label fw-bold">Email</label>
+                        <div class="form-floating">
+                          <input type="email" class="form-control" name="email" id="email">
+                          <label for="email" class="form-label">Email Address</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row g-2">
+                      <div class="mb-3 col col-md-6">
+                        <label for="contact" class="form-label fw-bold">Contact</label>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" name="contact" id="contact">
+                          <label for="contact" class="form-label">(Mobile No. / Phone No.)</label>
+                        </div>
+                      </div>
+                      <div class="mb-3 col col-md-6">
+                        <label for="address" class="form-label fw-bold">Address</label>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" name="address" id="address">
+                          <label for="address" class="form-label">Complete Address</label>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmBeneficiary">Save</button>
+                  <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- END BENEFICIARY FORM -->
+          
           <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+            <div class="row justify-content-center">
+              <button type="button" class="btn btn-success w-25" id="btnAddBeneficiary" data-bs-toggle="modal" data-bs-target="#modalFrmAddBeneficiary">Add Beneficiary</button>
+            </div>
             <!-- DATA TABLE -->
             <table id="donationDataTable" class="display table table-striped mt-5">
               <thead>
@@ -132,29 +196,32 @@ include "../../../app/functions/donationManagement.php";
               </thead>
               <tbody>
               <?php
-                $allDonationData = getDonationData($conn);
-                if ($allDonationData && $allDonationData->num_rows > 0) {
-                    while ($data = $allDonationData->fetch_object()) { 
+                $allBeneficiaryData = getBeneficiaryData($conn);
+                $rowNumber = 1;
+                if ($allBeneficiaryData && $allBeneficiaryData->num_rows > 0) {
+                    while ($data = $allBeneficiaryData->fetch_object()) { 
                       ?>
                         <tr>
-                            <td>1</td>
-                            <td><?php echo htmlspecialchars($data->strDonorName); ?></td>
-                            <td>test@gmail.com</td>
-                            <td>09999999999</td>
-                            <td><?php echo htmlspecialchars($data->strDescription); ?></td>
+                            <td><?php echo $rowNumber; ?></td>
+                            <td><?php echo htmlspecialchars($data->strName); ?></td>
+                            <td><?php echo htmlspecialchars($data->strEmail); ?></td>
+                            <td><?php echo htmlspecialchars($data->strContact); ?></td>
+                            <td><?php echo htmlspecialchars($data->strAddress); ?></td>
                             <td>
-                                <a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
-                                  href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
+                                <a class="btn-edit-beneficiary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
+                                  href="javascript:void(0)" data-id="<?php echo $data->intBeneficiaryId; ?>">
                                   <i class='bi bi-pencil-square'></i>
                                 </a>
                             </td>
                             <td>
-                                <a class="btn-delete-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
+                                <a class="btn-delete-beneficiary" href="javascript:void(0)" data-id="<?php echo $data->intBeneficiaryId; ?>">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
                             </td>
                         </tr>
-                        <?php }        
+                    <?php 
+                      $rowNumber++; 
+                    }
                 }
 
                 $conn->close();
@@ -188,7 +255,7 @@ include "../../../app/functions/donationManagement.php";
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
-  <script src="../../../app/js/donationManagement.js"></script>
+  <script src="../../../app/js/manageBeneficiary.js"></script>
   <script>
   $(document).ready(function() {
     new DataTable('#donationDataTable', {

@@ -1,0 +1,33 @@
+.dt-layout-table{
+    width: 100%;
+    height: 410px;
+    overflow: auto;
+}
+
+.bi.bi-pencil-square {
+    color: #0dcaf0;
+}
+
+.bi.bi-trash-fill {
+    color: #dc3545;
+}
+
+.ysn-true {
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 3px;
+}
+
+.ysn-false {
+    background-color: #35c9dc;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 3px;
+}
+
+table.dataTable.row-border > tbody > tr > *, table.dataTable.display > tbody > tr > * {
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 12px !important;
+}
