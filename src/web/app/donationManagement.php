@@ -116,9 +116,14 @@ include "../../../app/functions/donationManagement.php";
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="" class="form-label fw-bold">Upload Documentation</label>
-                      <span>(PDF/WORD Max: 5MB)</span><br>
-                      <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
+                      <label for="" class="form-label fw-bold">Upload Documentation</label><span>(JPG/PNG/MP4)</span><br>
+                      <div class="mb-1">
+                        <b>Uploaded: </b><span class="d-inline my-3" id="signUploaded"></span>
+                        <!-- SHOW ALL MEDIA SELECTED -->
+                        <div class="d-flex justify-content-center align-items-center" id="mediaSelectedLoc"></div>
+                        <div class="mb-3" id="docsUploadedMedia"></div>
+                      </div>
+                      <input type="file" class="form-control" name="uploadDocumentation[]" id="uploadDocumentation" accept="image/*,video/*" multiple>
                     </div>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
@@ -166,7 +171,16 @@ include "../../../app/functions/donationManagement.php";
                             <td><?php echo htmlspecialchars($data->strTitle); ?></td>
                             <td><?php echo htmlspecialchars($data->strDescription); ?></td>
                             <td><?php echo htmlspecialchars($data->strPickupLocation); ?></td>
-                            <td><?php echo htmlspecialchars(basename($data->strDocFilePath)); ?></td>
+                            <td>
+                              <?php
+                                $paths = explode(",", $data->strDocFilePath);
+                                $docsUploaded = "";
+                                foreach($paths as $path) {
+                                  $docsUploaded .= basename($path) . ", ";
+                                }
+                                echo rtrim($docsUploaded, ", ");
+                              ?>
+                            </td>
                             <td>
                                 <?php echo $data->ysnStatus ? "<span class='ysn-true'>Received</span>" : "<span class='ysn-false'>Pending</span>"; ?>
                             </td>

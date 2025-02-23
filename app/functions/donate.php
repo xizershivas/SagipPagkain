@@ -12,7 +12,7 @@ function processDocFileUpload() {
             . DIRECTORY_SEPARATOR . "SagipPagkain" 
             . DIRECTORY_SEPARATOR . "app" 
             . DIRECTORY_SEPARATOR . "storage" 
-            . DIRECTORY_SEPARATOR . "images/";
+            . DIRECTORY_SEPARATOR . "media/";
 
         $uploadFilePath = $targetDir . basename($fileName);
 

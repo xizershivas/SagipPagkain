@@ -142,10 +142,13 @@ include "../../../app/functions/volunteerManagement.php";
                       </div>
                     </div>
                     <div class="row g-3">
-                      <div class="mb-3 col col-md-4">
-                        <label for="signature" class="form-label fw-bold">Signature <span class="fw-normal">(Image: JPG/PNG Max: 3MB)</span></label>
-                        <span class="d-inline-block my-3" id="signUploaded"></span>
-                        <input type="file" class="form-control" name="signature" id="signature">
+                      <div class="mb-3 col col-md-12">
+                        <label for="" class="form-label fw-bold">Signature <span class="fw-normal">(Image: JPG/PNG Max: 3MB)</span></label>
+                        <div class="mb-1">
+                        <b>Uploaded: </b><span class="d-inline my-3" id="signUploaded"></span>
+                          <img src="" alt="" name="signImage" id="signImage">
+                        </div>
+                        <input type="file" class="form-control" name="signature" id="signImageSelected">
                       </div>
                     </div>
                   </form>

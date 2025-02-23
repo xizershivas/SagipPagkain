@@ -53,7 +53,8 @@ function processSignFileUpload($intVolunteerId) {
             . DIRECTORY_SEPARATOR . "SagipPagkain" 
             . DIRECTORY_SEPARATOR . "app" 
             . DIRECTORY_SEPARATOR . "storage" 
-            . DIRECTORY_SEPARATOR . "images/";
+            . DIRECTORY_SEPARATOR . "media"
+            . DIRECTORY_SEPARATOR . "volunteer/";
 
         // DELETE signature if intVolunteerId already exist
         $existingSignFilePath = $targetDir . $intVolunteerId . "_*"; // Wildcard
