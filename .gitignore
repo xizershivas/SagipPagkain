@@ -1,5 +1,0 @@
-app/storage/documents/*
-!app/storage/documents/
-
-app/storage/images/*
-!app/storage/images/

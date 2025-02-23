@@ -10,7 +10,7 @@ function processSignFileUpload() {
             . DIRECTORY_SEPARATOR . "SagipPagkain" 
             . DIRECTORY_SEPARATOR . "app" 
             . DIRECTORY_SEPARATOR . "storage" 
-            . DIRECTORY_SEPARATOR . "images/";
+            . DIRECTORY_SEPARATOR . "media/";
 
         $uploadFilePath = $targetDir . basename($fileName);
 
@@ -19,7 +19,7 @@ function processSignFileUpload() {
         if (!in_array($fileType, $allowedTypes)) {
             http_response_code(400);
             echo json_encode(["data" => ["message" => "Invalid image type"]]);
-        } else if ($fileSize > 3000000) {
+        } else if ($fileSize > 5000000) {
             http_response_code(400);
             echo json_encode(["data" => ["message" => "Image is too large"]]);
         } else if (file_exists($uploadFilePath)) {

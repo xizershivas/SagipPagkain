@@ -36,6 +36,12 @@ table.dataTable.row-border > tbody > tr > *, table.dataTable.display > tbody > t
     height: 100%;
 }
 
+#signImage {
+    display: block;
+    max-width: 5em;
+    max-height: 5em;
+}
+
 @media (min-width: 992px) {
     .modal-dialog.modal-lg {
         --bs-modal-width: 1024px;
