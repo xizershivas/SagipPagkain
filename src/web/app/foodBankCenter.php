@@ -13,19 +13,18 @@ include "../../../app/functions/user.php";
   <meta name="keywords" content="">
 
   <!-- Data Table CSS CDN -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+
     
   <!-- Include stylesheet -->
   <?php include '../global/stylesheet.php'; ?>
 
   <link href="../../../app/css/foodCenter.css" rel="stylesheet">
-
-  <style>
-        #map { height: 420px; }
-    </style>
 </head>
 
 <body class="services-details-page">
@@ -85,7 +84,22 @@ include "../../../app/functions/user.php";
             <h2 class="text-center" style="color: #333;">Item Stock Map</h2>
             <!-- DATA GRAPH -->
             <div class="card p-3 shadow-sm">
-              <div id="map"></div>
+
+            <div class="d-flex"> 
+            <div id="map"></div>
+
+                <div id="sidebar">
+                    <h3 class="text-center mb-3">Food Stock Areas</h3>
+
+                    <!-- Search Bar -->
+                    <div id="search-container">
+                        <input type="text" id="searchBox" class="form-control" placeholder="Search for a location..." onkeyup="filterLocations()">
+                    </div>
+
+                    <ul class="list-group" id="locationList"></ul>
+                </div>
+            </div>
+
             </div>
             <!-- END MAP GRAPH> -->
           </div>
@@ -109,41 +123,85 @@ include "../../../app/functions/user.php";
 
   <!-- Include global JS -->
   <?php include '../global/script.php'; ?>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Initialize map
-    var map = L.map('map').setView([14.5995, 120.9842], 10); // Center on Philippines
+        // Initialize the map and set to Laguna
+        var map = L.map('map').setView([14.2044, 121.3473], 10);
 
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Sample data (ID, Location, Latitude, Longitude, Stock)
-    var stockLocations = [
-        { id: 1, location: "Rizal", lat: 14.599512, lng: 121.036079, stock: 20 },
-        { id: 2, location: "Manila", lat: 14.6091, lng: 120.9822, stock: 5 },
-        { id: 3, location: "Quezon City", lat: 14.6760, lng: 121.0437, stock: 50 }
-    ];
-
-    // Function to determine marker color based on stock
-    function getColor(stock) {
-        return stock > 30 ? "green" : stock > 10 ? "orange" : "red";
-    }
-
-    // Loop through locations and add markers
-    stockLocations.forEach(function (data) {
-        var marker = L.circleMarker([data.lat, data.lng], {
-            color: getColor(data.stock),
-            radius: 10,
-            fillOpacity: 0.8
+        // Light-themed map (OpenStreetMap Standard)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // Popup info
-        marker.bindPopup(`<b>${data.location}</b><br>Stock: ${data.stock}`);
-    });
-</script>
+        // Stock level colors
+        function getStockColor(stock) {
+            if (stock >= 80) return "red";    
+            if (stock >= 30) return "yellow"; 
+            return "green";                   
+        }
+
+        // Dummy locations with stock details
+        var locations = [
+            { name: "Pagsanjan Falls", lat: 14.1871, lng: 121.2423, stock: 90, branch: "FoodBanking Pagsanjan", contact: "0912-345-6789" },
+            { name: "Enchanted Kingdom", lat: 14.2786, lng: 121.4107, stock: 40, branch: "FoodBanking EK", contact: "0921-234-5678" },
+            { name: "Mount Makiling", lat: 14.1761, lng: 121.5491, stock: 10, branch: "FoodBanking Makiling", contact: "0933-567-8901" },
+            { name: "Nuvali", lat: 14.2166, lng: 121.0573, stock: 85, branch: "FoodBanking Nuvali", contact: "0905-678-1234" },
+            { name: "UPLB", lat: 14.3041, lng: 121.3769, stock: 35, branch: "FoodBanking UPLB", contact: "0917-890-4567" },
+            { name: "Nagcarlan Cemetery", lat: 14.1816, lng: 121.4916, stock: 5, branch: "FoodBanking Nagcarlan", contact: "0998-765-4321" },
+            { name: "Lake Pandin", lat: 14.2639, lng: 121.3645, stock: 95, branch: "FoodBanking Pandin", contact: "0916-543-2109" }
+        ];
+
+        // Add markers and populate the location list
+        var locationList = document.getElementById("locationList");
+
+        locations.forEach(location => {
+            var marker = L.marker([location.lat, location.lng]).addTo(map);
+            marker.bindPopup(`
+                <div class="text-left">
+                    <h6 class="mb-1"><b>${location.branch}</b></h6>
+                    <p class="mb-1">📍 <strong>${location.name}</strong></p>
+                    <p class="mb-1">📦 Stock Quantity: <strong>${location.stock} kg</strong></p>
+                    <p class="mb-1">📞 Contact: <strong>${location.contact}</strong></p>
+                </div>
+            `);
+
+            // Add locations to the list with pin icon
+            var listItem = document.createElement("li");
+            listItem.className = "list-group-item";
+            listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
+            listItem.onclick = function () {
+                zoomToLocation(location.lat, location.lng);
+            };
+            locationList.appendChild(listItem);
+
+            // Add a colored circle to indicate stock level
+            L.circle([location.lat, location.lng], {
+                color: getStockColor(location.stock),
+                fillColor: getStockColor(location.stock),
+                fillOpacity: 0.5,
+                radius: 300
+            }).addTo(map);
+        });
+
+        // Function to zoom into a location
+        function zoomToLocation(lat, lng) {
+            map.setView([lat, lng], 13);
+        }
+
+        // Search bar functionality: filters locations in the list
+        function filterLocations() {
+            var input = document.getElementById("searchBox").value.toLowerCase();
+            var listItems = document.querySelectorAll(".list-group-item");
+
+            listItems.forEach(item => {
+                if (item.textContent.toLowerCase().includes(input)) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
