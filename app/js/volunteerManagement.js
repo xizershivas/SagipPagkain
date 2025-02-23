@@ -1,7 +1,9 @@
 const frmVolunteer = document.querySelector('#frmVolunteer');
 const btnEditVolunteerList = document.getElementsByClassName('btn-edit-volunteer');
 const btnDeleteVolunteerList = document.getElementsByClassName('btn-delete-volunteer');
+const signImageSelected = document.querySelector('#signImageSelected');
 const signUploaded = document.querySelector('#signUploaded');
+const signImage = document.querySelector('#signImage');
 const btnSave = document.querySelector('#btnSave');
 let editData = {};
 let intVolunteerId = 0;
@@ -21,7 +23,22 @@ function setFormData({ data }) {
     frmVolunteer.elements.contact.value = data.strContact;
     frmVolunteer.elements.email.value = data.strEmail;
     // Get the filename of the uploaded signature image
-    signUploaded.innerHTML = `<b>Uploaded:</b> ${data.strSignFilePath.split('/').pop()}`;
+    signUploaded.innerHTML = `${data.strSignFilePath.split('/').pop()}`;
+    // Show signature image
+    signImage.src = '../../../app/storage/media/' + data.strSignFilePath.split('/').pop();
+}
+
+function signSelected(e) {
+    const file = e.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            signImage.src = evt.target.result;
+        }
+
+        reader.readAsDataURL(file);
+    }
 }
 
 function editVolunteer(e) {
@@ -107,3 +124,4 @@ for (let btnDelete of btnDeleteVolunteerList) {
 }
 
 frmVolunteer.addEventListener('submit', updateVolunteer);
+signImageSelected.addEventListener('change', signSelected);

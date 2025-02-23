@@ -244,7 +244,7 @@
                         </div>
                         <div class="row my-2">
                             <div class="col-12 col-sm-12 col-md-8 col-lg-6">
-                                <label class="form-label" for=""><strong>Select Signature</strong> (Image: JPG/PNG Max: 3MB)</label>
+                                <label class="form-label" for=""><strong>Select Signature</strong> (Image: JPG/PNG Max: 5MB)</label>
                                 <input class="form-control" type="file" name="signature" id="signature" required>
                             </div>
                         </div>

@@ -19,48 +19,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $strPickupLocation = $_POST["pickupLocation"];
     $strRemarks = $_POST["remarks"];
     $ysnStatus = isset($_POST["transportStatus"]) ? 1 : 0;
+    $strDocsUploadedPaths = isset($_POST["docsUploadedPaths"]) ? $_POST["docsUploadedPaths"] : "";
 
-    // File upload PDF/Word
-    $strDocFilePath = processDocFileUpload();
+    $strDocFilePath = processDocFileUpload($intDonationId);
 
-    $query = $conn->prepare("UPDATE tbldonationmanagement SET strDonorName = ?, dtmDate = ?, strTitle = ?, strDescription = ?, strPickupLocation = ?, strDocFilePath = ?, strRemarks = ?, ysnStatus = ? WHERE intDonationId = ?");
-    $query->bind_param("sssssssii"
-        ,$strDonorName
-        ,$dtmDate
-        ,$strTitle
-        ,$strDescription
-        ,$strPickupLocation
-        ,$strDocFilePath
-        ,$strRemarks
-        ,$ysnStatus
-        ,$intDonationId
-    );
+    $donationData = [
+        "intDonationId" => $intDonationId,
+        "strDonorName" => $strDonorName,
+        "dtmDate" => $dtmDate,
+        "strTitle" => $strTitle,
+        "strDescription" => $strDescription,
+        "strPickupLocation" => $strPickupLocation,
+        "strRemarks" => $strRemarks,
+        "ysnStatus" => $ysnStatus,
+        "strDocFilePath" => $strDocFilePath ? implode(",", $strDocFilePath) : $strDocsUploadedPaths
+    ];
 
-    if ($query->execute()) {
-        if ($query->affected_rows > 0) {
-            $data = array(
-                "donationId" => $intDonationId,
-                "donor" => $strDonorName,
-                "date" => $dtmDate,
-                "title" => $strTitle,
-                "description" => $strDescription,
-                "pickupLocation" => $strPickupLocation,
-                "remarks" => $strRemarks,
-                "transportStatus" => $ysnStatus
-            );
+    updateDonation($conn, $donationData);
 
-            http_response_code(200);
-            echo json_encode(["data" => $data]);
-        } else {
-            http_response_code(202);
-            echo json_encode(array("data" => array("message" => "No rows were affected")));
-        }
-    } else {
-        http_response_code(500);
-        echo json_encode(["data" => ["message" => $query->error]]);
-    }
-
-    $query->close();
     $conn->close();
 }
 
