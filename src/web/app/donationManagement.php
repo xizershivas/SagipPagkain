@@ -136,9 +136,9 @@ include "../../../app/functions/donationManagement.php";
           </div>
           <!-- END DONATION FORM -->
 
-          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
             <!-- DATA TABLE -->
-            <table id="donationDataTable" class="display table table-striped mt-5">
+            <table id="donationDataTable" class="display table table-striped">
               <thead>
                 <tr>
                   <th scope="col">Donor</th>
@@ -221,7 +221,7 @@ include "../../../app/functions/donationManagement.php";
   $(document).ready(function() {
     new DataTable('#donationDataTable', {
 
-      lengthMenu: [8, 20, 30, 50, 100]
+      lengthMenu: [10, 20, 30, 50, 100]
     });
   });
 </script>

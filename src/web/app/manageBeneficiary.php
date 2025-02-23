@@ -178,12 +178,12 @@ include "../../../app/functions/manageBeneficiary.php";
           </div>
           <!-- END BENEFICIARY FORM -->
           
-          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
             <div class="row justify-content-center">
               <button type="button" class="btn btn-success w-25" id="btnAddBeneficiary" data-bs-toggle="modal" data-bs-target="#modalFrmAddBeneficiary">Add Beneficiary</button>
             </div>
             <!-- DATA TABLE -->
-            <table id="donationDataTable" class="display table table-striped mt-5">
+            <table id="donationDataTable" class="display table table-striped">
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -260,7 +260,7 @@ include "../../../app/functions/manageBeneficiary.php";
   $(document).ready(function() {
     new DataTable('#donationDataTable', {
 
-      lengthMenu: [8, 20, 30, 50, 100]
+      lengthMenu: [10, 20, 30, 50, 100]
     });
   });
 </script>

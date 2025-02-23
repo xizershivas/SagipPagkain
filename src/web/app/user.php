@@ -78,7 +78,7 @@ include "../../../app/functions/user.php";
             </div>
           </div>
 
-             <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+             <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
                <!-- USER FORM (HIDDEN) -->
               <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -125,7 +125,7 @@ include "../../../app/functions/user.php";
 
 
               <!-- DATA TABLE -->
-              <table id="userDataTable" class="display table table-striped mt-5">
+              <table id="userDataTable" class="display table table-striped">
                 <thead>
                   <tr>
                     <th scope="col">User</th>
@@ -198,7 +198,7 @@ include "../../../app/functions/user.php";
     $(document).ready(function() {
     new DataTable('#userDataTable', {
 
-      lengthMenu: [9, 20, 30, 50, 100]
+      lengthMenu: [10, 20, 30, 50, 100]
     });
   });
   </script>

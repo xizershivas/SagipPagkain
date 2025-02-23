@@ -9,7 +9,7 @@ include "../../../app/functions/volunteerManagement.php";
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Sagip Pagkain - Donation Management</title>
+  <title>Sagip Pagkain - Volunteer Management</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -21,7 +21,7 @@ include "../../../app/functions/volunteerManagement.php";
   <!-- <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
 
-  <!-- <link href="../../../app/css/donationManagement.css" rel="stylesheet"> -->
+  <link href="../../../app/css/volunteerManagement.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -83,51 +83,75 @@ include "../../../app/functions/volunteerManagement.php";
               <div class="modal-content">
 
                 <div class="text-black mb-3 bg-light p-3" id="frmEditDonation">
-                  <form class="" id="frmDonation" enctype="multipart/form-data">
+                  <form class="" id="frmVolunteer" enctype="multipart/form-data">
                     <div class="row g-3">
-                      <div class="mb-3 col col-md-6">
-                        <label for="donor" class="form-label fw-bold">Donor</label>
-                        <input type="text" class="form-control" name="donor" id="donor" required>
+                      <div class="mb-3 col col-md-4">
+                        <label for="firstname" class="form-label fw-bold">First Name</label>
+                        <input type="text" class="form-control" name="firstname" id="firstname" required>
                       </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="date" class="form-label fw-bold">Date</label>
-                        <input type="date" class="form-control" name="date" id="date">
+                      <div class="mb-3 col col-md-4">
+                        <label for="lastname" class="form-label fw-bold">Last Name</label>
+                        <input type="text" class="form-control" name="lastname" id="lastname" required>
                       </div>
-                    </div>
-                    <div class="row g-3">
-                      <div class="mb-3 col col-md-6">
-                        <label for="title" class="form-label fw-bold">Title</label>
-                        <input type="text" class="form-control" name="title" id="title" required>
-                      </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="description" class="form-label fw-bold">Description</label>
-                        <input type="text" class="form-control" name="description" id="description">
+                      <div class="mb-3 col col-md-4">
+                        <label for="gender" class="form-label fw-bold">Gender</label>
+                        <input type="text" class="form-control" name="gender" id="gender" required>
                       </div>
                     </div>
                     <div class="row g-3">
-                      <div class="mb-3 col col-md-6">
-                        <label for="pickupLocation" class="form-label fw-bold">Pickup Location</label>
-                        <input type="text" class="form-control" name="pickupLocation" id="pickupLocation" required>
+                      <div class="mb-3 col col-md-4">
+                        <label for="birthdate" class="form-label fw-bold">Birthdate</label>
+                        <input type="date" class="form-control" name="birthdate" id="birthdate" required>
                       </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="remarks" class="form-label fw-bold">Remarks</label>
-                        <input type="text" class="form-control" name="remarks" id="remarks">
+                      <div class="mb-3 col col-md-4">
+                        <label for="street" class="form-label fw-bold">Street</label>
+                        <input type="text" class="form-control" name="street" id="street">
+                      </div>
+                      <div class="mb-3 col col-md-4">
+                        <label for="address" class="form-label fw-bold">Address</label>
+                        <input type="text" class="form-control" name="address" id="address">
                       </div>
                     </div>
-                    <div class="mb-3">
-                      <label for="" class="form-label fw-bold">Upload Documentation</label>
-                      <span>(PDF/WORD Max: 5MB)</span><br>
-                      <input type="file" class="form-control" name="uploadDocumentation" id="uploadDocumentation">
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-4">
+                        <label for="city" class="form-label fw-bold">City/Municipality</label>
+                        <input type="text" class="form-control" name="city" id="city" required>
+                      </div>
+                      <div class="mb-3 col col-md-4">
+                        <label for="region" class="form-label fw-bold">Region</label>
+                        <input type="text" class="form-control" name="region" id="region" required>
+                      </div>
+                      <div class="mb-3 col col-md-4">
+                        <label for="zipcode" class="form-label fw-bold">Zip Code</label>
+                        <input type="text" class="form-control" name="zipcode" id="zipcode">
+                      </div>
                     </div>
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
-                      <label class="form-check-label fw-bold" for="transportStatus" id="labelTransportStatus">Status</label>
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-4">
+                        <label for="country" class="form-label fw-bold">Country</label>
+                        <input type="text" class="form-control" name="country" id="country" required>
+                      </div>
+                      <div class="mb-3 col col-md-4">
+                        <label for="contact" class="form-label fw-bold">Contact</label>
+                        <input type="text" class="form-control" name="contact" id="contact">
+                      </div>
+                      <div class="mb-3 col col-md-4">
+                        <label for="email" class="form-label fw-bold">Email</label>
+                        <input type="email" class="form-control" name="email" id="email">
+                      </div>
+                    </div>
+                    <div class="row g-3">
+                      <div class="mb-3 col col-md-4">
+                        <label for="signature" class="form-label fw-bold">Signature <span class="fw-normal">(Image: JPG/PNG Max: 3MB)</span></label>
+                        <span class="d-inline-block my-3" id="signUploaded"></span>
+                        <input type="file" class="form-control" name="signature" id="signature">
+                      </div>
                     </div>
                   </form>
                 </div>
                 
                 <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmDonation">Save</button>
+                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmVolunteer">Save</button>
                   <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
                 </div>
 
@@ -136,29 +160,70 @@ include "../../../app/functions/volunteerManagement.php";
           </div>
           <!-- END DONATION FORM -->
 
-          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
             <!-- DATA TABLE -->
-            <table id="donationDataTable" class="display table table-striped mt-5">
+            <table id="donationDataTable" class="display table table-striped">
               <thead>
                 <tr>
-                  <th scope="col">First Name</th>
-                  <th scope="col">Last Name</th>
+                  <th scope="col">#</th>
+                  <th scope="col">FirstName</th>
+                  <th scope="col">LastName</th>
                   <th scope="col">Gender</th>
                   <th scope="col">Birthdate</th>
                   <th scope="col">Street</th>
                   <th scope="col">Address</th>
-                  <th scope="col">City</th>
+                  <th scope="col">City/Municipality</th>
                   <th scope="col">Region</th>
-                  <th scope="col">Zip Code</th>
+                  <th scope="col">ZipCode</th>
                   <th scope="col">Country</th>
                   <th scope="col">Contact</th>
                   <th scope="col">Email</th>
-                  <th scope="col">Terms of Volunteering</th>
+                  <!-- <th scope="col">Terms of Volunteering</th> -->
                   <th scope="col">Signature</th>
                   <th scope="col" colspan="2">Action</th>
                 </tr>
               </thead>
               <tbody>
+              <?php
+                $allVolunteerData = getVolunteerData($conn);
+                $rowNumber = 1;
+
+                if ($allVolunteerData->num_rows > 0) {
+                    while ($data = $allVolunteerData->fetch_object()) { 
+                      ?>
+                        <tr>
+                          <td><?php echo $rowNumber; ?></td>
+                          <td><?php echo $data->strFirstName; ?></td>
+                          <td><?php echo $data->strLastName; ?></td>
+                          <td><?php echo $data->strGender; ?></td>
+                          <td><?php echo $data->dtmDateOfBirth; ?></td>
+                          <td><?php echo $data->strStreet; ?></td>
+                          <td><?php echo $data->strAddress; ?></td>
+                          <td><?php echo $data->strCity; ?></td>
+                          <td><?php echo $data->strRegion; ?></td>
+                          <td><?php echo $data->strZipCode; ?></td>
+                          <td><?php echo $data->strCountry; ?></td>
+                          <td><?php echo $data->strContact; ?></td>
+                          <td><?php echo $data->strEmail; ?></td>
+                          <td><?php echo $data->strSignFilePath; ?></td>
+                          <td>
+                              <a class="btn-edit-volunteer" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
+                                href="javascript:void(0)" data-id="<?php echo $data->intVolunteerId; ?>">
+                                <i class='bi bi-pencil-square'></i>
+                              </a>
+                          </td>
+                          <td>
+                              <a class="btn-delete-volunteer" href="javascript:void(0)" data-id="<?php echo $data->intVolunteerId; ?>">
+                                  <i class="bi bi-trash-fill"></i>
+                              </a>
+                          </td>
+                        </tr>
+                      <?php 
+                      $rowNumber++;
+                    }
+                  }
+                  $conn->close();
+                ?>
               </tbody>
             </table><!-- END DATA TABLE -->
           </div>
@@ -188,12 +253,12 @@ include "../../../app/functions/volunteerManagement.php";
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
-  <!-- <script src="../../../app/js/donationManagement.js"></script> -->
+  <script src="../../../app/js/volunteerManagement.js"></script>
   <script>
   $(document).ready(function() {
     new DataTable('#donationDataTable', {
 
-      lengthMenu: [8, 20, 30, 50, 100]
+      lengthMenu: [10, 20, 30, 50, 100]
     });
   });
 </script>
