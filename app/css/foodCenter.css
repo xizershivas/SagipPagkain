@@ -28,12 +28,12 @@
 
 
 #map {
-    height: 65vh;
+    height: 55vh;
     flex: 3; /* Makes the map take more space */
 }
 #sidebar {
     flex: 1; /* Sidebar takes less space */
-    height: 65vh;
+    height: 55vh;
     overflow-y: auto;
     padding: 20px;
     background: #f8f9fa;
