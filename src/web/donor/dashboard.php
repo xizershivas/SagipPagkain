@@ -3,13 +3,6 @@ session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
 
-// if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
-//   header("Location: ../../../dashboard.php");
-//   exit();
-// } else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0) {
-//   header("Location: ../donor/dashboard.php");
-//   exit();
-// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,11 +54,11 @@ include "../../../app/functions/user.php";
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="dashboard.php" class="active"><i class="bi bi-arrow-right-circle"></i><span>Dashboard</span></a>
-                <a href="donate.php" class=""><i class="bi bi-arrow-right-circle"></i><span>Donate</span></a>
-                <a href="foodDonationManagement.php"><i class="bi bi-arrow-right-circle"></i><span>Food Donation Management</span></a>
-                <a href="foodCenter.php"><i class="bi bi-arrow-right-circle"></i><span>Food Bank Center</span></a>
-                <a href="reward.php"><i class="bi bi-arrow-right-circle"></i><span>Reward System</span></a>
+                <a href="dashboard.php" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
+                <a href="foodDonationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
+                <a href="foodCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
+                <a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>
               </div>
             </div><!-- End Services List -->
 

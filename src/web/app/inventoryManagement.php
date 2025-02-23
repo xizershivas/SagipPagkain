@@ -9,7 +9,7 @@ include "../../../app/functions/manageBeneficiary.php";
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Sagip Pagkain - Manage Beneficiaries</title>
+  <title>Sagip Pagkain - Inventory Management</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -37,7 +37,7 @@ include "../../../app/functions/manageBeneficiary.php";
         <div class="container-fluid">
           <ol>
             <li><a href="dashboard.php">Dashboard</a></li>
-            <li class="current">Manage Beneficiaries</li>
+            <li class="current">Inventory Management</li>
           </ol>
         </div>
       </nav>
@@ -63,7 +63,8 @@ include "../../../app/functions/manageBeneficiary.php";
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>
                 <a href="manageBeneficiary.php" class="active"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
-                <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
+                <a href="inventoryManagement.php" class="active"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
+                
               </div>
             </div><!-- End Services List -->
 
@@ -126,109 +127,41 @@ include "../../../app/functions/manageBeneficiary.php";
             </div>
           </div>
           <!-- END ADD BENEFICIARY FORM-->
-
-          <!-- BENEFICIARY FORM (HIDDEN) -->
-          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-
-                <div class="text-black mb-3 bg-light p-3" id="frmEditBeneficiary">
-                  <form class="" id="frmBeneficiary">
-                    <div class="row g-2">
-                      <div class="mb-3 col col-md-6">
-                        <label for="name" class="form-label fw-bold">Name</label>
-                        <div class="form-floating">
-                          <input type="text" class="form-control" name="name" id="name" required>
-                          <label for="name" class="form-label">Beneficiary's Full Name</label>
-                        </div>
-                      </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="email" class="form-label fw-bold">Email</label>
-                        <div class="form-floating">
-                          <input type="email" class="form-control" name="email" id="email">
-                          <label for="email" class="form-label">Email Address</label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row g-2">
-                      <div class="mb-3 col col-md-6">
-                        <label for="contact" class="form-label fw-bold">Contact</label>
-                        <div class="form-floating">
-                          <input type="text" class="form-control" name="contact" id="contact">
-                          <label for="contact" class="form-label">(Mobile No. / Phone No.)</label>
-                        </div>
-                      </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="address" class="form-label fw-bold">Address</label>
-                        <div class="form-floating">
-                          <input type="text" class="form-control" name="address" id="address">
-                          <label for="address" class="form-label">Complete Address</label>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmBeneficiary">Save</button>
-                  <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <!-- END BENEFICIARY FORM -->
           
           <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
-            <div class="row justify-content-center">
-              <button type="button" class="btn btn-success w-25" id="btnAddBeneficiary" data-bs-toggle="modal" data-bs-target="#modalFrmAddBeneficiary">Add Beneficiary</button>
+             <div class="row" style="padding: 20px 0;">
+                <div class="col-lg-4 d-flex align-items-center">
+                    <input type="text" id="column-name" class="form-control me-2" placeholder="Enter column name (optional)">
+                    <button class="btn btn-primary btn-sm" style="width: 150px; height: 35px;" onclick="addColumn()">Add Column</button>
+                </div>
             </div>
-            <!-- DATA TABLE -->
-            <table id="donationDataTable" class="display table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Contact</th>
-                  <th scope="col">Address</th>
-                  <th scope="col" colspan="2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-              <?php
-                $allBeneficiaryData = getBeneficiaryData($conn);
-                $rowNumber = 1;
-                if ($allBeneficiaryData && $allBeneficiaryData->num_rows > 0) {
-                    while ($data = $allBeneficiaryData->fetch_object()) { 
-                      ?>
-                        <tr>
-                            <td><?php echo $rowNumber; ?></td>
-                            <td><?php echo htmlspecialchars($data->strName); ?></td>
-                            <td><?php echo htmlspecialchars($data->strEmail); ?></td>
-                            <td><?php echo htmlspecialchars($data->strContact); ?></td>
-                            <td><?php echo htmlspecialchars($data->strAddress); ?></td>
-                            <td>
-                                <a class="btn-edit-beneficiary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
-                                  href="javascript:void(0)" data-id="<?php echo $data->intBeneficiaryId; ?>">
-                                  <i class='bi bi-pencil-square'></i>
-                                </a>
-                            </td>
-                            <td>
-                                <a class="btn-delete-beneficiary" href="javascript:void(0)" data-id="<?php echo $data->intBeneficiaryId; ?>">
-                                    <i class="bi bi-trash-fill"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php 
-                      $rowNumber++; 
-                    }
-                }
 
-                $conn->close();
-                ?>
-              </tbody>
-            </table><!-- END DATA TABLE -->
+            <!-- DATA TABLE -->
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr id="inventoryTable">
+                        <th>#</th>
+                        <th>Quantity Need <button class="remove-btn" onclick="removeColumn(1)">×</button></th>
+                        <th>Unit Need <button class="remove-btn" onclick="removeColumn(2)">×</button></th>
+                        <th>Item/Food <button class="remove-btn" onclick="removeColumn(3)">×</button></th>
+                        <th>Grocery Category <button class="remove-btn" onclick="removeColumn(4)">×</button></th>
+                        <th>Storage <button class="remove-btn" onclick="removeColumn(5)">×</button></th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <tr>
+                        <td>1</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+           <!-- END DATA TABLE -->
           </div>
           
         </div>
@@ -255,16 +188,49 @@ include "../../../app/functions/manageBeneficiary.php";
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+<script>
+        function addColumn() {
+            let columnName = document.getElementById("column-name").value.trim();
+            let tableHead = document.getElementById("inventoryTable");
+            let tableBody = document.getElementById("inventoryTableBody");
+            
+            // Generate a default column name if none is provided
+            let colCount = tableHead.getElementsByTagName("th").length;
+            if (columnName === "") {
+                columnName = "Column " + colCount;
+            }
 
-  <script src="../../../app/js/manageBeneficiary.js"></script>
-  <script>
-  $(document).ready(function() {
-    new DataTable('#donationDataTable', {
+            // Add new column header with remove button
+            let th = document.createElement("th");
+            th.innerHTML = `${columnName} <button class="remove-btn" onclick="removeColumn(${colCount})">×</button>`;
+            tableHead.appendChild(th);
 
-      lengthMenu: [10, 20, 30, 50, 100]
-    });
-  });
-</script>
+            // Add new column cells to each row
+            let rows = tableBody.getElementsByTagName("tr");
+            for (let row of rows) {
+                let td = document.createElement("td");
+                td.contentEditable = "true";
+                row.appendChild(td);
+            }
+
+            // Clear input field
+            document.getElementById("column-name").value = "";
+        }
+
+        function removeColumn(index) {
+            let tableHead = document.getElementById("inventoryTable");
+            let tableBody = document.getElementById("inventoryTableBody");
+
+            // Remove header column
+            tableHead.removeChild(tableHead.children[index]);
+
+            // Remove column from each row
+            let rows = tableBody.getElementsByTagName("tr");
+            for (let row of rows) {
+                row.removeChild(row.children[index]);
+            }
+        }
+    </script>
 
 </body>
 

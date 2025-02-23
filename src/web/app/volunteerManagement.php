@@ -66,6 +66,7 @@ include "../../../app/functions/volunteerManagement.php";
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>
                 <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
+                <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
               </div>
             </div><!-- End Services List -->
 

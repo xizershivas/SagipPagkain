@@ -39,8 +39,8 @@ include "../../../app/functions/donationManagement.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><a href="dashboard.php">Dashboard</a></li>
-            <li class="current">Donation Management</li>
+            <li class="current">Admin</li>
+            <li><a href="donationManagement.php">Donation Management</a></li>
           </ol>
         </div>
       </nav>
@@ -66,6 +66,7 @@ include "../../../app/functions/donationManagement.php";
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>
                 <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
+                <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
               </div>
             </div><!-- End Services List -->
 
