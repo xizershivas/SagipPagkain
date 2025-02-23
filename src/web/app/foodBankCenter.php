@@ -85,21 +85,23 @@ include "../../../app/functions/user.php";
             <h2 class="text-center" style="color: #333;">Item Stock Map</h2>
             <!-- DATA GRAPH -->
             <div class="card p-3 shadow-sm">
-
-            <div class="d-flex"> 
-            <div id="map"></div>
-
-                <div id="sidebar">
-                    <h3 class="text-center mb-3">Food Stock Areas</h3>
-
-                    <!-- Search Bar -->
-                    <div id="search-container">
-                        <input type="text" id="searchBox" class="form-control" placeholder="Search for a location..." onkeyup="filterLocations()">
-                    </div>
-
-                    <ul class="list-group" id="locationList"></ul>
+              <div class="d-flex"> 
+                <div class="col-lg-9"> 
+                   <div id="map"></div>
                 </div>
-            </div>
+                <div class="col-lg-3"> 
+                    <div id="sidebar">
+                        <h3 class="text-center mb-3">Food Stock Areas</h3>
+
+                        <!-- Search Bar -->
+                        <div id="search-container">
+                            <input type="text" id="searchBox" class="form-control" placeholder="Search for a location..." onkeyup="filterLocations()">
+                        </div>
+
+                        <ul class="list-group" id="locationList"></ul>
+                    </div>
+                    </div>
+              </div>
 
             </div>
             <!-- END MAP GRAPH> -->
