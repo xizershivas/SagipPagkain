@@ -1,6 +1,7 @@
 const frmDonation = document.querySelector('#frmDonation');
 const btnEditDonationList = document.getElementsByClassName('btn-edit-donation');
-const btnDeleteDonationList = document.getElementsByClassName('btn-delete-donation');
+// const btnDeleteDonationList = document.getElementsByClassName('btn-delete-donation');
+const btnArchiveDonationList = document.getElementsByClassName('btn-archive-donation');
 const transportStatus = document.querySelector('#transportStatus');
 const labelTransportStatus = document.querySelector('#labelTransportStatus');
 const uploadDocumentation = document.querySelector('#uploadDocumentation');
@@ -160,28 +161,65 @@ function updateDonation(e) {
     }
 }
 
-function deleteDonation(e) {
+// function deleteDonation(e) {
+//     intDonationId = parseInt(e.currentTarget.getAttribute('data-id'));
+//     const ysnConfirmed = window.confirm('Are you sure you want to delete this donation record?');
+
+//     if (ysnConfirmed) {
+//         const xmlhttp = new XMLHttpRequest();
+
+//         xmlhttp.onreadystatechange = function() {
+//             if (this.readyState == 4) {
+//                 const response = JSON.parse(this.responseText);
+
+//                 if (this.status == 200) {
+//                     window.location.reload(); // Refresh to reload Data Table
+//                 } else {
+//                     // alert(response.data.message);
+//                 }
+//             }
+//         };
+
+//         xmlhttp.open('DELETE', `../../../app/controllers/donationManagement.php`, true);
+//         xmlhttp.setRequestHeader('Content-Type', 'application/json');
+//         xmlhttp.send(JSON.stringify({ intDonationId: intDonationId }));
+//     }
+// }
+
+function archiveDonation(e) {
     intDonationId = parseInt(e.currentTarget.getAttribute('data-id'));
-    const ysnConfirmed = window.confirm('Are you sure you want to delete this donation record?');
+    let ysnArchive = parseInt(e.currentTarget.getAttribute('data-archive')) == 0 ? false : true;
+    let ysnConfirmed;
 
-    if (ysnConfirmed) {
-        const xmlhttp = new XMLHttpRequest();
+    const xmlhttp = new XMLHttpRequest();
 
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4) {
-                const response = JSON.parse(this.responseText);
+    if (!ysnArchive) {
+        ysnConfirmed = window.confirm('Are you sure you want to unarchive this donation record?');
+    } else {
+        ysnConfirmed = window.confirm('Are you sure you want to archive this donation record?');
+    }
 
-                if (this.status == 200) {
-                    window.location.reload(); // Refresh to reload Data Table
-                } else {
-                    // alert(response.data.message);
-                }
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            const response = JSON.parse(this.responseText);
+
+            if (this.status == 200) {
+                alert(response.data.message);
+                window.location.reload();
+            } else {
+                alert(response.data.message);
             }
-        };
+        }
+    };
 
-        xmlhttp.open('DELETE', `../../../app/controllers/donationManagement.php`, true);
+    if (ysnConfirmed && !ysnArchive) {
+        xmlhttp.open('POST', `../../../app/controllers/donationManagement.php`, true);
         xmlhttp.setRequestHeader('Content-Type', 'application/json');
-        xmlhttp.send(JSON.stringify({ intDonationId: intDonationId }));
+        xmlhttp.send(JSON.stringify({ intDonationId: intDonationId, ysnArchive: ysnArchive }));
+    } else {
+        xmlhttp.open('POST', `../../../app/controllers/donationManagement.php`, true);
+        xmlhttp.setRequestHeader('Content-Type', 'application/json');
+        xmlhttp.send(JSON.stringify({ intDonationId: intDonationId, ysnArchive: true }));
     }
 }
 
@@ -190,8 +228,12 @@ for (let btnEdit of btnEditDonationList) {
     btnEdit.addEventListener('click', editDonation);
 }
 
-for (let btnDelete of btnDeleteDonationList) {
-    btnDelete.addEventListener('click', deleteDonation);
+// for (let btnDelete of btnDeleteDonationList) {
+//     btnDelete.addEventListener('click', deleteDonation);
+// }
+
+for (let btnArchive of btnArchiveDonationList) {
+    btnArchive.addEventListener('click', archiveDonation);
 }
 
 uploadDocumentation.addEventListener('change', mediaSelected);

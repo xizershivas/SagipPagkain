@@ -4,6 +4,11 @@ function getDonationData($conn) {
     return $allDonationData;
 }
 
+function getArchiveData($conn) {
+    $allArchiveData = $conn->query("SELECT intDonationId, strDonorName FROM tbldonationarchive");
+    return $allArchiveData;
+}
+
 function editDonation($conn, $intDonationId) {
     if (!filter_var($intDonationId, FILTER_VALIDATE_INT)) {
         http_response_code(400);
@@ -144,19 +149,97 @@ function updateDonation($conn, $donationData) {
     exit();
 }
 
-function deleteDonation($conn, $intDonationId) {
-    $query = $conn->prepare("DELETE FROM tbldonationmanagement WHERE intDonationId = ?");
-    $query->bind_param("i", $intDonationId);
+function archiveDonation($conn, $intDonationId) {
+    // Start a transaction
+    $conn->begin_transaction();
 
-    if ($query->execute()) {
+    try {
+        // Insert into tbldonationarchive
+        $query1 = $conn->prepare("INSERT INTO tbldonationarchive SELECT * FROM tbldonationmanagement WHERE intDonationId = ?");
+        $query1->bind_param("s", $intDonationId);
+
+        if (!$query1->execute()) {
+            throw new Exception("Error inserting into archive: " . $query1->error);
+        }
+
+        // Delete the donation record from tbldonationmanagement
+        $query2 = $conn->prepare("DELETE FROM tbldonationmanagement WHERE intDonationId = ?");
+        $query2->bind_param("s", $intDonationId);
+
+        if (!$query2->execute()) {
+            throw new Exception("Error deleting from tbldonationmanagement: " . $query2->error);
+        }
+
+        // Commit the transaction if both queries succeeded
+        $conn->commit();
+
+        // Return success response
         http_response_code(200);
-        echo json_encode(array("data" => array("message" => "Donation record was successfully deleted")));
-    } else {
+        echo json_encode(["data" => ["message" => "Donation record moved from donation to archive"]]);
+    } catch (Exception $e) {
+        // Rollback the transaction in case of any error
+        $conn->rollback();
+
+        // Return error response
         http_response_code(400);
-        echo json_encode(array("data" => array("message" => $query->error)));
+        echo json_encode(["data" => ["message" => $e->getMessage()]]);
     }
 
-    $query->close();
     exit();
 }
+
+function unarchiveDonation($conn, $intDonationId) {
+    // Start a transaction
+    $conn->begin_transaction();
+
+    try {
+        // Insert into tbldonationmanagement
+        $query1 = $conn->prepare("INSERT INTO tbldonationmanagement SELECT * FROM tbldonationarchive WHERE intDonationId = ?");
+        $query1->bind_param("s", $intDonationId);
+
+        if (!$query1->execute()) {
+            throw new Exception("Error moving archive into donation: " . $query1->error);
+        }
+
+        // Delete the donation record from tbldonationarchive
+        $query2 = $conn->prepare("DELETE FROM tbldonationarchive WHERE intDonationId = ?");
+        $query2->bind_param("s", $intDonationId);
+
+        if (!$query2->execute()) {
+            throw new Exception("Error deleting from tbldonationarchive: " . $query2->error);
+        }
+
+        // Commit the transaction if both queries succeeded
+        $conn->commit();
+
+        // Return success response
+        http_response_code(200);
+        echo json_encode(["data" => ["message" => "Donation record moved from archive to donation"]]);
+    } catch (Exception $e) {
+        // Rollback the transaction in case of any error
+        $conn->rollback();
+
+        // Return error response
+        http_response_code(400);
+        echo json_encode(["data" => ["message" => $e->getMessage()]]);
+    }
+
+    exit();
+}
+
+// function deleteDonation($conn, $intDonationId) {
+//     $query = $conn->prepare("DELETE FROM tbldonationmanagement WHERE intDonationId = ?");
+//     $query->bind_param("i", $intDonationId);
+
+//     if ($query->execute()) {
+//         http_response_code(200);
+//         echo json_encode(array("data" => array("message" => "Donation record was successfully deleted")));
+//     } else {
+//         http_response_code(400);
+//         echo json_encode(array("data" => array("message" => $query->error)));
+//     }
+
+//     $query->close();
+//     exit();
+// }
 ?>

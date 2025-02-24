@@ -78,6 +78,50 @@ include "../../../app/functions/donationManagement.php";
             </div>
           </div>
 
+          <!-- VIEW ARCHIVE (HIDDEN) -->
+          <div class="modal fade" id="modalFrmViewArchive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content modal-archive px-4 py-4">
+
+                <div class="tbl" data-aos="fade-up" data-aos-delay="200">
+                  <!-- DATA TABLE -->
+                  <table id="archiveDataTable" class="display table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Donor</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                      $allArchiveData = getArchiveData($conn);
+
+                      while ($data = $allArchiveData->fetch_object()) {
+                        ?>
+                        <tr>
+                          <td><?php echo $data->strDonorName; ?></td>
+                          <td>
+                            <a class="btn-archive-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>" data-archive="0">
+                              <i class="bi bi-archive-fill"></i>
+                            </a>
+                          </td>
+                        </tr>
+                        <?php
+                      }
+                    ?>
+                    </tbody>
+                  </table><!-- END DATA TABLE -->
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- END VIEW ARCHIVE -->
+
           <!-- DONATION FORM (HIDDEN) -->
           <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -143,6 +187,9 @@ include "../../../app/functions/donationManagement.php";
           <!-- END DONATION FORM -->
 
           <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
+            <div class="row justify-content-center">
+              <button type="button" class="btn btn-success w-25" id="btnViewArchive" data-bs-toggle="modal" data-bs-target="#modalFrmViewArchive">View Archive</button>
+            </div>
             <!-- DATA TABLE -->
             <table id="donationDataTable" class="display table table-striped">
               <thead>
@@ -192,8 +239,11 @@ include "../../../app/functions/donationManagement.php";
                                 </a>
                             </td>
                             <td>
-                                <a class="btn-delete-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
+                                <!-- <a class="btn-delete-donation" href="javascript:void(0)" data-id="">
                                     <i class="bi bi-trash-fill"></i>
+                                </a> -->
+                                <a class="btn-archive-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
+                                  <i class="bi bi-archive-fill"></i>
                                 </a>
                             </td>
                         </tr>
@@ -237,6 +287,13 @@ include "../../../app/functions/donationManagement.php";
     new DataTable('#donationDataTable', {
 
       lengthMenu: [10, 20, 30, 50, 100]
+    });
+  });
+
+  $(document).ready(function() {
+    new DataTable('#archiveDataTable', {
+
+      lengthMenu: [5, 10]
     });
   });
 </script>
