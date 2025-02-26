@@ -29,6 +29,10 @@ session_start();
   <!-- Main CSS File -->
   <link href="app/css/app.css" rel="stylesheet">
 
+  <style>
+ 
+    </style>
+
 </head>
 
 <body class="index-page">
@@ -101,7 +105,6 @@ session_start();
       <?php } else { ?>
         <div>
         <a class="btn btn-warning" style="color: #ffffff;" href="index.php#donate">DONATE</a>
-        <a class="btn btn-light" href="src/web/forms/login.php">Login</a>
         </div>
     <?php } ?>
 
@@ -124,15 +127,14 @@ session_start();
             <?php if (!isset($_SESSION["intUserId"])) { ?>    
              <div class="col-lg-5" data-aos="fade-up" data-aos-delay="300">
             <form action="forms/newsletter.php" method="post" class="php-email-form">
-              <div class="sign-up-form"><input type="email" name="email" value="Be A Volunteer" readonly style="font-size: 24px; color: #545151">
+              <div class="sign-up-form"><input type="email" name="email" value="Access Your Account" readonly style="font-size: 24px; color: #545151">
                 <button type="button" class="btn btn-warning" style="font-size: 20px;width: 155px;">
-                <a href="src/web/forms/volunteerForm.php" style="color: #ffffff;"><span>Click now</span></button>
+                <a href="src/web/forms/login.php" style="color: #ffffff;"><span>Login</span></button>
               </div>
             </form>
           </div>
             <?php } ?>
           </div>
-         
         </div>
       </div>
 
@@ -193,7 +195,8 @@ session_start();
       </div>
 
     </section><!-- /Clients Section -->
-
+    
+    
     <!-- About Section -->
     <section id="about" class="about section light-background">
 
@@ -212,6 +215,22 @@ session_start();
       </div>
 
     </section><!-- /About Section -->
+
+        <div class="volunteer-section section">
+        <div class="container" data-aos="fade-up">
+        <div class="row gy-4">
+            <div class="volunteer-text">
+                <h1>Become a Volunteer</h1>
+                <p>Facilitates seamless onboarding of individuals who wish to contribute their time and skills to the Sagip-Pagkain initiative. Volunteers can indicate their preferred roles, such as field support, food bank coordination, or logistics assistance.</p>
+                <a href="src/web/forms/volunteerForm.php" class="btn-custom">SIGN UP NOW <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="volunteer-image">
+                <img src="assets/img/volunteer/volunteers.png" alt="Volunteers">
+            </div>
+        </div>
+        </div>
+    </div>
+
 
         <!-- system Section -->
         <section id="system" class="system section">

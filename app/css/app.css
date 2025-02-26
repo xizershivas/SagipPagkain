@@ -3044,3 +3044,60 @@ section,
 .h6, h6 {
   font-size: 16px;
 }
+
+.volunteer-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 10%;
+  background-color: #f0f3f6;
+}
+
+.volunteer-text {
+  flex: 1;
+  max-width: 50%;
+}
+
+.volunteer-text h1 {
+  font-size: 3rem;
+  color: #6c63ff;
+  font-weight: bold;
+}
+
+.volunteer-text p {
+  font-size: 1.2rem;
+  color: #333;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+
+.btn-custom {
+  display: inline-flex;
+  align-items: center;
+  background-color: #004d40;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: 0.3s ease-in-out;
+}
+
+.btn-custom i {
+  margin-left: 10px;
+}
+
+.btn-custom:hover {
+  background-color: #002d24;
+}
+
+.volunteer-image {
+  flex: 1;
+  text-align: right;
+}
+
+.volunteer-image img {
+  max-width: 100%;
+  height: auto;
+}
