@@ -24,7 +24,7 @@ include "../../../app/functions/user.php";
   <!-- Include stylesheet -->
   <?php include '../global/stylesheet.php'; ?>
 
-  <link href="../../../app/css/donorFoodCenter.css" rel="stylesheet">
+  <link href="../../../app/css/foodCenter.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -42,8 +42,8 @@ include "../../../app/functions/user.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current">Donor</li>
-            <li><a href="foodCenter.php">Food Bank Center</a></li>
+            <li class="current">Admin</li>
+            <li><a href="foodBankCenter.php">Food Bank Center</a></li>
           </ol>
         </div>
       </nav>
@@ -61,11 +61,11 @@ include "../../../app/functions/user.php";
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-              <a href="./dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <a href="donate.php"><i class="bi bi-gift"></i><span>Donate</span></a>
-                <a href="foodDonationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
-                <a href="foodCenter.php" class="active"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
-                <a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>
+                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
+                <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
+                <a href="foodBankCenter.php" class="active"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
+                <a href="reward.php" class=""><i class="bi bi-trophy"></i><span>Reward System</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -81,21 +81,23 @@ include "../../../app/functions/user.php";
             <h2 class="text-center" style="color: #333;">Item Stock Map</h2>
             <!-- DATA GRAPH -->
             <div class="card p-3 shadow-sm">
-
-            <div class="d-flex"> 
-            <div id="map"></div>
-
-                <div id="sidebar">
-                    <h3 class="text-center mb-3">Food Stock Areas</h3>
-
-                    <!-- Search Bar -->
-                    <div id="search-container">
-                        <input type="text" id="searchBox" class="form-control" placeholder="Search for a location..." onkeyup="filterLocations()">
-                    </div>
-
-                    <ul class="list-group" id="locationList"></ul>
+              <div class="d-flex"> 
+                <div class="col-lg-9"> 
+                   <div id="map"></div>
                 </div>
-            </div>
+                <div class="col-lg-3"> 
+                    <div id="sidebar">
+                        <h3 class="text-center mb-3">Food Stock Areas</h3>
+
+                        <!-- Search Bar -->
+                        <div id="search-container">
+                            <input type="text" id="searchBox" class="form-control" placeholder="Search for a location..." onkeyup="filterLocations()">
+                        </div>
+
+                        <ul class="list-group" id="locationList"></ul>
+                    </div>
+                    </div>
+              </div>
 
             </div>
             <!-- END MAP GRAPH> -->

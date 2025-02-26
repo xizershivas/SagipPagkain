@@ -12,16 +12,16 @@
     color: #dc3545;
 }
 
-.ysn-true {
-    background-color: #5cb85c;
-    border-color: #5cb85c;
+.ysn-in-transit {
+    background-color: #35c9dc;
     color: white;
     padding: 3px 10px;
     border-radius: 3px;
 }
 
-.ysn-false {
-    background-color: #35c9dc;
+.ysn-received {
+    background-color: #5cb85c;
+    border-color: #5cb85c;
     color: white;
     padding: 3px 10px;
     border-radius: 3px;
@@ -34,4 +34,10 @@ table.dataTable.row-border > tbody > tr > *, table.dataTable.display > tbody > t
 
 .dt-layout-row.dt-layout-table {
     height: 100%;
+}
+
+@media (min-width: 992px) {
+    .modal-lg, .modal-xl {
+        --bs-modal-width: 1024px;
+    }
 }

@@ -24,26 +24,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             unarchiveDonation($conn, $intDonationId);
         }
     } else {
-        $intDonationId = $_POST["donationId"];
-        $strDonorName = $_POST["donor"];
-        $dtmDate = $_POST["date"];
-        $strTitle = $_POST["title"];
-        $strDescription = $_POST["description"];
-        $strPickupLocation = $_POST["pickupLocation"];
-        $strRemarks = $_POST["remarks"];
+        $intDonationId = intval($_POST["donationId"]);
+        $strDonorName = sanitize($_POST["donor"]);
+        $dtmDate = sanitize($_POST["date"]);
+        $intFoodBankId = sanitize($_POST["foodBank"]);
+        $strTitle = sanitize($_POST["title"]);
+        $strDescription = sanitize($_POST["description"]);
+        $strRemarks = sanitize($_POST["remarks"]);
+        $strItem = sanitize($_POST["itemFood"]);
+        $intQuantity = intval($_POST["quantity"]);
+        $strUnit = sanitize($_POST["unit"]);
+        $strCategory = sanitize($_POST["category"]);
         $ysnStatus = isset($_POST["transportStatus"]) ? 1 : 0;
         $strDocsUploadedPaths = isset($_POST["docsUploadedPaths"]) ? $_POST["docsUploadedPaths"] : "";
 
-        $strDocFilePath = processDocFileUpload($intDonationId);
+        $strDocFilePath = processDocFileUpload($conn, $intDonationId);
 
         $donationData = [
             "intDonationId" => $intDonationId,
             "strDonorName" => $strDonorName,
             "dtmDate" => $dtmDate,
+            "intFoodBankId" => $intFoodBankId,
             "strTitle" => $strTitle,
             "strDescription" => $strDescription,
-            "strPickupLocation" => $strPickupLocation,
             "strRemarks" => $strRemarks,
+            "strItem" => $strItem,
+            "intQuantity" => $intQuantity,
+            "strUnit" => $strUnit,
+            "strCategory" => $strCategory,
             "ysnStatus" => $ysnStatus,
             "strDocFilePath" => $strDocFilePath ? implode(",", $strDocFilePath) : $strDocsUploadedPaths
         ];
@@ -53,16 +61,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $conn->close();
 }
-
-// if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
-//     // Get the RAW DELETE data
-//     $inputData = file_get_contents('php://input');
-
-//     // Decode the JSON data into an object
-//     $data = json_decode($inputData);
-
-//     deleteDonation($conn, $data->intDonationId);
-
-//     $conn->close();
-// }
 ?>

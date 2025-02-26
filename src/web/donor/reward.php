@@ -3,8 +3,8 @@ session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
 
-if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 0) {
-  header("Location: login.php");
+if (!isset($_SESSION["intUserId"])) {
+  header("Location: ../forms/login.php");
   exit();
 }
 ?>
@@ -60,8 +60,8 @@ if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 0) {
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
-                <a href="foodDonationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
-                <a href="foodCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
+                <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
+                <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
                 <a href="reward.php" class="active"><i class="bi bi-trophy"></i><span>Reward System</span></a>
               </div>
             </div><!-- End Services List -->

@@ -4,10 +4,9 @@ const btnEditDonationList = document.getElementsByClassName('btn-edit-donation')
 const btnArchiveDonationList = document.getElementsByClassName('btn-archive-donation');
 const transportStatus = document.querySelector('#transportStatus');
 const labelTransportStatus = document.querySelector('#labelTransportStatus');
-const uploadDocumentation = document.querySelector('#uploadDocumentation');
+const verification = document.querySelector('#verification');
 const mediaSelectedLoc = document.querySelector('#mediaSelectedLoc');
 const docsUploadedMedia = document.querySelector('#docsUploadedMedia');
-const btnSave = document.querySelector('#btnSave');
 let intDonationId = 0;
 let docsUploaded = "";
 
@@ -74,7 +73,7 @@ function mediaSelected(e) {
                 // Reassign the updated list of files back to the input field
                 const dataTransfer = new DataTransfer();
                 selectedFiles.forEach(f => dataTransfer.items.add(f));
-                uploadDocumentation.files = dataTransfer.files;
+                verification.files = dataTransfer.files;
             });
 
             // Append the media container to the main div
@@ -87,11 +86,12 @@ function mediaSelected(e) {
 
 function statusChange() {
     if (transportStatus.checked) {
-        labelTransportStatus.innerHTML = 'Status <span class="ysn-true">Received</span>';
+        labelTransportStatus.innerHTML = 'Status <span class="ysn-received">Received</span>';
     } else {
-        labelTransportStatus.innerHTML = 'Status <span class="ysn-false">Pending</span>';
+        labelTransportStatus.innerHTML = 'Status <span class="ysn-in-transit">In Transit</span>';
     }
 }
+
 
 function setFormData({ data }) {
     docsUploaded = data;
@@ -99,11 +99,15 @@ function setFormData({ data }) {
     frmDonation.elements.date.value = data.dtmDate;
     frmDonation.elements.title.value = data.strTitle;
     frmDonation.elements.description.value = data.strDescription;
-    frmDonation.elements.pickupLocation.value = data.strPickupLocation;
-    // NOTE: TO BE ADDED FILE HANDLING
-    frmDonation.elements.transportStatus.checked = data.ysnStatus ? true : false;
-    labelTransportStatus.innerHTML = data.ysnStatus ? 'Status <span class="ysn-true">Received</span>' : 'Status <span class="ysn-false">Pending</span>';
+    frmDonation.elements.foodBank.value = data.intFoodBankId;
+    frmDonation.elements.itemFood.value = data.strItem;
+    frmDonation.elements.quantity.value = data.intQuantity;
+    frmDonation.elements.unit.value = data.strUnit;
+    frmDonation.elements.category.value = data.strCategory;
     frmDonation.elements.remarks.value = data.strRemarks;
+    frmDonation.elements.transportStatus.checked = data.ysnStatus ? true : false;
+    labelTransportStatus.innerHTML = (data.ysnStatus == 0) ? 'Status <span class="ysn-in-transit">In Transit</span>' 
+        : (data.ysnStatus == 1 ? 'Status <span class="ysn-received">Received</span>' : 'Status <span class="ysn-delivered">Delivered</span>');
     const docsPathArray = docsUploaded.strDocFilePath.split(',');
     const docs = docsPathArray.map(filePath => filePath.split(/[/\\]/).pop());
     docsUploadedMedia.innerHTML = docs.join('<br>');
@@ -131,7 +135,6 @@ function editDonation(e) {
 
 function updateDonation(e) {
     e.preventDefault();
-    
     const formData = new FormData(this);
     formData.append('donationId', intDonationId);
 
@@ -139,15 +142,14 @@ function updateDonation(e) {
         formData.append('docsUploadedPaths', docsUploaded.strDocFilePath);
     }
 
-    if (this.elements.uploadDocumentation.files.length > 3) {
+    if (this.elements.verification.files.length > 3) {
         alert('You can only select 3 files in total');
     } else {
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4) {
                 const response = JSON.parse(this.responseText);
-
-                if (this.status == 200 || this.status == 202) {
+                if (this.status == 200) {
                     alert(response.data.message);
                     window.location.reload();
                 } else {
@@ -236,6 +238,6 @@ for (let btnArchive of btnArchiveDonationList) {
     btnArchive.addEventListener('click', archiveDonation);
 }
 
-uploadDocumentation.addEventListener('change', mediaSelected);
+verification.addEventListener('change', mediaSelected);
 transportStatus.addEventListener('change', statusChange);
 frmDonation.addEventListener('submit', updateDonation);

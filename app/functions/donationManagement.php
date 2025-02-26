@@ -1,12 +1,66 @@
 <?php
-function getDonationData($conn) {
-    $allDonationData = $conn->query("SELECT * FROM tbldonationmanagement");
+function getDonationData($conn, $user) {
+    $intUserId = intval($user->intUserId);
+    $ysnActive = $user->ysnActive;
+    $ysnAdmin = $user->ysnAdmin;
+    $ysnDonor = $user->ysnDonor;
+    $ysnNgo = $user->ysnNgo;
+    $allDonationData;
+
+    if ($ysnAdmin == 1) {
+        $allDonationData = $conn->query("SELECT D.*
+            , FB.intFoodBankId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory
+            FROM tbldonationmanagement D
+            INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
+            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblitem I ON IV.intItemId = I.intItemId
+            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
+            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId"
+        );
+    } else {
+        $allDonationData = $conn->query("SELECT D.*
+            , FB.intFoodBankId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory
+            FROM tbldonationmanagement D
+            INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
+            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblitem I ON IV.intItemId = I.intItemId
+            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
+            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
+            WHERE D.intUserId = $intUserId"
+        );
+    }
+
     return $allDonationData;
+}
+
+function getUserData($conn, $intUserId) {
+    $userData = $conn->query("SELECT * FROM tbluser WHERE intUserId = $intUserId");
+    return $userData;
 }
 
 function getArchiveData($conn) {
     $allArchiveData = $conn->query("SELECT intDonationId, strDonorName FROM tbldonationarchive");
     return $allArchiveData;
+}
+
+function getItems($conn) {
+    $items = $conn->query("SELECT * FROM tblitem");
+    return $items;
+}
+
+function getUnits($conn) {
+    $units = $conn->query("SELECT * FROM tblunit");
+    return $units;
+}
+
+function getCategories($conn) {
+    $categories = $conn->query("SELECT * FROM tblcategory");
+    return $categories;
+}
+
+function getFoodBanks($conn) {
+    $foodbanks = $conn->query("SELECT * FROM tblfoodbank");
+    return $foodbanks;
 }
 
 function editDonation($conn, $intDonationId) {
@@ -15,7 +69,17 @@ function editDonation($conn, $intDonationId) {
         echo json_encode(array("data" => array("message" => "Invalid request")));
         exit();
     } else {
-        $query = $conn->prepare("SELECT * FROM tbldonationmanagement WHERE intDonationId = ?");
+        $sql = 
+            "SELECT D.*, FB.intFoodBankId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory
+            FROM tbldonationmanagement D
+            INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
+            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblitem I ON IV.intItemId = I.intItemId
+            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
+            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
+            WHERE D.intDonationId = ?";
+
+        $query = $conn->prepare($sql);
 
         if (!$query) {
             http_response_code(500);
@@ -43,8 +107,8 @@ function editDonation($conn, $intDonationId) {
     }
 }
 
-function processDocFileUpload($intDonationId) {
-    if (empty($_FILES['uploadDocumentation']['name'][0])) {
+function processDocFileUpload($conn, $intDonationId) {
+    if (empty($_FILES['verification']['name'][0])) {
         return;
     } else {
         $targetDir = $_SERVER["DOCUMENT_ROOT"] 
@@ -56,94 +120,207 @@ function processDocFileUpload($intDonationId) {
             
         $allowedTypes = [
             'image/jpeg', // JPEG/JPG
-            'image/png', // PNG
-            'video/mp4',  // MP4 video
+            'image/png' // PNG
         ];
 
         $uploadedFiles = [];
 
-        foreach ($_FILES['uploadDocumentation']['name'] as $key => $fileName) {
-            $fileTmpPath = $_FILES['uploadDocumentation']['tmp_name'][$key];
-            $fileSize = $_FILES['uploadDocumentation']['size'][$key];
-            $fileType = $_FILES['uploadDocumentation']['type'][$key];
-            $fileInfo = pathinfo($fileName);
-            $fileBaseName = $fileInfo["filename"];
-            $fileExtension = $fileInfo["extension"];
-            $uploadFilePath = $targetDir . $intDonationId . "_" . $fileBaseName . "_" . date("Ymd") . "." . $fileExtension;
-    
-            // Check if file type is allowed
-            if (!in_array($fileType, $allowedTypes)) {
-                http_response_code(400);
-                echo json_encode(["data" => ["message" => "Invalid document type"]]);
-                return;
-            }
-    
-            // Check if file size is acceptable
-            // if ($fileSize > 5000000) { // 5MB
-            //     http_response_code(400);
-            //     echo json_encode(["data" => ["message" => "Document is too large"]]);
-            //     return;
-            // }
-    
-            // Check if file already exists
-            if (file_exists($uploadFilePath)) {
-                http_response_code(400);
-                echo json_encode(["data" => ["message" => "File already exists"]]);
-                return;
-            }
-    
-            // Move the uploaded file to the target directory
-            if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
-                $uploadedFiles[] = $uploadFilePath;
-            } else {
-                http_response_code(500);
-                echo json_encode(["data" => ["message" => "Server encountered an error, upload failed."]]);
-                return;
-            }
-        }
+        $userResult = $conn->query("SELECT intUserId FROM tbldonationmanagement WHERE intDonationId = $intDonationId");
+        $intUserId;
+        
+        // User check
+        if ($userResult->num_rows == 0) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Server encountered an error, Upload failed."]]);
+            exit();
+        } else {
+            $intUserId = $userResult->fetch_object()->intUserId;
 
-        return $uploadedFiles;
+            // DELETE uploaded images if intUserId already exist
+            $existingSignFilePath = $targetDir . $intUserId . "_*"; // Wildcard
+            // Get all files matching the pattern
+            $files = glob($existingSignFilePath);
+
+            if ($files) {
+                foreach ($files as $file) {
+                    if (file_exists($file)) {
+                        // Check if the file exists and then delete it
+                        unlink($file);
+                    }
+                }
+            }
+
+            foreach ($_FILES['verification']['name'] as $key => $fileName) {
+                $fileTmpPath = $_FILES['verification']['tmp_name'][$key];
+                $fileSize = $_FILES['verification']['size'][$key];
+                $fileType = $_FILES['verification']['type'][$key];
+                $fileInfo = pathinfo($fileName);
+                $fileBaseName = $fileInfo["filename"];
+                $fileExtension = $fileInfo["extension"];
+                $uploadFilePath = $targetDir . $intUserId . "_" . $fileBaseName . "_" . date("Ymd") . "." . $fileExtension;
+        
+                // Check if file type is allowed
+                if (!in_array($fileType, $allowedTypes)) {
+                    http_response_code(400);
+                    echo json_encode(["data" => ["message" => "Invalid document type"]]);
+                    exit();
+                }
+        
+                // Check if file size is acceptable
+                if ($fileSize > 5000000) { // 5MB
+                    http_response_code(400);
+                    echo json_encode(["data" => ["message" => "Document is too large"]]);
+                    exit();
+                }
+        
+                // Check if file already exists
+                if (file_exists($uploadFilePath)) {
+                    http_response_code(400);
+                    echo json_encode(["data" => ["message" => "File already exists"]]);
+                    exit();
+                }
+        
+                // Move the uploaded file to the target directory
+                if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
+                    $uploadedFiles[] = $uploadFilePath;
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["data" => ["message" => "Server encountered an error, upload failed."]]);
+                    exit();
+                }
+            }
+
+            return $uploadedFiles;
+        }
     }
 }
 
 function updateDonation($conn, $donationData) {
-    $query = $conn->prepare("UPDATE tbldonationmanagement SET 
-        strDonorName = ?,
-        dtmDate = ?,
-        strTitle = ?,
-        strDescription = ?,
-        strPickupLocation = ?,
-        strRemarks = ?,
-        ysnStatus = ?,
-        strDocFilePath = ?
-        WHERE intDonationId = ?"
-    );
+    $intDonationId = $donationData["intDonationId"];
+    $intFoodBankId = $donationData["intFoodBankId"];
+    $strItem = $donationData["strItem"];
+    $strCategory = $donationData["strCategory"];
+    $strUnit = $donationData["strUnit"];
+    $intQuantity = $donationData["intQuantity"];
+    $strDescription = $donationData["strDescription"];
 
-    $query->bind_param("ssssssssi",
-        $donationData["strDonorName"],
-        $donationData["dtmDate"],
-        $donationData["strTitle"],
-        $donationData["strDescription"],
-        $donationData["strPickupLocation"],
-        $donationData["strRemarks"],
-        $donationData["ysnStatus"],
-        $donationData["strDocFilePath"],
-        $donationData["intDonationId"]
-    );
-    
-    header("Content-Type: application/json");
+    $conn->begin_transaction();
 
-    if ($query->execute()) {
-        if ($query->affected_rows > 0) {
-            http_response_code(200);
-            echo json_encode(["data" => ["message" => "Volunteer successfully updated"]]);
+    try {
+        $strFoodBank;
+        $intItemId;
+        $intCategoryId;
+        $intUnitId;
+        $intInventoryId;
+        
+        header("Content-Type: application/json");
+
+        // Food Bank check
+        $foodBankResult = $conn->query("SELECT strFoodBank FROM tblfoodbank WHERE intFoodBankId = $intFoodBankId");        
+        // Item check
+        $itemResult = $conn->query("SELECT intItemId FROM tblitem WHERE strItem = '$strItem'");
+        // Category check
+        $categoryResult = $conn->query("SELECT intCategoryId FROM tblcategory WHERE strCategory = '$strCategory'");
+        // Unit check
+        $unitResult = $conn->query("SELECT intUnitId FROM tblunit WHERE strUnit = '$strUnit'");
+        // Inventory check
+        $inventoryResult = $conn->query("SELECT intInventoryId FROM tblinventory WHERE intDonationId = $intDonationId");
+
+        if ($foodBankResult->num_rows == 0) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Invalid Food Bank"]]);
+            exit();
+        } else if ($itemResult->num_rows == 0) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Invalid Item"]]);
+            exit();
+        } else if ($categoryResult->num_rows == 0) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Invalid Category"]]);
+            exit();
+        } else if ($unitResult->num_rows == 0) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Invalid Unit"]]);
+            exit();
+        } else if ($inventoryResult->num_rows == 0) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Update failed, cannot find donation detail"]]);
+            exit();
         } else {
-            http_response_code(202);
-            echo json_encode(["data" => ["message" => "No rows were affected"]]);
+            $strFoodBank = $foodBankResult->fetch_object()->strFoodBank;
+            $intItemId = $itemResult->fetch_object()->intItemId;
+            $intCategoryId = $categoryResult->fetch_object()->intCategoryId;
+            $intUnitId = $unitResult->fetch_object()->intUnitId;
+            $intInventoryId = $inventoryResult->fetch_object()->intInventoryId;
         }
-    } else {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => $query->error]]);
+
+        $query1 = $conn->prepare("UPDATE tbldonationmanagement SET 
+            strDonorName = ?
+            ,dtmDate = ?
+            ,strFoodBank = ?
+            ,strTitle = ?
+            ,strDescription = ?
+            ,strRemarks = ?
+            ,ysnStatus = ?
+            ,strDocFilePath = ?
+            WHERE intDonationId = ?"
+        );
+
+        $query1->bind_param("ssssssssi"
+            ,$donationData["strDonorName"]
+            ,$donationData["dtmDate"]
+            ,$strFoodBank
+            ,$donationData["strTitle"]
+            ,$donationData["strDescription"]
+            ,$donationData["strRemarks"]
+            ,$donationData["ysnStatus"]
+            ,$donationData["strDocFilePath"]
+            ,$intDonationId
+        );
+
+        if (!$query1->execute()) {
+            http_response_code(500);
+            echo json_encode(["data" => ["message" => "Donation update failed, ".$query1->error]]);
+            exit();
+        }
+
+        $query2 = $conn->prepare("UPDATE tblinventory SET 
+            intFoodBankId = ?
+            ,intItemId = ?
+            ,intCategoryId = ?
+            ,intUnitId = ?
+            ,intQuantity = ?
+            ,strDescription = ?
+            WHERE intInventoryId = ?"
+        );
+
+        $query2->bind_param("iiiiisi"
+            ,$intFoodBankId
+            ,$intItemId
+            ,$intCategoryId
+            ,$intUnitId
+            ,$intQuantity
+            ,$strDescription
+            ,$intInventoryId
+        );
+
+        if (!$query2->execute()) {
+            http_response_code(500);
+            echo json_encode(["data" => ["message" => "Inventory update failed, ".$query2->error]]);
+            exit();
+        }
+
+        $conn->commit();
+
+        $query1->close();
+        $query2->close();
+
+        http_response_code(200);
+        echo json_encode(["data" => ["message" => "Donation updated successfully"]]);
+    } catch (Exception $ex) {
+        $conn->rollback();
+        http_response_code(500);
+        echo json_encode(["data" => ["message" => "Update failed, please check user input"]]);
     }
 
     exit();
@@ -226,20 +403,4 @@ function unarchiveDonation($conn, $intDonationId) {
 
     exit();
 }
-
-// function deleteDonation($conn, $intDonationId) {
-//     $query = $conn->prepare("DELETE FROM tbldonationmanagement WHERE intDonationId = ?");
-//     $query->bind_param("i", $intDonationId);
-
-//     if ($query->execute()) {
-//         http_response_code(200);
-//         echo json_encode(array("data" => array("message" => "Donation record was successfully deleted")));
-//     } else {
-//         http_response_code(400);
-//         echo json_encode(array("data" => array("message" => $query->error)));
-//     }
-
-//     $query->close();
-//     exit();
-// }
 ?>

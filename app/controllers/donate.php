@@ -4,58 +4,37 @@ include "../functions/donate.php";
 include "../utils/sanitize.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $strDonorName = $_POST["fullname"];
-    $dtmDate = $_POST["date"];
-    $strTitle = $_POST["title"];
-    $strDescription = $_POST["description"];
-    $strPickupLocation = $_POST["pickupLocation"];
-    $strRemarks = $_POST["remarks"];
+    $intUserId = intval($_POST["userId"]);
+    $strDonorName = sanitize($_POST["fullname"]);
+    $dtmDate = sanitize($_POST["date"]);
+    $strTitle = sanitize($_POST["title"]);
+    $strDescription = sanitize($_POST["description"]);
+    $intFoodBankId = intval($_POST["foodBank"]);
+    $strItem = sanitize($_POST["item"]);
+    $intQuantity = intval($_POST["quantity"]);
+    $strCategory = sanitize($_POST["category"]);
+    $strUnit = sanitize($_POST["unit"]);
+    $strRemarks = sanitize($_POST["remarks"]);
 
     // File upload JPG/PNG
-    $strDocFilePath = processDocFileUpload();
+    $strDocFilePath = processDocFileUpload($intUserId);
 
-    if (empty($strDonorName)) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "Full Name is required"]]);
-    } else if (empty($dtmDate)) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "Date is required"]]);
-    } else if (empty($strTitle)) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "Title is required"]]);
-    } else if (empty($strDescription)) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "Description is required"]]);
-    } else if (empty($strPickupLocation)) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "Pickup Location is required"]]);
-    } else {
-        $query = $conn->prepare("INSERT INTO tbldonationmanagement (strDonorName, dtmDate, strTitle, strDescription, strPickupLocation, strDocFilePath, strRemarks) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $query->bind_param("sssssss"
-            ,$strDonorName
-            ,$dtmDate
-            ,$strTitle
-            ,$strDescription
-            ,$strPickupLocation
-            ,$strDocFilePath
-            ,$strRemarks
-        );
+    $donationData = [
+        "intUserId" => $intUserId,
+        "strDonorName" => $strDonorName,
+        "dtmDate" => $dtmDate,
+        "strTitle" => $strTitle,
+        "strDescription" => $strDescription,
+        "intFoodBankId" => $intFoodBankId,
+        "strItem" => $strItem,
+        "intQuantity" => $intQuantity,
+        "strCategory" => $strCategory,
+        "strUnit" => $strUnit,
+        "strDocFilePath" => $strDocFilePath ? implode(",", $strDocFilePath) : "",
+        "strRemarks" => $strRemarks
+    ];
 
-        if ($query->execute()) {
-            // if ($query->affected_rows > 0) {
-                http_response_code(200);
-                echo json_encode(["data" => ["message" => "Donation submitted successfully" ]]);
-            // } else {
-                // http_response_code(202);
-                // echo json_encode(array("data" => array("message" => "No rows were affected")));
-            // }
-        } else {
-            http_response_code(500);
-            echo json_encode(["data" => ["message" => "Internal server error, ".$query->error]]);
-        }
-        
-        $query->close();
-    }
+    addDonation($conn, $donationData);
 
     $conn->close();
 }
