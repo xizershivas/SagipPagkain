@@ -7,8 +7,8 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
   header("Location: ../app/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnNgo"]) && $_SESSION["ysnNgo"] == 1) {
-  header("Location: ../ngo/dashboard.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
+  header("Location: ../donor/dashboard.php");
 }
 ?>
 <!DOCTYPE html>
@@ -43,7 +43,7 @@ if (!isset($_SESSION["intUserId"])) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-          <li class="current">Donor</li>
+          <li class="current">NGO</li>
             <li><a href="dashboard.php">dashboard</a></li>
           </ol>
         </div>
@@ -62,10 +62,10 @@ if (!isset($_SESSION["intUserId"])) {
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
+                <!-- <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
                 <a href="foodCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
-                <a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>
+                <a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a> -->
               </div>
             </div><!-- End Services List -->
 

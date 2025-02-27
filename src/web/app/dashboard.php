@@ -1,11 +1,13 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/user.php";
 
-if (!isset($_SESSION["intUserId"]) || $_SESSION["ysnAdmin"] != 1) {
-  header("Location: login.php");
-  exit();
+if (!isset($_SESSION["intUserId"])) {
+  header("Location: ../forms/login.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
+  header("Location: ../donor/dashboard.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnNgo"]) && $_SESSION["ysnNgo"] == 1) {
+  header("Location: ../ngo/dashboard.php");
 }
 ?>
 <!DOCTYPE html>

@@ -101,6 +101,12 @@
     <div class="row justify-content-center">
       <div class="col-md-6 form">
         <h1 class="signup-heading">Sign Up</h1>
+        <?php
+        $strSalt = bin2hex(random_bytes(22));
+        echo $strSalt . "<br><br>";
+        $strPassword = crypt("Ngo_2025", $strSalt);
+        echo $strPassword;
+        ?>
         <form class="row g-3 needs-validation" id="frmSignUp" novalidate>
           <div class="col-12">
             <label class="form-label fw-bold signup-form-label" for="fullname">Full Name</label>

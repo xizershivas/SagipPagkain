@@ -19,8 +19,10 @@ function login(e) {
             if (this.status == 200) {
                 if (response.data.ysnAdmin) {
                     window.location.href = '../app/dashboard.php';
-                } else {
+                } else if (response.data.ysnDonor) {
                     window.location.href = '../donor/dashboard.php';
+                } else if (response.data.ysnNgo) {
+                    window.location.href = '../ngo/dashboard.php';
                 }
             } else {
                 alert(response.data.message);
