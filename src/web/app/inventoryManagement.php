@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/manageBeneficiary.php";
+// include "../../../app/functions/inventoryManagement.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +18,6 @@ include "../../../app/functions/manageBeneficiary.php";
 
   <!-- Data Table CSS CDN -->
   <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" /> -->
-  <link href="../../../app/css/manageBeneficiary.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -75,95 +74,55 @@ include "../../../app/functions/manageBeneficiary.php";
               <p class="d-flex align-items-center mt-1 mb-0"><i class="bi bi-envelope me-2"></i> <a href="mailto:contact@example.com">contact@example.com</a></p>
             </div>
           </div>
-
-          <!-- ADD BENEFICIARY FORM (HIDDEN) -->
-          <div class="modal fade" id="modalFrmAddBeneficiary" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-
-                <div class="text-black mb-3 bg-light p-3">
-                  <form class="" id="frmAddBeneficiary">
+          
+          <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
+             <div class="row">
+                <div class="col col-md-4 mb-2">
+                  <form id="frmInventoryFilter">
                     <div class="row g-2">
-                      <div class="mb-3 col col-md-6">
-                        <label for="name" class="form-label fw-bold">Name</label>
-                        <div class="form-floating">
-                          <input type="text" class="form-control" name="name" id="name" required>
-                          <label for="name" class="form-label">Beneficiary's Full Name</label>
-                        </div>
+                      <div class="col col-md-8">
+                        <input class="form-control" list="filterOptions" name="searchItem" id="searchItem" placeholder="Search" required>
+                        <datalist id="filterOptions">
+                        </datalist>
                       </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="email" class="form-label fw-bold">Email</label>
-                        <div class="form-floating">
-                          <input type="email" class="form-control" name="email" id="email">
-                          <label for="email" class="form-label">Email Address</label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row g-2">
-                      <div class="mb-3 col col-md-6">
-                        <label for="contact" class="form-label fw-bold">Contact</label>
-                        <div class="form-floating">
-                          <input type="text" class="form-control" name="contact" id="contact">
-                          <label for="contact" class="form-label">(Mobile No. / Phone No.)</label>
-                        </div>
-                      </div>
-                      <div class="mb-3 col col-md-6">
-                        <label for="address" class="form-label fw-bold">Address</label>
-                        <div class="form-floating">
-                          <input type="text" class="form-control" name="address" id="address">
-                          <label for="address" class="form-label">Complete Address</label>
-                        </div>
+                      <div class="col col-md-4">
+                        <select class="form-select px-2" name="filterBy" id="filterBy" aria-label="Inventory filter">
+                          <option value="strCategory" selected>Category</option>
+                          <option value="strItem">Item</option>
+                          <option value="strUnit">Unit</option>
+                          <option value="strFoodBank">Food Bank</option>
+                        </select>
                       </div>
                     </div>
                   </form>
                 </div>
-                
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmAddBeneficiary">Save</button>
-                  <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
+                <!-- <div class="col col-md-4 mb-2">
+                  <input class="form-control d-inline-block" type="text" id="columnName" placeholder="Enter column name (optional)">
+                  <button class="btn btn-primary btn-sm" id="btnAddColumn">Add Column</button>
                 </div>
-
-              </div>
-            </div>
-          </div>
-          <!-- END ADD BENEFICIARY FORM-->
-          
-          <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
-             <div class="row" style="padding: 20px 0;">
-                <div class="col-lg-4 d-flex align-items-center">
-                    <input type="text" id="column-name" class="form-control me-2" placeholder="Enter column name (optional)">
-                    <button class="btn btn-primary btn-sm" style="width: 150px; height: 35px;" onclick="addColumn()">Add Column</button>
-                </div>
+                <div class="col col-md-4 mb-2">
+                  <input class="form-control d-inline-block" type="text" id="columnName" placeholder="Enter column name (optional)">
+                  <button class="btn btn-primary btn-sm" id="btnAddColumn">Add Column</button>
+                </div> -->
             </div>
 
-            <!-- DATA TABLE -->
+            <!-- TABLE INVENTORY -->
+            <table class="table table-bordered table-hover">
+              <thead class="text-center">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Item</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Unit</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Food Bank</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+              </tbody>
+            </table><!-- END TABLE INVENTORY -->
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr id="inventoryTable">
-                        <th>#</th>
-                        <th>Quantity Need <button class="remove-btn" onclick="removeColumn(1)">×</button></th>
-                        <th>Unit Need <button class="remove-btn" onclick="removeColumn(2)">×</button></th>
-                        <th>Item/Food <button class="remove-btn" onclick="removeColumn(3)">×</button></th>
-                        <th>Grocery Category <button class="remove-btn" onclick="removeColumn(4)">×</button></th>
-                        <th>Storage <button class="remove-btn" onclick="removeColumn(5)">×</button></th>
-                    </tr>
-                </thead>
-                <tbody id="inventoryTableBody">
-                    <tr>
-                        <td>1</td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                        <td contenteditable="true"></td>
-                    </tr>
-                </tbody>
-            </table>
-
-           <!-- END DATA TABLE -->
           </div>
-          
         </div>
       </div>
     </section><!-- /Service Details Section -->
@@ -188,7 +147,8 @@ include "../../../app/functions/manageBeneficiary.php";
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-<script>
+   <script src="../../../app/js/inventoryManagement.js"></script>
+<!-- <script>
         function addColumn() {
             let columnName = document.getElementById("column-name").value.trim();
             let tableHead = document.getElementById("inventoryTable");
@@ -230,7 +190,7 @@ include "../../../app/functions/manageBeneficiary.php";
                 row.removeChild(row.children[index]);
             }
         }
-    </script>
+    </script> -->
 
 </body>
 

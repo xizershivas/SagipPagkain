@@ -104,6 +104,12 @@ function addDonation($conn, $donationData) {
         $strDocFilePath = $donationData["strDocFilePath"];
         $strRemarks = $donationData["strRemarks"];
 
+        if (empty($dtmDate)) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Invalid Date"]]);
+            exit();
+        }
+
         // Get Food Bank Name
         $strFoodBankResult = $conn->query("SELECT strFoodBank FROM tblfoodbank WHERE intFoodBankId = '$intFoodBankId'");
         $strFoodBank = $strFoodBankResult->fetch_object()->strFoodBank;
