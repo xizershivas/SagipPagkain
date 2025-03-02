@@ -1,7 +1,6 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/manageBeneficiary.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,54 +11,12 @@ include "../../../app/functions/manageBeneficiary.php";
   <title>Sagip Pagkain - User Profile</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
-
-  <style>
-        .profile-container {
-            width: 90%;
-            margin: 50px auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            background: white;
-            text-align: center;
-            color: black;
-        }
-        .profile-container h2{
-            color: #3e3f40;
-        }
-        .profile-container h3{
-            color: #332;
-        }
-        .profile-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin-bottom: 15px;
-        }
-        .tabs {
-            margin-top: 20px;
-           
-        }
-        .tab-pane{
-            padding: 40px 20%
-        }
-        tab-pane 
-        .form-control:read-only {
-            background-color: #e9ecef;
-            opacity: 1;
-        }
-        .form-control {
-            width: 50%;
-            margin: auto;
-        }
-    </style>
-
  <!-- Include global stylesheet -->
  <?php include '../global/stylesheet.php'; ?>
 
   <!-- Data Table CSS CDN -->
   <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" /> -->
-  <link href="../../../app/css/manageBeneficiary.css" rel="stylesheet">
+  <link href="../../../app/css/profile.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -91,7 +48,7 @@ include "../../../app/functions/manageBeneficiary.php";
 
         <div class="row gy-5">
 
-          <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-3 mt-0" data-aos="fade-up" data-aos-delay="100">
 
             <div class="service-box">
               <h4>Services List</h4>
@@ -99,6 +56,7 @@ include "../../../app/functions/manageBeneficiary.php";
                 <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
+                <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
                 <a href="volunteerManagement.php"><i class="bi bi-people"></i><span>Volunteer Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
@@ -117,7 +75,7 @@ include "../../../app/functions/manageBeneficiary.php";
           </div>
 
   
-          <div class="col-lg-9 tbl table-donor pe-2" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
             <div class="profile-container">
                 <img src="../../../assets/img/profile/default-profile-img.jpeg" alt="Profile Image" class="profile-img">
                 <h3>Welcome</h3>

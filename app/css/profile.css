@@ -1,0 +1,39 @@
+
+.profile-container {
+    width: 90%;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    text-align: center;
+    color: black;
+}
+.profile-container h2{
+    color: #3e3f40;
+}
+.profile-container h3{
+    color: #332;
+}
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+.tabs {
+    margin-top: 20px;
+   
+}
+.tab-pane{
+    padding: 40px 20%
+}
+tab-pane 
+.form-control:read-only {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+.form-control {
+    width: 50%;
+    margin: auto;
+}
