@@ -38,7 +38,6 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
         if (empty($search)) {
             $sql = "SELECT IV.intInventoryId 
             ,IV.intQuantity
-            ,IV.strDescription
             ,D.intDonationId
             ,FB.intFoodBankId
             ,FB.strFoodBank
@@ -90,7 +89,6 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
     
             $sql = "SELECT IV.intInventoryId 
             ,IV.intQuantity
-            ,IV.strDescription
             ,D.intDonationId
             ,FB.intFoodBankId
             ,FB.strFoodBank AS strFoodBank
