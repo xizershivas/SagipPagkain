@@ -7,6 +7,7 @@
   <script src="../../../assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
   <script src="../../../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="../../../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/js/all.min.js"></script>
 
   <!-- Data Table JS CDN -->
    <!-- <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>

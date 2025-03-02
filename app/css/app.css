@@ -3101,3 +3101,18 @@ section,
   max-width: 100%;
   height: auto;
 }
+
+
+/* navigation profile */
+.profile-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: white;
+  font-size: 20px;
+}
