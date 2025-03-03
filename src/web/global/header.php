@@ -1,3 +1,11 @@
+<?php
+include "../../../app/functions/profile.php";
+$userInfo;
+if (isset($_SESSION["intUserId"])) {
+  $userData = getUser($conn, $_SESSION["intUserId"]);
+  $userInfo = $userData->fetch_object();
+}
+?>
 <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
 
@@ -45,7 +53,13 @@
                     <i class="fas fa-user"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li class="dropdown-header">Hi!, Jason Smith</li>
+                    <li class="dropdown-header">Hi!,&nbsp;
+                    <?php
+                      if (isset($_SESSION["intUserId"])) {
+                        echo strtoupper($userInfo->strUsername);
+                      }
+                    ?>
+                    </li>
                     <li><a class="dropdown-item" href="../app/profile.php">See profile details</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="window.location.href='../forms/logout.php'">Logout</a></li>
