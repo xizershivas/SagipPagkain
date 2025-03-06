@@ -25,6 +25,8 @@ function getFoodBanks($conn) {
 }
 
 function processDocFileUpload($intUserId) {
+    header("Content-Type: application/json");
+
     if (empty($_FILES['verification']['name'][0])) {
         return;
     } else {
@@ -49,7 +51,7 @@ function processDocFileUpload($intUserId) {
             $fileInfo = pathinfo($fileName);
             $fileBaseName = $fileInfo["filename"];
             $fileExtension = $fileInfo["extension"];
-            $uploadFilePath = $targetDir . $intUserId . "_" . $fileBaseName . "_" . date("Ymd") . "." . $fileExtension;
+            $uploadFilePath = $targetDir . $intUserId . "_" . $fileBaseName . "_" . date("Ymdhis") . "." . $fileExtension;
     
             // Check if file type is allowed
             if (!in_array($fileType, $allowedTypes)) {
@@ -87,6 +89,8 @@ function processDocFileUpload($intUserId) {
 }
 
 function addDonation($conn, $donationData) {
+    header("Content-Type: application/json");
+
     if (!isset($donationData)) {
         http_response_code(500);
         echo json_encode(["data" => ["message" => "Internal Server Error"]]);
@@ -142,25 +146,39 @@ function addDonation($conn, $donationData) {
 
             // Get intItemId
             $itemResult = $conn->query("SELECT intItemId FROM tblitem WHERE strItem = '$strItem'");
+            if ($itemResult->num_rows == 0) {
+                http_response_code(401);
+                echo json_encode(["data" => ["message" => "Invalid item selected"]]);
+                exit();
+            }
             $intItemId = $itemResult->fetch_object()->intItemId;
             // Get intCategoryId
             $categoryResult = $conn->query("SELECT intCategoryId FROM tblcategory WHERE strCategory = '$strCategory'");
+            if ($categoryResult->num_rows == 0) {
+                http_response_code(401);
+                echo json_encode(["data" => ["message" => "Invalid category selected"]]);
+                exit();
+            }
             $intCategoryId = $categoryResult->fetch_object()->intCategoryId;
             // Get intUnitId
             $unitResult = $conn->query("SELECT intUnitId FROM tblunit WHERE strUnit = '$strUnit'");
+            if ($unitResult->num_rows == 0) {
+                http_response_code(401);
+                echo json_encode(["data" => ["message" => "Invalid unit selected"]]);
+                exit();
+            }
             $intUnitId = $unitResult->fetch_object()->intUnitId;
 
             // Insert inventory
             $query2 = $conn->prepare("INSERT INTO tblinventory 
-                (intDonationId, intFoodBankId, intItemId, intCategoryId, intUnitId, intQuantity, strDescription) VALUES (?,?,?,?,?,?,?)");
-            $query2->bind_param("iiiiiis"
+                (intDonationId, intFoodBankId, intItemId, intCategoryId, intUnitId, intQuantity) VALUES (?,?,?,?,?,?)");
+            $query2->bind_param("iiiiii"
                 ,$intDonationId
                 ,$intFoodBankId
                 ,$intItemId
                 ,$intCategoryId
                 ,$intUnitId
                 ,$intQuantity
-                ,$strDescription
             );
 
             if (!$query2->execute()) {

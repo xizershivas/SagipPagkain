@@ -264,15 +264,15 @@ if (isset($_SESSION["intUserId"])) {
                         <input type="file" class="form-control" name="verification[]" id="verification" accept="image/*" multiple>
                       </div>
                       <div class="mb-2">
+                      <div class="form-check form-switch col col-md-4 mb-2">
+                        <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
+                        <label class="form-check-label fw-bold" for="transportStatus" id="labelTransportStatus">Status</label>
+                      </div>
                         <b>Uploaded: </b><span class="d-inline my-3" id="signUploaded"></span>
                         <!-- SHOW ALL MEDIA SELECTED -->
                         <div class="d-flex justify-content-center align-items-center" id="mediaSelectedLoc"></div>
                         <div class="mb-3" id="docsUploadedMedia"></div>
                       </div>
-                    </div>
-                    <div class="form-check form-switch d-none">
-                      <input class="form-check-input" type="checkbox" role="switch" name="transportStatus" id="transportStatus">
-                      <label class="form-check-label fw-bold" for="transportStatus" id="labelTransportStatus">Status</label>
                     </div>
                   </form>
                 </div>

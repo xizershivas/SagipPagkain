@@ -51,7 +51,7 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
 
       <a href="../../../index.php" class="logo d-flex align-items-center me-auto me-xl-0">
 
-        <img src="../../../assets/img/sagip-pagkain-logo.JPEG" alt="Sagip Logo" oncontextmenu="return false;" draggable="false">
+        <img src="../../../assets/img/sagiplogo.png" alt="Sagip Logo" oncontextmenu="return false;" draggable="false">
         <div>
           <h2 class="sitename" style="padding-left: 10px;"><b>SAGIP</b><span>.</span></h2>
           <h4 class="sitename subtitle" style="padding-left: -10px; letter-spacing: 10.5px;">PAGKAIN</h4>

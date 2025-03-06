@@ -203,6 +203,7 @@ function updateDonation($conn, $donationData) {
     $strUnit = $donationData["strUnit"];
     $intQuantity = $donationData["intQuantity"];
     $strDescription = $donationData["strDescription"];
+    $ysnStatus = intval($donationData["ysnStatus"]);
 
     $conn->begin_transaction();
 
@@ -266,14 +267,14 @@ function updateDonation($conn, $donationData) {
             WHERE intDonationId = ?"
         );
 
-        $query1->bind_param("ssssssssi"
+        $query1->bind_param("ssssssisi"
             ,$donationData["strDonorName"]
             ,$donationData["dtmDate"]
             ,$strFoodBank
             ,$donationData["strTitle"]
             ,$donationData["strDescription"]
             ,$donationData["strRemarks"]
-            ,$donationData["ysnStatus"]
+            ,$ysnStatus
             ,$donationData["strDocFilePath"]
             ,$intDonationId
         );
@@ -290,17 +291,15 @@ function updateDonation($conn, $donationData) {
             ,intCategoryId = ?
             ,intUnitId = ?
             ,intQuantity = ?
-            ,strDescription = ?
             WHERE intInventoryId = ?"
         );
 
-        $query2->bind_param("iiiiisi"
+        $query2->bind_param("iiiiii"
             ,$intFoodBankId
             ,$intItemId
             ,$intCategoryId
             ,$intUnitId
             ,$intQuantity
-            ,$strDescription
             ,$intInventoryId
         );
 
