@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
 ?>
