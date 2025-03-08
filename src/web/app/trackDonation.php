@@ -1,7 +1,6 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-// include "../../../app/functions/trackDonation.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +22,11 @@ include "../../../app/config/db_connection.php";
 
   <!-- Main CSS File -->
   <link href="../../../app/css/app.css" rel="stylesheet">
+  <style>
+    #trackDonationTable td {
+      width: 13%;
+    }
+  </style>
 </head>
 
 <body class="services-details-page">
@@ -82,20 +86,69 @@ include "../../../app/config/db_connection.php";
 
              <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
               <!-- TRACK DONATION TABLE -->
-              <table id="userDataTable" class="display table table-striped">
+              <table id="trackDonationTable" class="display table table-striped">
                 <thead>
                   <tr>
                     <th scope="col">Donor</th>
                     <th scope="col">Food Bank</th>
+                    <th scope="col">Item</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col" class="text-nowrap">Send Qty</th>
                     <th scope="col">Beneficiary</th>
                     <th scope="col">Status</th>
                     <th scope="col" colspan="2">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <?php
-                  
-                  ?>
+                  <tr>
+                    <td class="col">
+                      <select class="form-select" name="donorSelect" id="donorSelect">
+                        <option value="">-- Select Donor --</option>
+                      </select>
+                    </td>
+                    <td class="col">
+                      <input class="form-control" list="foodBankOptions" name="foodBankItem" id="foodBankItem" required>
+                      <datalist id="foodBankOptions">
+                      </datalist>
+                    </td>
+                    <td class="col">
+                      <select class="form-select" name="itemSelect" id="itemSelect">
+                        <option value="">-- Select Item --</option>
+                      </select>
+                    </td>
+                    <td class="col">
+                      <input class="form-control" type="text" name="itemQty" id="itemQty" value="0" readonly>
+                    </td>
+                    <td class="col">
+                      <input class="form-control" type="text" name="unit" id="unit" readonly>
+                    </td>
+                    <td class="col">
+                      <input class="form-control" type="number" name="itemQtySend" id="itemQtySend" value="0" min="1">
+                    </td>
+                    <td class="col">
+                      <input class="form-control" list="beneficiaryOptions" name="beneficiaryItem" id="beneficiaryItem" placeholder="-- Select Beneficiary --" required>
+                      <datalist id="beneficiaryOptions">
+                      </datalist>
+                    </td>
+                    <td class="col">
+                      <select class="form-select" name="status" id="statusSelect" aria-label="Status Options">
+                        <option value="">-- Set Status --</option>
+                        <option value="1">Received</option>
+                        <option value="0">In Transit</option>
+                      </select>
+                    </td>
+                    <td>
+                      <a href="javascript:void(0)" id="btnSave">
+                        <i class="bi bi-floppy-fill fs-4 text-success"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="javascript:void(0)" id="btnDelete">
+                        <i class="bi bi-trash-fill fs-4 text-danger"></i>
+                      </a>
+                    </td>
+                  </tr>
                 </tbody>
               </table><!-- END TRACK DONATION TABLE -->
             </div>
