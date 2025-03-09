@@ -1,6 +1,8 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
+include "../../../app/functions/trackDonation.php";
+$allTrackDonationData = getAllTrackDonationData($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,6 +87,7 @@ include "../../../app/config/db_connection.php";
           </div>
 
              <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
+              <h2 class="text-black">Process Beneficiary</h2>
               <!-- TRACK DONATION TABLE -->
               <table id="trackDonationTable" class="display table table-striped">
                 <thead>
@@ -97,15 +100,15 @@ include "../../../app/config/db_connection.php";
                     <th scope="col" class="text-nowrap">Send Qty</th>
                     <th scope="col">Beneficiary</th>
                     <th scope="col">Status</th>
-                    <th scope="col" colspan="2">Action</th>
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td class="col">
-                      <select class="form-select" name="donorSelect" id="donorSelect">
-                        <option value="">-- Select Donor --</option>
-                      </select>
+                      <input class="form-control" list="donorOptions" name="donorItem" id="donorItem" placeholder="-- Select Donor --" required>
+                      <datalist id="donorOptions">
+                      </datalist>
                     </td>
                     <td class="col">
                       <input class="form-control" list="foodBankOptions" name="foodBankItem" id="foodBankItem" required>
@@ -124,7 +127,7 @@ include "../../../app/config/db_connection.php";
                       <input class="form-control" type="text" name="unit" id="unit" readonly>
                     </td>
                     <td class="col">
-                      <input class="form-control" type="number" name="itemQtySend" id="itemQtySend" value="0" min="1">
+                      <input class="form-control" type="number" name="itemSendQty" id="itemSendQty" value="0" min="1">
                     </td>
                     <td class="col">
                       <input class="form-control" list="beneficiaryOptions" name="beneficiaryItem" id="beneficiaryItem" placeholder="-- Select Beneficiary --" required>
@@ -138,19 +141,60 @@ include "../../../app/config/db_connection.php";
                         <option value="0">In Transit</option>
                       </select>
                     </td>
-                    <td>
+                    <td title="Save">
                       <a href="javascript:void(0)" id="btnSave">
                         <i class="bi bi-floppy-fill fs-4 text-success"></i>
                       </a>
                     </td>
-                    <td>
+                    <!-- <td title="Delete">
                       <a href="javascript:void(0)" id="btnDelete">
                         <i class="bi bi-trash-fill fs-4 text-danger"></i>
                       </a>
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table><!-- END TRACK DONATION TABLE -->
+
+              <!-- DONATION PROCESSED TABLE -->
+              <h2 class="text-black pt-3">Processed Donations</h2>
+              <?php
+              if ($allTrackDonationData && $allTrackDonationData->num_rows > 0) {
+              ?>
+                <table class="display table table-striped">
+                  <thead>
+                    <tr>
+                      <th class="col">Donor</th>
+                      <th class="col">Food Bank</th>
+                      <th class="col">Item</th>
+                      <th class="col">Received Qty.</th>
+                      <th class="col">Unit</th>
+                      <th class="col">Beneficiary</th>
+                      <th class="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- DISPLAY TRACK DONATION DATA HERE -->
+                    <?php
+                      while($data = $allTrackDonationData->fetch_object()) {
+                        ?>
+                        <tr>
+                          <td><?php echo $data->strFullName; ?></td>
+                          <td><?php echo $data->strFoodBank; ?></td>
+                          <td><?php echo $data->strItem; ?></td>
+                          <td><?php echo $data->intQuantity; ?></td>
+                          <td><?php echo $data->strUnit; ?></td>
+                          <td><?php echo $data->strName; ?></td>
+                          <td><?php echo $data->ysnStatus == 1 ? 'Received' : ''; ?></td>
+                        </tr>
+                        <?php
+                      }
+                    ?>
+                  </tbody>
+                </table><!-- END DONATION PROCESSED TABLE -->
+              <?php
+              }
+              ?>
+
             </div>
           </div>
 

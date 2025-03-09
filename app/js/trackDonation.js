@@ -1,4 +1,6 @@
-const donorSelect = document.querySelector('#donorSelect');
+// const donorSelect = document.querySelector('#donorSelect');
+const donorOptions = document.querySelector('#donorOptions');
+const donorItem = document.querySelector('#donorItem');
 const foodBankOptions = document.querySelector('#foodBankOptions');
 const foodBankItem = document.querySelector('#foodBankItem');
 const itemSelect = document.querySelector('#itemSelect');
@@ -6,40 +8,83 @@ const beneficiaryOptions = document.querySelector('#beneficiaryOptions');
 const beneficiaryItem = document.querySelector('#beneficiaryItem');
 const itemQty = document.querySelector('#itemQty');
 const unit = document.querySelector('#unit');
-const itemQtySend = document.querySelector('#itemQtySend');
+const itemSendQty = document.querySelector('#itemSendQty');
 const statusSelect = document.querySelector('#statusSelect');
+const btnSave = document.querySelector('#btnSave');
+let donorId = 0;
+let foodBankId = 0;
+let beneficiaryId = 0;
 
-itemQtySend.max = parseInt(itemQty.value);
-
-function itemQuantityChange(e) {
-    if (isNaN(itemQty.value) || parseInt(itemQty.value) <= 0) {
-        itemQtySend.value = 0;
-    } else {
-        itemQtySend.max = itemQty.value;
-        itemQtySend.value = parseInt(itemQtySend.value)++;
-    }
-}
-
-function getItemQuantity(e) {
-    const user = donorSelect.value;
-    const foodBank = foodBankItem.value;
-    const item = e.currentTarget.value;
+function saveTrackDonation() {
+    const inputData = {
+        intUserId: donorId
+        ,intFoodBankId: foodBankId
+        ,intItemId: itemSelect.value
+        ,intQuantity: itemQty.value
+        ,strUnit: unit.value
+        ,intSendQuantity: itemSendQty.value
+        ,intBeneficiaryId: beneficiaryId
+        ,ysnStatus: statusSelect.value
+    };
 
     const xmlhttp = new XMLHttpRequest()
 
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4) {
             const { data } = JSON.parse(this.responseText);
-            if (this.status == 200) {
-                itemQty.value = data.intQuantity
-                unit.value = data.strUnit
+            if (this.status == 201) {
+                alert(data.message);
+                window.location.reload();
             } else {
                 alert(data.message);
             }
         }
     };
 
-    xmlhttp.open('GET', `../../../app/controllers/trackDonation.php?user=${user}&foodBank=${foodBank}&item=${item}`, true);
+    xmlhttp.open('POST', '../../../app/controllers/trackDonation.php', true);
+    xmlhttp.setRequestHeader('Content-Type', 'application/json');
+    xmlhttp.send(JSON.stringify(inputData));
+}
+
+function getBeneficiary(e) {
+    const beneficiaryOptionSelected = document.querySelector(`#beneficiaryOptions option[value="${e.target.value}"]`);
+    beneficiaryId = beneficiaryOptionSelected.getAttribute('data-id');
+}
+
+itemSendQty.max = parseInt(itemQty.value);
+function itemQuantityChange(e) {
+    if (isNaN(itemQty.value) || parseInt(itemQty.value) <= 0) {
+        itemSendQty.value = 0;
+    } else {
+        itemSendQty.max = itemQty.value;
+        itemSendQty.value = itemSendQty.value++;
+        if (parseInt(itemSendQty.value) > parseInt(itemQty.value)) {
+            itemSendQty.value = itemQty.value;
+        }
+    }
+}
+
+function getItemQuantity(e) {
+    const foodBank = foodBankItem.value;
+    const item = e.currentTarget.value;
+    itemSendQty.value = 0;
+    beneficiaryItem.value = '';
+    statusSelect.value = '';
+    const xmlhttp = new XMLHttpRequest()
+
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            const { data } = JSON.parse(this.responseText);
+            if (this.status == 200) {
+                itemQty.value = data.intQuantity ? data.intQuantity : 0;
+                unit.value = data.strUnit ? data.strUnit : '';
+            } else {
+                alert(data.message);
+            }
+        }
+    };
+
+    xmlhttp.open('GET', `../../../app/controllers/trackDonation.php?user=${donorId}&foodBank=${foodBankId}&item=${item}`, true);
     xmlhttp.send();
 }
 
@@ -55,8 +100,13 @@ function setItem({ items }) {
 
 function getItem(e) {
     itemSelect.innerHTML = '<option value="">-- Select Item --</option>';
-    let user = donorSelect.value;
-    let foodBank = e.currentTarget.value;
+    itemQty.value = 0;
+    unit.value = '';
+    itemSendQty.value = 0;
+    beneficiaryItem.value = '';
+    statusSelect.value = '';
+    const foodBankOptionSelected = document.querySelector(`#foodBankOptions option[value="${e.target.value}"]`);
+    foodBankId = foodBankOptionSelected.getAttribute('data-id');
     const xmlhttp = new XMLHttpRequest()
 
     xmlhttp.onreadystatechange = function() {
@@ -65,12 +115,12 @@ function getItem(e) {
             if (this.status == 200) {
                 setItem(data);
             } else {
-                alert(data.message);
+                // alert(data.message);
             }
         }
     };
 
-    xmlhttp.open('GET', `../../../app/controllers/trackDonation.php?user=${user}&foodBank=${foodBank}`, true);
+    xmlhttp.open('GET', `../../../app/controllers/trackDonation.php?user=${donorId}&foodBank=${foodBankId}`, true);
     xmlhttp.send();
 }
 
@@ -79,6 +129,7 @@ function setFoodBank({ foodBanks }) {
     foodBanks.forEach(fb => {
         const foodBankOption = document.createElement('option');
         foodBankOption.value = fb.strFoodBank;
+        foodBankOption.setAttribute('data-id', fb.intFoodBankId);
         foodBankOptions.append(foodBankOption);
     });
 }
@@ -89,12 +140,11 @@ function getFoodBank(e) {
     itemSelect.innerHTML = '<option value="">-- Select Item --</option>';
     itemQty.value = 0;
     unit.value = '';
-    itemQtySend.value = 0;
+    itemSendQty.value = 0;
     beneficiaryItem.value = '';
-    statusSelect.innerHTML = '<option value="">-- Set Status --</option>'
-        + '<option value="1">Received</option>'
-        + '<option value="0">In Transit</option>';
-    let intUserId = e.currentTarget.value;
+    statusSelect.value = '';
+    const donorOptionSelected = document.querySelector(`#donorOptions option[value="${e.target.value}"]`);
+    donorId = donorOptionSelected.getAttribute('data-id');
     const xmlhttp = new XMLHttpRequest()
 
     xmlhttp.onreadystatechange = function() {
@@ -108,7 +158,7 @@ function getFoodBank(e) {
         }
     };
 
-    xmlhttp.open('GET', `../../../app/controllers/trackDonation.php?user=${intUserId}`, true);
+    xmlhttp.open('GET', `../../../app/controllers/trackDonation.php?user=${donorId}`, true);
     xmlhttp.send();
 }
 
@@ -116,15 +166,16 @@ function setData({ donors, /*foodBanks,*/ beneficiaries}) {
     // Donor Options
     donors.forEach(d => {
         const donorOption = document.createElement('option');
-        donorOption.value = d.intUserId;
-        donorOption.textContent = d.strDonorName;
-        donorSelect.append(donorOption);
+        donorOption.value = d.strDonorName;
+        donorOption.setAttribute('data-id', d.intUserId);
+        donorOptions.append(donorOption);
     });
 
     // Beneficiary Options
     beneficiaries.forEach(b => {
         const beneficiaryOption = document.createElement('option');
         beneficiaryOption.value = b.strName;
+        beneficiaryOption.setAttribute('data-id', b.intBeneficiaryId);
         beneficiaryOptions.append(beneficiaryOption);
     });
 }
@@ -148,7 +199,10 @@ function loadData(e) {
 }
 
 window.addEventListener('load', loadData);
-donorSelect.addEventListener('change', getFoodBank);
-foodBankItem.addEventListener('input', getItem);
+donorItem.addEventListener('change', getFoodBank);
+foodBankItem.addEventListener('change', getItem);
 itemSelect.addEventListener('change', getItemQuantity);
-itemQtySend.addEventListener('change', itemQuantityChange);
+itemSendQty.addEventListener('change', itemQuantityChange);
+itemSendQty.addEventListener('input', itemQuantityChange);
+beneficiaryItem.addEventListener('input', getBeneficiary);
+btnSave.addEventListener('click', saveTrackDonation);
