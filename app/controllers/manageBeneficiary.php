@@ -16,10 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $strEmail = sanitize($_POST["email"]);
     $strContact = sanitize($_POST["contact"]);
     $strAddress = sanitize($_POST["address"]);
+    $dblSalary =  sanitize($_POST["salary"]);
 
     if (empty($intBeneficiaryId)) {
-        $query = $conn->prepare("INSERT INTO tblbeneficiary (strName, strEmail, strContact, strAddress) VALUES (?, ?, ?, ?)");
-        $query->bind_param("ssss", $strName, $strEmail, $strContact, $strAddress );
+        $query = $conn->prepare("INSERT INTO tblbeneficiary (strName, strEmail, strContact, strAddress, dblSalary) VALUES (?, ?, ?, ?, ?)");
+        $query->bind_param("ssssd", $strName, $strEmail, $strContact, $strAddress, $dblSalary);
 
         if ($query->execute()) {
             http_response_code(200);
@@ -32,12 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $query->close();
         $conn->close();
     } else {
-        $query = $conn->prepare("UPDATE tblbeneficiary SET strName = ?, strEmail = ?, strContact = ?, strAddress = ? WHERE intBeneficiaryId = ?");
-        $query->bind_param("ssssi"
+        $query = $conn->prepare("UPDATE tblbeneficiary SET strName = ?, strEmail = ?, strContact = ?, strAddress = ?, dblSalary = ? WHERE intBeneficiaryId = ?");
+        $query->bind_param("ssssdi"
             ,$strName
             ,$strEmail
             ,$strContact
             ,$strAddress
+            ,$dblSalary
             ,$intBeneficiaryId
         );
 
@@ -49,6 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     "email" => $strEmail,
                     "contact" => $strContact,
                     "address" => $strAddress,
+                    "salary" => $dblSalary
                 );
 
                 http_response_code(200);

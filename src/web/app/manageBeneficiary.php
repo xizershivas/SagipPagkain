@@ -115,6 +115,15 @@ include "../../../app/functions/manageBeneficiary.php";
                         </div>
                       </div>
                     </div>
+                    <div class="row g-2">
+                      <div class="mb-3 col col-md-6">
+                        <label for="salary" class="form-label fw-bold">Monthly Income</label>
+                        <div class="form-floating">
+                          <input type="number" class="form-control" name="salary" id="salary" step="0.01">
+                          <label for="salary" class="form-label">Monthly Income</label>
+                        </div>
+                      </div>
+                    </div>
                   </form>
                 </div>
                 
@@ -167,6 +176,15 @@ include "../../../app/functions/manageBeneficiary.php";
                         </div>
                       </div>
                     </div>
+                    <div class="row g-2">
+                      <div class="mb-3 col col-md-6">
+                        <label for="salary" class="form-label fw-bold">Monthly Income</label>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" name="salary" id="salary">
+                          <label for="salary" class="form-label">Monthly Income</label>
+                        </div>
+                      </div>
+                    </div>
                   </form>
                 </div>
                 
@@ -193,6 +211,7 @@ include "../../../app/functions/manageBeneficiary.php";
                   <th scope="col">Email</th>
                   <th scope="col">Contact</th>
                   <th scope="col">Address</th>
+                  <th scope="col">Salary</th>
                   <th scope="col" colspan="2">Action</th>
                 </tr>
               </thead>
@@ -209,6 +228,7 @@ include "../../../app/functions/manageBeneficiary.php";
                             <td><?php echo htmlspecialchars($data->strEmail); ?></td>
                             <td><?php echo htmlspecialchars($data->strContact); ?></td>
                             <td><?php echo htmlspecialchars($data->strAddress); ?></td>
+                            <td><?php echo htmlspecialchars($data->dblSalary); ?></td>
                             <td>
                                 <a class="btn-edit-beneficiary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
                                   href="javascript:void(0)" data-id="<?php echo $data->intBeneficiaryId; ?>">
