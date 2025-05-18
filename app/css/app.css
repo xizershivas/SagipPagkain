@@ -3072,7 +3072,6 @@ section,
 }
 
 .btn-custom {
-  display: inline-flex;
   align-items: center;
   background-color: #004d40;
   color: #fff;
@@ -3115,4 +3114,19 @@ section,
   background: none;
   color: white;
   font-size: 20px;
+}
+
+
+#donationQRModal {
+  padding: 35px;
+  color: #060606;
+}
+
+#donationModalLabel {
+  color: #060606;
+}
+
+#donationNameModal{
+  padding-top: 20px;
+  color: #060606;
 }

@@ -115,6 +115,30 @@ include "../../../app/functions/user.php";
 
     </section><!-- /Service Details Section -->
 
+    <!-- Bootstrap Modal -->
+<div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Stock Details - <span id="modalLocationName"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Quantity (kg)</th>
+            </tr>
+          </thead>
+          <tbody id="modalStockTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   </main>
 
   <!-- Include global footer  -->
@@ -155,20 +179,48 @@ include "../../../app/functions/user.php";
             { name: "Nagcarlan Cemetery", lat: 14.1816, lng: 121.4916, stock: 5, branch: "FoodBanking Nagcarlan", contact: "0998-765-4321" },
             { name: "Lake Pandin", lat: 14.2639, lng: 121.3645, stock: 95, branch: "FoodBanking Pandin", contact: "0916-543-2109" }
         ];
+        document.addEventListener('click', function (e) {
+          if (e.target.closest('.stock-link')) {
+              const link = e.target.closest('.stock-link');
+              const items = JSON.parse(link.dataset.items);
+              const locationName = link.dataset.location;
+
+              // Set modal title
+              document.getElementById('modalLocationName').textContent = locationName;
+
+              // Populate table
+              const tbody = document.getElementById('modalStockTableBody');
+              tbody.innerHTML = ''; // Clear previous rows
+
+              items.forEach(item => {
+                  const row = `<tr><td>${item.name}</td><td>${item.quantity} kg</td></tr>`;
+                  tbody.insertAdjacentHTML('beforeend', row);
+              });
+          }
+      });
 
         // Add markers and populate the location list
         var locationList = document.getElementById("locationList");
 
         locations.forEach(location => {
-            var marker = L.marker([location.lat, location.lng]).addTo(map);
-            marker.bindPopup(`
-                <div class="text-left">
-                    <h6 class="mb-1"><b>${location.branch}</b></h6>
-                    <p class="mb-1">📍 <strong>${location.name}</strong></p>
-                    <p class="mb-1">📦 Stock Quantity: <strong>${location.stock} kg</strong></p>
-                    <p class="mb-1">📞 Contact: <strong>${location.contact}</strong></p>
-                </div>
-            `);
+        var marker = L.marker([location.lat, location.lng]).addTo(map);
+        marker.bindPopup(`
+            <div class="text-left">
+                <h6 class="mb-1"><b>${location.branch}</b></h6>
+                <p class="mb-1">📍 <strong>${location.name}</strong></p>
+                <p class="mb-1">📦 
+                    <a href="#" 
+                      class="stock-link text-primary" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#stockModal"
+                      data-items='${JSON.stringify(location.items || [])}' 
+                      data-location="${location.name}">
+                      <strong>List of items</strong>
+                    </a>
+                </p>
+                <p class="mb-1">📞 Contact: <strong>${location.contact}</strong></p>
+            </div>
+        `);
 
             // Add locations to the list with pin icon
             var listItem = document.createElement("li");

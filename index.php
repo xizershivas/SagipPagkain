@@ -460,10 +460,10 @@ session_start();
       <div class="container" data-aos="zoom-in" data-aos-delay="100">
 
         <div class="row g-4">
-          <div class="donation-form border">
+          <div class="donation-form border p-4">
             <h3>Choose a Donation Amount</h3>
-            <form>
-                <div class="mb-3">
+            <form id="donationForm">
+                   <!-- <div class="mb-3">
                     <div class="d-flex flex-wrap gap-2">
                         <input type="radio" class="btn-check" name="donation-amount" id="amount50" autocomplete="off" onclick="updateAmount(50)">
                         <label class="btn btn-outline-primary" for="amount50">₱50</label>
@@ -483,34 +483,31 @@ session_start();
                         <input type="radio" class="btn-check" name="donation-amount" id="amount3000" autocomplete="off" onclick="updateAmount(3000)">
                         <label class="btn btn-outline-primary" for="amount3000">₱3000</label>
                     </div>
-                </div>
+                </div> -->
         
-                <div class="mb-3">
-                    <label for="customAmount" class="form-label">Custom Amount</label>
-                    <input type="number" class="form-control" id="customAmount" placeholder="₱0">
-                </div>
-        
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="donation-type" id="oneTime" checked>
-                    <label class="form-check-label" for="oneTime">
-                        One-time donation
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="donation-type" id="monthly">
-                    <label class="form-check-label" for="monthly">
-                        Monthly recurring donation
-                    </label>
-                </div>
-        
-                <div class="form-check mt-3">
-                    <input class="form-check-input" type="checkbox" id="roundUp">
-                    <label class="form-check-label" for="roundUp">
-                        Round up my donation to cover processing fees
-                    </label>
-                </div>
-        
-                <h5 class="mt-4">Payment Information</h5>
+                <!-- <div class="mb-3">
+                    <label for="customAmount" class="form-label">Choose donation type</label> -->
+                    <!-- <input type="number" class="form-control" id="customAmount" placeholder="₱0"> -->
+                <!-- </div> -->
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="donation-type" id="gcash" checked>
+                <label class="form-check-label" for="gcash">
+                  Gcash
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="donation-type" id="paymaya" disabled>
+                <label class="form-check-label" for="paymaya">
+                  Paymaya
+                </label>
+              </div>
+              <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" id="card" disabled>
+                <label class="form-check-label" for="card">
+                  Card
+                </label>
+              </div>
+                <!-- <h5 class="mt-4">Payment Information</h5>
                 <div class="btn-group w-100 mb-3" role="group">
                     <input type="radio" class="btn-check" name="payment-method" id="gcash" checked>
                     <label class="btn btn-outline-primary w-100" for="gcash">GCash</label>
@@ -523,12 +520,12 @@ session_start();
                 <div class="mb-3">
                     <label for="cardNumber" class="form-label">GCash Number</label>
                     <input type="text" class="form-control" id="cardNumber" placeholder="09XX XXXX XXX">
-                </div>
-        
-                <button type="submit" class="btn btn-custom w-100">Donate</button>
+                </div> -->
+              <br>
+              <button type="submit" class="btn btn-custom w-100">Donate</button>
             </form>
+          </div>
         </div>
-
 
         </div>
 
@@ -697,6 +694,23 @@ session_start();
 
     </section><!-- /Contact Section -->
 
+    <!-- Modal -->
+<div class="modal fade" id="donationModal" tabindex="-1" aria-labelledby="donationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title" id="donationModalLabel">Thank You for your support!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="donationQRModal">
+        <p>Any amount will help us grow and achieve our goal.</p>
+        <img src="assets/img/QRCode/gcashDonation.jpg" alt="QR Code">
+        <h3 id="donationNameModal">Louie Jerome Roldan</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
   </main>
 
   <footer id="footer" class="footer position-relative light-background">
@@ -734,6 +748,17 @@ session_start();
 
   <!-- Preloader -->
   <div id="preloader"></div>
+
+  <script>
+  const donationForm = document.getElementById('donationForm');
+
+  donationForm.addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent actual form submission
+
+    const donationModal = new bootstrap.Modal(document.getElementById('donationModal'));
+    donationModal.show();
+  });
+</script>
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
