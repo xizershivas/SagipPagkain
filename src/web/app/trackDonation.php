@@ -2,6 +2,7 @@
 session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/trackDonation.php";
+
 $allTrackDonationData = getAllTrackDonationData($conn);
 ?>
 <!DOCTYPE html>
@@ -27,6 +28,14 @@ $allTrackDonationData = getAllTrackDonationData($conn);
   <style>
     #trackDonationTable td {
       width: 13%;
+    }
+
+    .ellipsis {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+      display: inline-block;
     }
   </style>
 </head>
@@ -160,7 +169,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
               <?php
               if ($allTrackDonationData && $allTrackDonationData->num_rows > 0) {
               ?>
-                <table class="display table table-striped">
+                <table id="trackDonationDataTable" class="display table table-striped">
                   <thead>
                     <tr>
                       <th class="col">Donor</th>
@@ -170,6 +179,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                       <th class="col">Unit</th>
                       <th class="col">Beneficiary</th>
                       <th class="col">Status</th>
+                      <th class="col">QR Code</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -185,6 +195,8 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                           <td><?php echo $data->strUnit; ?></td>
                           <td><?php echo $data->strName; ?></td>
                           <td><?php echo $data->ysnStatus == 1 ? 'Received' : ''; ?></td>
+                          <!-- <td><img src="<?php //echo $data->strQRCode; ?>" alt=""></td> -->
+                          <td><a class="ellipsis" href="<?php echo "../" . $data->strQRCode; ?>" download title="Download QR Code"><?php echo $data->strQRCode; ?></a></td>
                         </tr>
                         <?php
                       }
@@ -231,7 +243,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
     $(document).ready(function() {
     new DataTable('#trackDonationDataTable', {
 
-      lengthMenu: [10, 20, 30, 50, 100]
+      lengthMenu: [5, 10, 20, 30, 50, 100]
     });
   });
   </script>

@@ -13,6 +13,7 @@ function getAllTrackDonationData($conn) {
         ,B.intBeneficiaryId
         ,B.strName
         ,TD.ysnStatus
+        ,TD.strQRCode
         FROM tbltrackdonation TD
         INNER JOIN tbluser U ON TD.intUserId = U.intUserId
         INNER JOIN tblfoodbank FB ON TD.intFoodBankId = FB.intFoodBankId
@@ -260,6 +261,8 @@ function saveTrackDonation($conn, $trackDonationData) {
         if (!$query->execute()) {
             throw new Exception("Failed to process data", 400);
         }
+
+        $lastInsertId = $conn->insert_id;
         #END Add Record to tbltrackdonation
 
         #BEGIN Update Inventory Item Quantity
@@ -284,6 +287,8 @@ function saveTrackDonation($conn, $trackDonationData) {
             throw new Exception("Database update operation failed", 500);
         }
 
+        generateQRCode($conn, $intBeneficiaryId, $intItemId, $intSendQuantity, $lastInsertId);
+
         $conn->commit();
 
         http_response_code(201);
@@ -300,5 +305,38 @@ function saveTrackDonation($conn, $trackDonationData) {
     }
 
     exit();
+}
+
+function generateQRCode($conn, $intBeneficiaryId, $intItemId, $intSendQuantity, $lastInsertId) {
+    
+    include "../../app/utils/phpqrcode/qrlib.php";
+
+    // Beneficiary
+    $beneficiaryQuery = $conn->prepare("SELECT strName FROM tblbeneficiary WHERE intBeneficiaryId = ?");
+    $beneficiaryQuery->bind_param("i", $intBeneficiaryId);
+    $beneficiaryQuery->execute();
+    $beneficiaryResult = $beneficiaryQuery->get_result()->fetch_assoc();
+
+    // Inventory Item and Item Quantity
+    $qtyQuery = $conn->prepare("SELECT SUM(IV.intQuantity) AS intQuantity, I.strItem FROM tblinventory IV INNER JOIN tblitem I ON IV.intItemId = I.intItemId WHERE IV.intItemId = ? GROUP BY IV.intItemId");
+    $qtyQuery->bind_param("i", $intItemId);
+    $qtyQuery->execute();
+    $qtyResult = $qtyQuery->get_result()->fetch_assoc();
+
+    $data = "Name: " . $beneficiaryResult["strName"]
+        . "\nItem: " . $qtyResult["strItem"]
+        . "\nQty Received: " . $intSendQuantity
+        . "\nQty Available: " . $qtyResult["intQuantity"];
+
+    $filePath = '../../app/storage/media/qrcodes/' . $intBeneficiaryId . '_' . $beneficiaryResult["strName"] . '_' . uniqid(). '.png';
+    QRcode::png($data, $filePath, QR_ECLEVEL_L, 1000/150);
+
+    // Update Track Donation QR Code
+    $updateQuery = $conn->prepare("UPDATE tbltrackdonation SET strQRCode = ? WHERE intTrackDonationId = ?");
+    $updateQuery->bind_param("si", $filePath, $lastInsertId);
+
+    if (!$updateQuery->execute()) {
+        throw new Exception("Failed generate and update QR Code", 400);
+    }
 }
 ?>
