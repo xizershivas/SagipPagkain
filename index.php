@@ -1,6 +1,15 @@
 <?php
 session_start();
+
+if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
+  header("Location: src/web/app/dashboard.php");
+  exit();
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0) {
+  header("Location: src/web/donor/dashboard.php");
+  exit();
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -121,19 +130,40 @@ session_start();
 
       <div class="container">
         <div class="row">
-          <div class="col-lg-10">
+          <!-- Left Content Column -->
+          <div class="col-lg-8">
             <h2 data-aos="fade-up" data-aos-delay="100">Welcome to Sagip Pagkain</h2>
             <p data-aos="fade-up" data-aos-delay="200">Food banking is key to the solution</p>
-            <?php if (!isset($_SESSION["intUserId"])) { ?>    
-             <div class="col-lg-5" data-aos="fade-up" data-aos-delay="300">
-            <form action="forms/newsletter.php" method="post" class="php-email-form">
-              <div class="sign-up-form"><input type="email" name="email" value="Access Your Account" readonly style="font-size: 24px; color: #545151">
-                <button type="button" class="btn btn-warning" style="font-size: 20px;width: 155px;">
-                <a href="src/web/forms/login.php" style="color: #ffffff;"><span>Login</span></button>
-              </div>
-            </form>
           </div>
-            <?php } ?>
+
+          <!-- Right Login Column -->
+          <div class="col-lg-4">
+            <div class="login-container">
+              <div class="login-box" style="background-color: rgba(248, 249, 250, 0.9); border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                <div class="login-img"></div>
+                <div class="login-form">
+                  <h3 class="mb-3 signin" style="color: #333;">Log In</h3>
+                  <form class="was-validated" id="frmLogin">
+                    <div class="mb-3">
+                      <label class="form-label" style="color: #333;">Username</label>
+                      <input class="form-control" type="text" name="username" id="username" placeholder="Username" required style="color: #333;">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label" style="color: #333;">Password</label>
+                      <input class="form-control" type="password" name="password" id="password" placeholder="Password" required style="color: #333;">
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100" id="btnSignIn">Sign In</button>
+                    <div class="d-flex justify-content-between mt-2" style="color: #333;">
+                      <div><input type="checkbox"> Remember Me</div>
+                      <a href="#">Forgot Password?</a>
+                    </div>
+                    <div class="text-center mt-3" style="color: #333;">
+                      Not a member? <a href="signup.php">Sign Up</a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -772,6 +802,7 @@ session_start();
 
   <!-- Main JS File -->
   <script src="app/js/app.js"></script>
+  <script src="app/js/login.js"></script>
 
   <script>
     function updateAmount(amount) {

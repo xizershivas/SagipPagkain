@@ -18,11 +18,11 @@ function login(e) {
 
             if (this.status == 200) {
                 if (response.data.ysnAdmin) {
-                    window.location.href = '../app/dashboard.php';
+                    window.location.href = 'src/web/app/dashboard.php';
                 } else if (response.data.ysnDonor) {
-                    window.location.href = '../donor/dashboard.php';
+                    window.location.href = 'src/web/donor/dashboard.php';
                 } else if (response.data.ysnNgo) {
-                    window.location.href = '../ngo/dashboard.php';
+                    window.location.href = 'src/web/ngo/dashboard.php';
                 }
             } else {
                 alert(response.data.message);
@@ -30,7 +30,7 @@ function login(e) {
         }
     };
 
-    xmlhttp.open('POST', '../../../app/controllers/login.php', true);
+    xmlhttp.open('POST', 'app/controllers/login.php', true);
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send(data);
 }
