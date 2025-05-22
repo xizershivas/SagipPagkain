@@ -29,14 +29,6 @@ $allTrackDonationData = getAllTrackDonationData($conn);
     #trackDonationTable td {
       width: 13%;
     }
-
-    .ellipsis {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 200px;
-      display: inline-block;
-    }
   </style>
 </head>
 
@@ -185,6 +177,8 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                   <tbody>
                     <!-- DISPLAY TRACK DONATION DATA HERE -->
                     <?php
+                      $ctr = 1;
+
                       while($data = $allTrackDonationData->fetch_object()) {
                         ?>
                         <tr>
@@ -195,10 +189,34 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                           <td><?php echo $data->strUnit; ?></td>
                           <td><?php echo $data->strName; ?></td>
                           <td><?php echo $data->ysnStatus == 1 ? 'Received' : ''; ?></td>
-                          <!-- <td><img src="<?php //echo $data->strQRCode; ?>" alt=""></td> -->
-                          <td><a class="ellipsis" href="<?php echo "../" . $data->strQRCode; ?>" download title="Download QR Code"><?php echo $data->strQRCode; ?></a></td>
+                          <td>
+                            <?php if (!empty($data->strQRCode)) { ?>
+                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#QRImage-<?php echo $ctr; ?>">
+                              View QR Code
+                            </button>
+
+                            <!-- QR CODE MODAL -->
+                            <div class="modal fade" id="QRImage-<?php echo $ctr; ?>" tabindex="-1" aria-labelledby="QRImageLabel-<?php echo $ctr; ?>" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content text-center">
+                                  <div class="modal-header border-0 pb-0">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body pt-0">
+                                    <img src="<?php echo "../" . $data->strQRCode; ?>" alt="">
+                                    <a class="d-block link-primary" href="<?php echo "../" . $data->strQRCode; ?>" download>Download QR Code</a>
+                                  </div>
+                                  <!-- <div class="modal-footer"> -->
+                                  <!-- </div> -->
+                                </div>
+                              </div>
+                            </div><!-- END QR CODE MODAL -->
+                            <?php } ?>
+
+                          </td>
                         </tr>
                         <?php
+                        $ctr++;
                       }
                     ?>
                   </tbody>
