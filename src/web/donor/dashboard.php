@@ -10,6 +10,51 @@ if (!isset($_SESSION["intUserId"])) {
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnNgo"]) && $_SESSION["ysnNgo"] == 1) {
   header("Location: ../ngo/dashboard.php");
 }
+
+$intUserId = $_SESSION['intUserId']; 
+
+$donor = "SELECT COUNT(donor.ysnStatus) AS totalDonation 
+          FROM tbluser user
+          JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
+          WHERE user.intUserId = $intUserId";
+
+$resultDonor = $conn->query($donor);
+
+$totalDonation = 0;
+
+if ($resultDonor && $rowDonor = $resultDonor->fetch_assoc()) {
+    $totalDonation = $rowDonor['totalDonation'];
+}
+
+$upcomingDonation = "SELECT COUNT(donor.ysnStatus) AS totalDonation 
+          FROM tbluser user
+          JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
+          WHERE user.intUserId = $intUserId
+          AND donor.ysnStatus = 0";
+
+$resultUpcomingDonation = $conn->query($upcomingDonation);
+
+$totalUpcomingDonation = 0;
+
+if ($resultUpcomingDonation && $rowDonor = $resultUpcomingDonation->fetch_assoc()) {
+    $totalUpcomingDonation = $rowDonor['totalDonation'];
+}
+
+$sql = "SELECT DATE_FORMAT(dtmDate, '%b %Y') AS month, COUNT(*) AS total
+        FROM tbldonationmanagement
+        GROUP BY month
+        ORDER BY dtmDate ASC";
+
+$result = $conn->query($sql);
+
+$monthlyLabels = [];
+$monthlyData = [];
+
+while ($row = $result->fetch_assoc()) {
+    $monthlyLabels[] = $row['month'];
+    $monthlyData[] = $row['total'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -84,23 +129,23 @@ if (!isset($_SESSION["intUserId"])) {
             <div class="col-md-4">
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
-                        <h6 class="text-muted">Number of Donors</h6>
-                        <h2 class="text-primary">300</h2>
+                        <h6 class="text-muted">Total Donations</h6>
+                        <h2 class="text-primary"><?= htmlspecialchars($totalDonation) ?></h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
-                        <h6 class="text-muted">Number of Recipients</h6>
-                        <h2 class="text-success">400</h2>
+                        <h6 class="text-muted">Upcoming Donations</h6>
+                        <h2 class="text-success"><?= htmlspecialchars($totalUpcomingDonation) ?></h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
-                        <h6 class="text-muted">Number of Users</h6>
+                        <h6 class="text-muted">Points Earn</h6>
                         <h2 class="text-warning">56</h2>
                     </div>
                 </div>
@@ -156,42 +201,73 @@ if (!isset($_SESSION["intUserId"])) {
   <!-- Main JS File -->
   <script src="../../../app/js/app.js"></script>
   <script>
-        // Chart.js setup
-        const ctx = document.getElementById('donationChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                datasets: [
-                    {
-                        label: "Current Week",
-                        data: [10, 20, 5, 15, 8, 2, 10],
-                        backgroundColor: "rgba(54, 162, 235, 0.5)",
-                        borderColor: "rgba(54, 162, 235, 1)",
-                        fill: true,
-                        tension: 0.3
-                    },
-                    {
-                        label: "Previous Week",
-                        data: [5, 28, 2, 10, 3, 1, 8],
-                        backgroundColor: "rgba(255, 99, 132, 0.5)",
-                        borderColor: "rgba(255, 99, 132, 1)",
-                        fill: true,
-                        tension: 0.3
+    const ctx = document.getElementById('donationChart').getContext('2d');
+
+    const donationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            datasets: [
+                {
+                    label: "Current Week",
+                    data: [10, 20, 5, 15, 8, 2, 10],
+                    backgroundColor: "rgba(54, 162, 235, 0.5)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: "Previous Week",
+                    data: [5, 28, 2, 10, 3, 1, 8],
+                    backgroundColor: "rgba(255, 99, 132, 0.5)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: "Monthly Trend",
+                    data: <?= json_encode($monthlyData) ?>,
+                    backgroundColor: "rgba(75, 192, 192, 0.3)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    fill: false,
+                    tension: 0.4,
+                    yAxisID: 'y2'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Weekly Donations"
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true, // Prevents infinite expansion
-                scales: {
-                    y: {
-                        beginAtZero: true
+                },
+                y2: {
+                    beginAtZero: true,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    title: {
+                        display: true,
+                        text: "Monthly Trend"
                     }
                 }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
             }
-        });
-    </script>
+        }
+    });
+</script>
+
 </body>
 
 </html>

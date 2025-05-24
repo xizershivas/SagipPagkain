@@ -9,6 +9,29 @@ if (!isset($_SESSION["intUserId"])) {
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnNgo"]) && $_SESSION["ysnNgo"] == 1) {
   header("Location: ../ngo/dashboard.php");
 }
+
+$user = "SELECT COUNT(*) AS total FROM tbluser";
+$resultUser = $conn->query($user);
+
+
+if ($resultUser && $rowUser = $resultUser->fetch_assoc()) {
+    $totalUsers = $rowUser['total'];
+}
+
+$donation = "SELECT COUNT(*) AS totalDonation FROM tbldonationmanagement";
+$resultDonation = $conn->query($donation);
+
+if ($resultDonation && $rowDonation = $resultDonation->fetch_assoc()) {
+$totalDonation = $rowDonation['totalDonation'];
+}
+
+$inventory = "SELECT COUNT(*) AS totalInventory FROM tblinventory";
+$resultInventory = $conn->query($inventory);
+
+if ($resultInventory && $rowInventory = $resultInventory->fetch_assoc()) {
+$totalInventory = $rowInventory['totalInventory'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,26 +113,26 @@ if (!isset($_SESSION["intUserId"])) {
             <div class="row text-center">
                 <div class="col-md-3 mb-3">
                     <div class="card p-3 shadow-sm">
-                        <h6>Total Partner Establishments</h6>
+                        <h6>Request</h6>
                         <h4>45</h4>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card p-3 shadow-sm">
-                        <h6>Total Surplus Items</h6>
-                        <h4>53</h4>
+                        <h6>Users</h6>
+                        <h4><?= htmlspecialchars($totalUsers) ?></h4>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card p-3 shadow-sm">
-                        <h6>Total Surplus Items</h6>
-                        <h4>53</h4>
+                        <h6>Donations</h6>
+                        <h4><?= htmlspecialchars($totalDonation) ?></h4>        
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card p-3 shadow-sm">
-                        <h6>Total Food Donated</h6>
-                        <h4>50</h4>
+                        <h6>Inventory</h6>
+                        <h4><?= htmlspecialchars($totalInventory) ?></h4>  
                     </div>
                 </div>
             </div>
