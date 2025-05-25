@@ -151,7 +151,7 @@
             <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
               <option selected disabled value="">-- Select account type --</option>
               <option value="donor">Donor</option>
-              <option value="ngo">NGO, Cooperative, Youth Org.</option>
+              <option value="partner">Partner (NGO, Cooperative, Youth Org.)</option>
             </select>
           </div>
           <div class="col-12">

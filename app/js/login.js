@@ -21,7 +21,7 @@ function login(e) {
                     window.location.href = 'src/web/app/dashboard.php';
                 } else if (response.data.ysnDonor) {
                     window.location.href = 'src/web/donor/dashboard.php';
-                } else if (response.data.ysnNgo) {
+                } else if (response.data.ysnPartner) {
                     window.location.href = 'src/web/ngo/dashboard.php';
                 }
             } else {

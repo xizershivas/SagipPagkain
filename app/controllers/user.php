@@ -10,6 +10,34 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $conn->close();
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $userData = file_get_contents('php://input');
+
+    $strFullName = sanitize($_POST["fullname"]);
+    $strEmail = sanitize($_POST["email"]);
+    $strContact = sanitize($_POST["contact"]);
+    $strUsername = sanitize($_POST["username"]);
+    $strPassword = sanitize($_POST["password"]);
+    $strConfirmPassword = sanitize($_POST["confirmPassword"]);
+    $strAccountType = sanitize($_POST["accountType"]);
+    $ysnStatus = intval($_POST["status"]);
+
+    $userData = [
+        'strFullName' => $strFullName,
+        'strEmail' => $strEmail,
+        'strContact' => $strContact,
+        'strUsername' => $strUsername,
+        'strPassword' => $strPassword,
+        'strConfirmPassword' => $strConfirmPassword,
+        'strAccountType' => $strAccountType,
+        'ysnStatus' => $ysnStatus
+    ];
+
+    addUser($conn, $userData);
+
+    $conn->close();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "PUT") {
     // Get the RAW PUT data
     $inputData = file_get_contents('php://input');
@@ -25,9 +53,10 @@ if ($_SERVER["REQUEST_METHOD"] == "PUT") {
         $ysnActive = $userData->ysnActive ?? 0;
         $ysnAdmin = $userData->ysnAdmin ?? 0;
         $ysnDonor = $userData->ysnDonor ?? 0;
-        $ysnNgo = $userData->ysnNgo ?? 0;
+        $ysnStaff = $userData->ysnStaff ?? 0;
+        $ysnPartner = $userData->ysnPartner ?? 0;
 
-        updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnActive, $ysnAdmin, $ysnDonor, $ysnNgo);
+        updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnActive, $ysnAdmin, $ysnDonor, $ysnStaff, $ysnPartner);
     }
 
     $conn->close();

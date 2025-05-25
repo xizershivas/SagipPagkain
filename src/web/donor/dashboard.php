@@ -7,7 +7,7 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
   header("Location: ../app/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnNgo"]) && $_SESSION["ysnNgo"] == 1) {
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnPartner"]) && $_SESSION["ysnPartner"] == 1) {
   header("Location: ../ngo/dashboard.php");
 }
 

@@ -23,8 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['ysnAdmin'] = $responseData["data"]["ysnAdmin"];
         } else if ($responseData["data"]["ysnDonor"] == 1) {
             $_SESSION['ysnDonor'] = $responseData["data"]["ysnDonor"];
-        } else if ($responseData["data"]["ysnNgo"] == 1) {
-            $_SESSION['ysnNgo'] = $responseData["data"]["ysnNgo"];
+        } else if ($responseData["data"]["ysnPartner"] == 1) {
+            $_SESSION['ysnPartner'] = $responseData["data"]["ysnPartner"];
         }
 
         http_response_code(200);

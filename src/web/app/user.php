@@ -24,6 +24,7 @@ include "../../../app/functions/user.php";
   <!-- Main CSS File -->
   <link href="../../../app/css/app.css" rel="stylesheet">
   <link href="../../../app/css/user.css" rel="stylesheet">
+  <!-- <link href="../../../app/css/signup.css" rel="stylesheet"> -->
 </head>
 
 <body class="services-details-page">
@@ -64,7 +65,7 @@ include "../../../app/functions/user.php";
                 <a href="user.php" class="active"><i class="bi bi-person-gear"></i><span>User Management</span></a>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
                 <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
-                <a href="volunteerManagement.php"><i class="bi bi-people"></i><span>Volunteer Management</span></a>
+                <!-- <a href="volunteerManagement.php"><i class="bi bi-people"></i><span>Volunteer Management</span></a> -->
                 <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>
@@ -81,7 +82,94 @@ include "../../../app/functions/user.php";
             </div>
           </div>
 
+          <!-- ADD USER FORM (HIDDEN) -->
+          <div class="modal fade" id="modalFrmAddUser" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+
+                <div class="text-black mb-3 bg-light p-3">
+                  <h3 class="signup-heading text-black text-center mb-3">Add New User</h3>
+                  <form class="row g-3 needs-validation" id="frmAddUser" novalidate>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="fullname">Full Name</label>
+                      <div class="input-group">
+                        <span class="input-group-text signup-form-icon" id="addon-fullname"><i class="bi bi-person-vcard-fill"></i></span>
+                        <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Full Name" aria-label="fullname" aria-describedby="addon-fullname" required>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="email">Email</label>
+                      <div class="input-group">
+                        <span class="input-group-text signup-form-icon" id="addon-email"><i class="bi bi-envelope-at-fill"></i></span>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Email Address" aria-label="email" aria-describedby="addon-email">
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="contact">Contact</label>
+                      <div class="input-group">
+                        <span class="input-group-text signup-form-icon" id="addon-contact"><i class="bi bi-telephone-fill"></i></span>
+                        <input type="text" class="form-control" name="contact" id="contact" placeholder="Contact Number" aria-label="contact" aria-describedby="addon-contact">
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="username">Username</label>
+                      <div class="input-group">
+                        <span class="input-group-text signup-form-icon" id="addon-username"><i class="bi bi-person-circle"></i></span>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="Username" aria-label="username" aria-describedby="addon-username" required>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="password">Password</label>
+                      <div class="input-group">
+                        <span class="input-group-text signup-form-icon" id="addon-password"><i class="bi bi-lock-fill"></i></span>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" aria-label="password" aria-describedby="addon-password" required>
+                        <span class="input-group-text signup-form-icon"><i class="bi bi-eye-fill show-hide-password" id="eyePassword"></i></span>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="confirmPassword">Confirm Password</label>
+                      <div class="input-group">
+                        <span class="input-group-text signup-form-icon" id="addon-confirm-password"><i class="bi bi-lock-fill"></i></span>
+                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" aria-label="confirm-password" aria-describedby="addon-confirm-password" required>
+                        <span class="input-group-text signup-form-icon"><i class="bi bi-eye-fill show-hide-password"></i></span>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="accountType">Account Type</label>
+                      <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
+                        <option selected disabled value="">-- Select account type --</option>
+                        <option value="admin">Admin</option>
+                        <option value="donor">Donor</option>
+                        <option value="staff">Food Bank Staff</option>
+                        <option value="partner">Partner (NGO, Cooperative, etc.)</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label fw-bold signup-form-label" for="status">Status</label>
+                      <select class="form-select" aria-label="Large select example" name="status" id="status" required>
+                        <option selected disabled value="">-- Select status --</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                      </select>
+                    </div>
+                  </form>
+                </div>
+                
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" id="btnCancel" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary me-1" id="btnSaveUser" form="frmAddUser">Save</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- END ADD USER FORM-->
+
              <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
+              <div class="row justify-content-center">
+                <button type="button" class="btn btn-success w-25" id="btnAddUser" data-bs-toggle="modal" data-bs-target="#modalFrmAddUser">Add New User</button>
+              </div>
+
                <!-- USER FORM (HIDDEN) -->
               <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -110,8 +198,12 @@ include "../../../app/functions/user.php";
                           <label class="form-check-label" for="donor">Donor access</label>
                         </div>
                         <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="ngo" id="ngo">
-                          <label class="form-check-label" for="ngo">NGO access</label>
+                          <input class="form-check-input" type="checkbox" role="switch" name="staff" id="staff">
+                          <label class="form-check-label" for="staff">Staff access</label>
+                        </div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" name="partner" id="partner">
+                          <label class="form-check-label" for="partner">Partner access</label>
                         </div>
                       </form>
                     </div>
@@ -136,7 +228,8 @@ include "../../../app/functions/user.php";
                     <th scope="col">Active</th>
                     <th scope="col">Admin</th>
                     <th scope="col">Donor</th>
-                    <th scope="col">NGO</th>
+                    <th scope="col">Staff</th>
+                    <th scope="col">Partner</th>
                     <th scope="col" colspan="2">Action</th>
                   </tr>
                 </thead>
@@ -153,7 +246,8 @@ include "../../../app/functions/user.php";
                         <td><?php echo $user->ysnActive ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>"; ?></td>
                         <td><?php echo $user->ysnAdmin ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><?php echo $user->ysnDonor ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnNgo ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnStaff ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnPartner ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><a class="btn-edit-user" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
                         <td><a class="btn-delete-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class="bi bi-trash-fill"></i></a></td>
                       </tr>

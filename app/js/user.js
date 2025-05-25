@@ -1,9 +1,13 @@
 // User Form Variables
 const frmUser = document.querySelector('#frmUser');
+const frmAddUser = document.querySelector('#frmAddUser');
 const btnEditUserList = document.getElementsByClassName('btn-edit-user');
 const btnDeleteUserList = document.getElementsByClassName('btn-delete-user');
 const btnSave = document.querySelector('#btnSave');
 const btnClose = document.querySelector('#btnClose');
+const btnShowHideList = document.getElementsByClassName('show-hide-password');
+const password = document.querySelector('#password');
+const confirmPassword = document.querySelector('#confirmPassword');
 let intUserId = 0;
 
 function setFormData({ data }) {
@@ -12,7 +16,8 @@ function setFormData({ data }) {
     frmUser.elements.active.checked = data.ysnActive ? true : false;
     frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
     frmUser.elements.donor.checked = data.ysnDonor ? true : false;
-    frmUser.elements.ngo.checked = data.ysnNgo ? true : false;
+    frmUser.elements.staff.checked = data.ysnStaff ? true : false;
+    frmUser.elements.partner.checked = data.ysnPartner ? true : false;
 }
 
 function editUser(e) {
@@ -43,7 +48,8 @@ function updateUser() {
         ysnActive: frmUser.elements.active.checked ? true : false,
         ysnAdmin: frmUser.elements.admin.checked ? true : false,
         ysnDonor: frmUser.elements.donor.checked ? true : false,
-        ysnNgo: frmUser.elements.ngo.checked ? true : false,
+        ysnStaff: frmUser.elements.staff.checked ? true : false,
+        ysnPartner: frmUser.elements.partner.checked ? true : false,
     };
 
     const xmlhttp = new XMLHttpRequest();
@@ -90,6 +96,59 @@ function deleteUser(e) {
     }
 }
 
+function showHidePassword(e) {
+    if (e.target.classList.contains('bi-eye-fill')) {
+        e.target.classList.remove('bi-eye-fill');
+        e.target.classList.add('bi-eye-slash-fill');
+        
+        // Show password
+        if (e.target.id == "eyePassword") {
+            password.type = "text"; // Password input
+        } else {
+            confirmPassword.type = "text"; // Confirm password input
+        }
+    } else {
+        e.target.classList.remove('bi-eye-slash-fill');
+        e.target.classList.add('bi-eye-fill');
+
+        // Hide password
+        if (e.target.id == "eyePassword") {
+            password.type = "password"; // Password input
+        } else {
+            confirmPassword.type = "password"; // Confirm password input
+        }
+    }
+}
+
+async function addUser(e) {
+    e.preventDefault();
+
+    if (!this.checkValidity()) {
+        this.classList.add('was-validated');
+        return;
+    }
+
+    const formData = new FormData(this);
+
+    try {
+        const res = await fetch('../../../app/controllers/user.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const resData = await res.json();
+
+        if (!res.ok) {
+            throw new Error(resData.data.message);
+        }
+        
+        alert(resData.data.message);
+        window.location.reload();
+    } catch (e) {
+        alert(e.message);
+    }
+}
+
 // Attach Event Handler for Editing User
 for (let btnEdit of btnEditUserList) {
     btnEdit.addEventListener('click', editUser);
@@ -100,4 +159,9 @@ for (let btnDelete of btnDeleteUserList) {
     btnDelete.addEventListener('click', deleteUser);
 }
 
+for (let btnShowHide of btnShowHideList) {
+    btnShowHide.addEventListener('click', showHidePassword);
+}
+
 btnSave.addEventListener('click', updateUser);
+frmAddUser.addEventListener('submit', addUser);

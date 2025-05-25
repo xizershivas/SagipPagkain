@@ -6,7 +6,7 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
   header("Location: ../donor/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnNgo"]) && $_SESSION["ysnNgo"] == 1) {
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnPartner"]) && $_SESSION["ysnPartner"] == 1) {
   header("Location: ../ngo/dashboard.php");
 }
 
@@ -89,7 +89,7 @@ $totalInventory = $rowInventory['totalInventory'];
                 <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
                 <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
-                <a href="volunteerManagement.php" class=""><i class="bi bi-people"></i><span>Volunteer Management</span></a>
+                <!-- <a href="volunteerManagement.php" class=""><i class="bi bi-people"></i><span>Volunteer Management</span></a> -->
                 <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>

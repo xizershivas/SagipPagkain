@@ -4,7 +4,7 @@ function getDonationData($conn, $user) {
     $ysnActive = $user->ysnActive;
     $ysnAdmin = $user->ysnAdmin;
     $ysnDonor = $user->ysnDonor;
-    $ysnNgo = $user->ysnNgo;
+    $ysnPartner = $user->ysnPartner;
     $allDonationData;
 
     if ($ysnAdmin == 1) {
