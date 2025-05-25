@@ -158,7 +158,7 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
                       <a href="#">Forgot Password?</a>
                     </div>
                     <div class="text-center mt-3" style="color: #333;">
-                      Not a member? <a href="signup.php">Sign Up</a>
+                      Not a member? <a href="src/web/forms/signup.php">Sign Up</a>
                     </div>
                   </form>
                 </div>

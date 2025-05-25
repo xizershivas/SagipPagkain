@@ -2,37 +2,57 @@
 session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
+
+$sql = "SELECT 
+    DATE_FORMAT(t.dtmCreatedDate, '%Y-%m') AS month,
+    t.intFoodBankId,
+    f.strFoodBank,
+    t.intItemId,
+    i.strItem,
+    SUM(t.intQuantity) AS total_quantity
+FROM tbltrackdonation t
+JOIN tblitem i ON t.intItemId = i.intItemId
+JOIN tblfoodbank f ON t.intFoodBankId = f.intFoodBankId
+GROUP BY month, t.intFoodBankId, t.intItemId
+ORDER BY t.intItemId, t.intFoodBankId, month";
+
+$result = $conn->query($sql);
+$data = [];
+
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
+}
+
+$uniqueItems = [];
+foreach ($data as $row) {
+    if (!isset($uniqueItems[$row['intItemId']])) {
+        $uniqueItems[$row['intItemId']] = $row['strItem'];
+    }
+}
+
+echo "<script>const forecastData = " . json_encode($data) . ";</script>";
+echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Sagip Pagkain - Data Analysis And Reporting</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-
-  <!-- Include global stylesheet -->
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Sagip Pagkain - Demand Forecast</title>
   <?php include '../global/stylesheet.php'; ?>
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-  <link href="../../../app/css/dataAnalysisReport.css" rel="stylesheet">
+  <link href="../../../app/css/dataAnalysisReport.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="services-details-page">
-
-  <!-- Include Header -->
   <?php include '../global/header.php'; ?>
 
   <main class="main">
-
-    <!-- Page Title -->
     <div class="page-title" data-aos="fade">
-      <div class="heading">
-        
-      </div>
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
@@ -41,24 +61,19 @@ include "../../../app/functions/user.php";
           </ol>
         </div>
       </nav>
-    </div><!-- End Page Title -->
+    </div>
 
-    <!-- Service Details Section -->
     <section id="service-details" class="service-details section">
-
       <div class="container-fluid">
-
         <div class="row gy-5">
-
           <div class="col-lg-3 mt-0" data-aos="fade-up" data-aos-delay="100">
-
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-               <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
-                <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
+                <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i><span>Track Donation</span></a>
                 <a href="volunteerManagement.php"><i class="bi bi-people"></i><span>Volunteer Management</span></a>
                 <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php" class="active"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
@@ -66,88 +81,45 @@ include "../../../app/functions/user.php";
                 <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
                 <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
               </div>
-            </div><!-- End Services List -->
+            </div>
 
             <div class="help-box d-flex flex-column justify-content-center align-items-center">
               <i class="bi bi-headset help-icon"></i>
               <h4>Have a Question?</h4>
-              <p class="d-flex align-items-center mt-2 mb-0"><i class="bi bi-telephone me-2"></i> <span>+1 5589 55488 55</span></p>
-              <p class="d-flex align-items-center mt-1 mb-0"><i class="bi bi-envelope me-2"></i> <a href="mailto:contact@example.com">contact@example.com</a></p>
+              <p class="d-flex align-items-center mt-2 mb-0">
+                <i class="bi bi-telephone me-2"></i> <span>+1 5589 55488 55</span>
+              </p>
+              <p class="d-flex align-items-center mt-1 mb-0">
+                <i class="bi bi-envelope me-2"></i> <a href="mailto:contact@example.com">contact@example.com</a>
+              </p>
             </div>
           </div>
 
-             <div class="col-lg-9 ps-lg-5 tbl grid-report mt-0" data-aos="fade-up" data-aos-delay="200">
-                    <div class="row">
-                        <!-- Sidebar -->
-                        <div class="col-md-3 bg-light p-3">
-                            <h5>Total Donations Received</h5>
-                            <select class="form-select">
-                                <option>All</option>
-                            </select>
-                            <h5 class="mt-3">Beneficiaries</h5>
-                            <select class="form-select">
-                                <option>Individual</option>
-                            </select>
-                            <h5 class="mt-3">Municipalities</h5>
-                            <select class="form-select">
-                                <option>Santa Maria</option>
-                            </select>
-                            <h5 class="mt-3">Barangay</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" checked> Bagong Pook
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" checked> Coralan
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" checked> Calangay
-                            </div>
-                            <h5 class="mt-3">Forecast</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"> 2 years
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"> 3 years
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"> 4 years
-                            </div>
-                        </div>
-                        
-                        <!-- Main Content -->
-                        <div class="col-md-9">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <canvas id="distributionChart" style="max-width: 400px;max-height: 350px;display: block;box-sizing: border-box;height: 350px;width: 350px;"></canvas>
-                                </div>
-                                <div class="col-md-6">
-                                    <div id="map"></div>
-                                </div>
-                            </div>
-                            <div class="row mt-4">
-                                <div class="col-md-6">
-                                    <canvas id="demandChart"></canvas>
-                                </div>
-                                <div class="col-md-6">
-                                    <canvas id="foodChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-            </div>
+          <div class="col-lg-9 ps-lg-5 tbl grid-report mt-0" data-aos="fade-up" data-aos-delay="200">
+            <h1>Food Demand Forecast</h1>
+
+            <!-- ADD DROPDOWN FOR ITEM FILTER HERE -->
+            <label for="itemFilter"><b>Filter by Item:</b></label>
+            <select id="itemFilter" style="margin-bottom: 15px; padding: 5px;">
+              <option value="all">All Items</option>
+            </select>
+
+            <canvas id="forecastChart" width="900" height="400"></canvas>
+
+            <div id="output" style="margin-top:20px;"></div>
+          </div>
         </div>
-
       </div>
-
-    </section><!-- /Service Details Section -->
-
+    </section>
   </main>
 
   <!-- Include global footer  -->
   <?php include '../global/footer.php'; ?>
 
   <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
 
   <!-- Preloader -->
   <div id="preloader"></div>
@@ -156,78 +128,186 @@ include "../../../app/functions/user.php";
   <?php include '../global/script.php'; ?>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Data Table JS CDN -->
-   <!-- <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
-   <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
-   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-   <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
-  <!-- Main JS File -->
-  <script src="../../../app/js/app.js"></script>
-  <script src="../../../app/js/user.js"></script>
   <script>
-        const ctx1 = document.getElementById('distributionChart').getContext('2d');
-        new Chart(ctx1, {
-            type: 'pie',
-            data: {
-                labels: ['Bagong Pook', 'Coralan', 'Calangay', 'Cabuoan', 'Kayhacat'],
-                datasets: [{
-                    data: [90, 60, 85, 80, 95],
-                    backgroundColor: ['yellow', 'blue', 'red', 'green', 'purple']
-                }]
+    // Your existing groupDataByItemAndLocation function (unchanged)
+    function groupDataByItemAndLocation(data) {
+      const grouped = {};
+      data.forEach(row => {
+        const key = `${row.intItemId}-${row.intFoodBankId}`;
+        if (!grouped[key]) grouped[key] = {
+          description: row.strItem,
+          foodbank: row.strFoodBank,
+          series: []
+        };
+        grouped[key].series.push({
+          month: row.month,
+          quantity: parseInt(row.total_quantity)
+        });
+      });
+
+      // Sort each series by month (ascending)
+      for (const key in grouped) {
+        grouped[key].series.sort((a, b) => (a.month > b.month ? 1 : -1));
+      }
+
+      return grouped;
+    }
+
+    // Your existing forecastDemandForSeries function (unchanged)
+    async function forecastDemandForSeries(series) {
+      if (series.length < 2) {
+        return null;
+      }
+
+      const xs = series.map((_, i) => i + 1);
+      const ys = series.map(item => item.quantity);
+
+      const inputX = tf.tensor2d(xs, [xs.length, 1]);
+      const inputY = tf.tensor2d(ys, [ys.length, 1]);
+
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+      model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
+
+      await model.fit(inputX, inputY, { epochs: 300 });
+
+      const nextX = tf.tensor2d([[xs.length + 1]]);
+      const prediction = model.predict(nextX);
+      const value = await prediction.data();
+
+      return value[0];
+    }
+
+    let chartInstance = null;
+
+    async function runForecast(selectedItemId = 'all') {
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = '';
+
+      let filteredData = forecastData;
+      if (selectedItemId !== 'all') {
+        filteredData = forecastData.filter(d => Number(d.intItemId) === selectedItemId);
+
+      }
+
+      const grouped = groupDataByItemAndLocation(filteredData);
+
+      const chartLabels = [];
+      const datasets = [];
+
+      let colorIndex = 0;
+      const colors = [
+        'rgba(255, 99, 132, 0.7)',
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(75, 192, 192, 0.7)',
+        'rgba(153, 102, 255, 0.7)',
+        'rgba(255, 159, 64, 0.7)',
+      ];
+
+      for (const key in grouped) {
+        const group = grouped[key];
+        const series = group.series;
+
+        if (series.length < 2) {
+          outputDiv.innerHTML += `<p>Not enough data for Item: <b>${group.description}</b> at Food Bank: <b>${group.foodbank}</b></p>`;
+          continue;
+        }
+
+        const forecastValue = await forecastDemandForSeries(series);
+        if (forecastValue === null) continue;
+
+        if (chartLabels.length === 0) {
+          series.forEach(s => chartLabels.push(s.month));
+          chartLabels.push('Next Month');
+        }
+
+        const dataPoints = series.map(s => s.quantity);
+        dataPoints.push(forecastValue);
+
+        datasets.push({
+          label: `${group.description} @ ${group.foodbank}`,
+          data: dataPoints,
+          borderColor: colors[colorIndex % colors.length],
+          backgroundColor: colors[colorIndex % colors.length],
+          fill: false,
+          tension: 0.2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        });
+
+        colorIndex++;
+      }
+
+      if (datasets.length === 0) {
+        outputDiv.innerHTML += `<p>No sufficient data found to forecast.</p>`;
+      }
+
+      const ctx = document.getElementById('forecastChart').getContext('2d');
+
+      // If chart already exists, destroy before creating new
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartLabels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+            },
+            title: {
+              display: true,
+              text: 'Food Demand Forecast by Item and Food Bank'
             }
-        });
-
-        const ctx2 = document.getElementById('demandChart').getContext('2d');
-        new Chart(ctx2, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', '2024', '2025'],
-                datasets: [{
-                    label: 'Predicted Demand',
-                    data: [10, 20, 30, 40, 35, 25, 30],
-                    borderColor: 'red',
-                    fill: false
-                }]
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Quantity'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Month'
+              }
             }
-        });
+          }
+        }
+      });
+    }
 
-        const ctx3 = document.getElementById('foodChart').getContext('2d');
-        new Chart(ctx3, {
-            type: 'bar',
-            data: {
-                labels: ['Vegetables', 'Canned Goods', 'Surplus Food', 'Cooked Meals', 'Fish'],
-                datasets: [{
-                    label: 'Food Type Contributions',
-                    data: [100, 40, 20, 10, 100],
-                    backgroundColor: 'orange'
-                }]
-            }
-        });
-    </script>
-        <script>
-        // Initialize the map
-        var map = L.map('map').setView([14.5995, 120.9842], 12); // Default: Manila, PH
+    function populateItemDropdown() {
+      const select = document.getElementById('itemFilter');
+      for (const [id, name] of Object.entries(uniqueItems)) {
+        const option = document.createElement('option');
+        option.value = id;
+        option.textContent = name;
+        select.appendChild(option);
+      }
+    }
 
-        // Add OpenStreetMap Tile Layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+    document.addEventListener('DOMContentLoaded', () => {
+      populateItemDropdown();
+      runForecast();
 
-        // Define locations with anchor links
-        var locations = [
-            { name: "Manila", coords: [14.5995, 120.9842], url: "https://en.wikipedia.org/wiki/Manila" },
-            { name: "Quezon City", coords: [14.6760, 121.0437], url: "https://en.wikipedia.org/wiki/Quezon_City" },
-            { name: "Makati", coords: [14.5547, 121.0244], url: "https://en.wikipedia.org/wiki/Makati" }
-        ];
-
-        // Add markers with clickable links
-        locations.forEach(function(location) {
-            L.marker(location.coords).addTo(map)
-                .bindPopup(`<a href="${location.url}" target="_blank">${location.name}</a>`);
-        });
-    </script>
+      document.getElementById('itemFilter').addEventListener('change', (e) => {
+        const selectedItemId = e.target.value === 'all' ? 'all' : parseInt(e.target.value);
+        runForecast(selectedItemId);
+      });
+    });
+  </script>
 </body>
-
 </html>
