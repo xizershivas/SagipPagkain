@@ -64,10 +64,10 @@ if (isset($_SESSION["intUserId"])) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="assistanceRequest.php"><i class="bi bi-speedometer2"></i><span>Register for Assistance</span></a>
-                <a href="requestStatus.php"><i class="bi bi-speedometer2"></i><span>Track Available Status</span></a>
-                <a href="availableFoodItem.php"><i class="bi bi-speedometer2"></i><span>View Available Food items</span></a>
-                <a href="RequestHistory.php" class="active"><i class="bi bi-speedometer2"></i><span>RequestHistory</span></a>
+              <a href="assistanceRequest.php"><i class="bi bi-pencil-square"></i><span> Register for Assistance</span></a>
+                <a href="requestStatus.php"><i class="bi bi-search"></i><span> Track Available Status</span></a>
+                <a href="availableFoodItem.php"><i class="bi bi-box"></i><span> View Available Food Items</span></a>
+                <a href="RequestHistory.php" class="active"><i class="bi bi-clock-history"></i><span> Request History</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -80,7 +80,79 @@ if (isset($_SESSION["intUserId"])) {
           </div>
 
           <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
-            <!-- inout main code here  -->
+           
+            <div class="container" style="margin-bottom: 25px;">
+
+                <!-- Request History Card -->
+                <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Request History</h2>
+                    <div class="mb-3">
+                    <label for="pastRequest" class="form-label">Past Requests</label>
+                    <input type="text" class="form-control border-warning" id="pastRequest" placeholder="dd/mm/yyy">
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-header">
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>REQ-001</td>
+                            <td>2024-03-15</td>
+                            <td>Canned Goods, Rice</td>
+                            <td class="text-green">Completed</td>
+                            <td class="action-links">
+                            <a href="#" class="text-primary">View</a>
+                            <a href="#" class="text-info">Edit</a>
+                            <a href="#" class="text-danger">Delete</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Assistance History Card -->
+                <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="card-title">Assistance History</h2>
+                    <div class="text-muted small text-end">
+                        <div>Last Assistance</div>
+                        <div>March 15, 2024</div>
+                    </div>
+                    </div>
+                    <div class="mt-3">
+                    <p class="mb-1">Total Assistance Received</p>
+                    <h4><a href="#">12</a></h4>
+                    </div>
+                    <hr>
+                    <h5>Recent Assistance Details</h5>
+                    <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <strong>Food Package #12</strong><br>
+                        <small class="text-muted">March 15, 2024</small>
+                        <div class="text-green">Completed</div>
+                    </li>
+                    <li>
+                        <strong>Food Package #11</strong><br>
+                        <small class="text-muted">February 28, 2024</small>
+                        <div class="text-green">Completed</div>
+                    </li>
+                    </ul>
+                </div>
+                </div>
+
+                </div>
+
           </div>
         </div>
       </div>

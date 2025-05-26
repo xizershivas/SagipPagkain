@@ -64,10 +64,10 @@ if (isset($_SESSION["intUserId"])) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="assistanceRequest.php" class="active"><i class="bi bi-speedometer2"></i><span>Register for Assistance</span></a>
-                <a href="requestStatus.php"><i class="bi bi-speedometer2"></i><span>Track Available Status</span></a>
-                <a href="availableFoodItem.php"><i class="bi bi-speedometer2"></i><span>View Available Food items</span></a>
-                <a href="RequestHistory.php"><i class="bi bi-speedometer2"></i><span>RequestHistory</span></a>
+                <a href="assistanceRequest.php" class="active"><i class="bi bi-pencil-square"></i><span> Register for Assistance</span></a>
+                <a href="requestStatus.php"><i class="bi bi-search"></i><span> Track Available Status</span></a>
+                <a href="availableFoodItem.php"><i class="bi bi-box"></i><span> View Available Food Items</span></a>
+                <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -80,76 +80,78 @@ if (isset($_SESSION["intUserId"])) {
           </div>
 
           <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
-          <div class="card mb-4">
-      <div class="card-body">
-        <h2 class="card-title"></h2>
-        <form>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="beneficiaryId" class="form-label">Beneficiary ID</label>
-              <input type="text" class="form-control border-warning" id="beneficiaryId" placeholder="Enter ID">
+          <div class="container">
+                    <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title"></h2>
+                    <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                        <label for="beneficiaryId" class="form-label">Beneficiary ID</label>
+                        <input type="text" class="form-control border-warning" id="beneficiaryId" placeholder="Enter ID">
+                        </div>
+                        <div class="col-md-6">
+                        <label for="requestType" class="form-label">Request Type</label>
+                        <select class="form-select border-warning" id="requestType">
+                            <option value="">Select type</option>
+                        </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="itemsNeeded" class="form-label">Items Needed</label>
+                        <textarea class="form-control border-warning" id="itemsNeeded" placeholder="Enter Item" rows="3"></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                        <label for="urgency" class="form-label">Urgency Level</label>
+                        <select class="form-select border-warning" id="urgency">
+                            <option value="">Select type</option>
+                        </select>
+                        </div>
+                        <div class="col-md-6">
+                        <label for="pickupDate" class="form-label">Preferred Pickup Date</label>
+                        <input type="date" class="form-control border-warning" id="pickupDate">
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                </div>
+
+                <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Upload Documents</h2>
+                    <form>
+                    <div class="mb-3">
+                        <label for="document" class="form-label">Select Document</label>
+                        <input type="file" class="form-control border-warning" id="document">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="docDescription" class="form-label">Description</label>
+                        <textarea class="form-control border-warning" id="docDescription" placeholder="Enter Description" rows="3"></textarea>
+                    </div>
+                    </form>
+                </div>
+                </div>
+
+                <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Submit Form</h2>
+                    <form>
+                    <div class="mb-3">
+                        <label for="additionalNotes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control border-warning" id="additionalNotes" placeholder="Enter additional notes" rows="3"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
+                    </div>
+                    </form>
+                </div>
+                </div>
+                </div>
             </div>
-            <div class="col-md-6">
-              <label for="requestType" class="form-label">Request Type</label>
-              <select class="form-select border-warning" id="requestType">
-                <option value="">Select type</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="itemsNeeded" class="form-label">Items Needed</label>
-            <textarea class="form-control border-warning" id="itemsNeeded" placeholder="Enter Item" rows="3"></textarea>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="urgency" class="form-label">Urgency Level</label>
-              <select class="form-select border-warning" id="urgency">
-                <option value="">Select type</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="pickupDate" class="form-label">Preferred Pickup Date</label>
-              <input type="date" class="form-control border-warning" id="pickupDate">
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="card mb-4">
-      <div class="card-body">
-        <h2 class="card-title">Upload Documents</h2>
-        <form>
-          <div class="mb-3">
-            <label for="document" class="form-label">Select Document</label>
-            <input type="file" class="form-control border-warning" id="document">
-          </div>
-
-          <div class="mb-3">
-            <label for="docDescription" class="form-label">Description</label>
-            <textarea class="form-control border-warning" id="docDescription" placeholder="Enter Description" rows="3"></textarea>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="card mb-4">
-      <div class="card-body">
-        <h2 class="card-title">Submit Form</h2>
-        <form>
-          <div class="mb-3">
-            <label for="additionalNotes" class="form-label">Additional Notes</label>
-            <textarea class="form-control border-warning" id="additionalNotes" placeholder="Enter additional notes" rows="3"></textarea>
-          </div>
-          <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    </div>
         </div>
       </div>
     </section><!-- /Service Details Section -->

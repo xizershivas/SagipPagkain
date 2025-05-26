@@ -29,6 +29,18 @@ if (isset($_SESSION["intUserId"])) {
 
   <link href="../../../app/css/donationManagement.css" rel="stylesheet">
 </head>
+  <style>
+    .table-header {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+    .text-green {
+      color: green;
+    }
+    .action-links a {
+      margin-right: 10px;
+    }
+  </style>
 
 <body class="services-details-page">
 
@@ -64,10 +76,10 @@ if (isset($_SESSION["intUserId"])) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="assistanceRequest.php"><i class="bi bi-speedometer2"></i><span>Register for Assistance</span></a>
-                <a href="requestStatus.php" class="active"><i class="bi bi-speedometer2"></i><span>Track Available Status</span></a>
-                <a href="availableFoodItem.php"><i class="bi bi-speedometer2"></i><span>View Available Food items</span></a>
-                <a href="RequestHistory.php"><i class="bi bi-speedometer2"></i><span>RequestHistory</span></a>
+              <a href="assistanceRequest.php"><i class="bi bi-pencil-square"></i><span> Register for Assistance</span></a>
+                <a href="requestStatus.php" class="active"><i class="bi bi-search"></i><span> Track Available Status</span></a>
+                <a href="availableFoodItem.php"><i class="bi bi-box"></i><span> View Available Food Items</span></a>
+                <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -80,7 +92,73 @@ if (isset($_SESSION["intUserId"])) {
           </div>
 
           <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
-            <!-- inout main code here  -->
+          <div class="container">
+
+                <div class="card mt-4">
+                <div class="card-body">
+                    <h2 class="card-title">Request Status Details</h2>
+                    <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="requestId" class="form-label">Request ID</label>
+                        <input type="text" class="form-control border-warning" id="requestId" placeholder="Enter ID">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="requestDate" class="form-label">Request Date</label>
+                        <input type="text" class="form-control border-warning" id="requestDate" placeholder="dd/mm/yyy">
+                    </div>
+                    </div>
+
+                </div>
+
+                <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="card-title">Track table</h2>
+                    <div class="text-muted small text-end">
+                        <div>List of items</div>
+                    </div>
+                    </div>
+                    <hr>
+                    <h5>Recent Assistance Details</h5>
+                    <div class="table-responsive">
+                    <table id="assistanceTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Date Expired</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Rice</td>
+                            <td>Grains</td>
+                            <td>March 15, 2024</td>
+                            <td>September 15, 2024</td>
+                            <td class="action-links">
+                            <a href="#" class="text-info">Edit</a>
+                            <a href="#" class="text-danger">Delete</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Canned Goods</td>
+                            <td>Preserved Food</td>
+                            <td>February 28, 2024</td>
+                            <td>February 28, 2026</td>
+                            <td class="action-links">
+                            <a href="#" class="text-info">Edit</a>
+                            <a href="#" class="text-danger">Delete</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                </div>
+
+                </div>
           </div>
         </div>
       </div>

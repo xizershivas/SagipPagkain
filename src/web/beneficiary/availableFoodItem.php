@@ -64,10 +64,10 @@ if (isset($_SESSION["intUserId"])) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="assistanceRequest.php"><i class="bi bi-speedometer2"></i><span>Register for Assistance</span></a>
-                <a href="requestStatus.php"><i class="bi bi-speedometer2"></i><span>Track Available Status</span></a>
-                <a href="availableFoodItem.php" class="active"><i class="bi bi-speedometer2"></i><span>View Available Food items</span></a>
-                <a href="RequestHistory.php"><i class="bi bi-speedometer2"></i><span>RequestHistory</span></a>
+                <a href="assistanceRequest.php"><i class="bi bi-pencil-square"></i><span> Register for Assistance</span></a>
+                <a href="requestStatus.php"><i class="bi bi-search"></i><span> Track Available Status</span></a>
+                <a href="availableFoodItem.php" class="active"><i class="bi bi-box"></i><span> View Available Food Items</span></a>
+                <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -80,55 +80,57 @@ if (isset($_SESSION["intUserId"])) {
           </div>
 
           <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
+          <div class="container">
                 <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="card-title">View Available Food Items</h2>
-                <div class="mb-3">
-                <label for="searchItems" class="form-label">Search Items</label>
-                <input type="text" class="form-control border-warning" id="searchItems" placeholder="Enter item name">
+                <div class="card-body">
+                    <h2 class="card-title">View Available Food Items</h2>
+                    <div class="mb-3">
+                    <label for="searchItems" class="form-label">Search Items</label>
+                    <input type="text" class="form-control border-warning" id="searchItems" placeholder="Enter item name">
+                    </div>
                 </div>
-            </div>
-            </div>
+                </div>
 
-            <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="card-title">Filter by Category</h2>
-                <div class="mb-3">
-                <label for="category" class="form-label">Select Category</label>
-                <select class="form-select border-warning" id="category">
-                    <option value="">select category</option>
-                </select>
-                </div>
-            </div>
-            </div>
-
-            <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="card-title">Request Specific Items</h2>
-                <form>
-                <div class="mb-3">
-                    <label for="itemName" class="form-label">Item Name</label>
-                    <input type="text" class="form-control border-warning" id="itemName" placeholder="Enter item name">
-                </div>
-                <div class="mb-3">
-                    <label for="quantity" class="form-label">Quantity Needed</label>
-                    <input type="number" class="form-control border-warning" id="quantity" placeholder="Enter quantity">
-                </div>
-                <div class="mb-3">
-                    <label for="urgencyLevel" class="form-label">Urgency Level</label>
-                    <select class="form-select border-warning" id="urgencyLevel">
-                    <option value="">Select urgency</option>
+                <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Filter by Category</h2>
+                    <div class="mb-3">
+                    <label for="category" class="form-label">Select Category</label>
+                    <select class="form-select border-warning" id="category">
+                        <option value="">select category</option>
                     </select>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="itemNotes" class="form-label">Additional Notes</label>
-                    <textarea class="form-control border-warning" id="itemNotes" placeholder="Enter notes" rows="3"></textarea>
                 </div>
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
+
+                <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Request Specific Items</h2>
+                    <form>
+                    <div class="mb-3">
+                        <label for="itemName" class="form-label">Item Name</label>
+                        <input type="text" class="form-control border-warning" id="itemName" placeholder="Enter item name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity Needed</label>
+                        <input type="number" class="form-control border-warning" id="quantity" placeholder="Enter quantity">
+                    </div>
+                    <div class="mb-3">
+                        <label for="urgencyLevel" class="form-label">Urgency Level</label>
+                        <select class="form-select border-warning" id="urgencyLevel">
+                        <option value="">Select urgency</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="itemNotes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control border-warning" id="itemNotes" placeholder="Enter notes" rows="3"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
+                    </div>
+                    </form>
                 </div>
-                </form>
-            </div>
+                </div>
             </div>
 
             </div>
