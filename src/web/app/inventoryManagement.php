@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-// include "../../../app/functions/inventoryManagement.php";
+include "../../../app/functions/inventoryTransfer.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,25 +86,22 @@ include "../../../app/config/db_connection.php";
                         <datalist id="filterOptions">
                         </datalist>
                       </div>
-                    <div class="col col-md-4 d-flex">
-                      <select class="form-select px-2 me-2" name="filterBy1" id="filterBy1" aria-label="Inventory filter">
-                        <option value="strCategory" selected>Category</option>
-                        <option value="strItem">Item</option>
-                        <option value="strUnit">Unit</option>
-                        <option value="strFoodBank">Food Bank</option>
-                      </select>
-                      
-                    </div>
-                      
+                      <div class="col col-md-4 d-flex">
+                        <select class="form-select px-2 me-2" name="filterBy" id="filterBy" aria-label="Inventory filter">
+                          <option value="strCategory" selected>Category</option>
+                          <option value="strItem">Item</option>
+                          <option value="strUnit">Unit</option>
+                          <option value="strFoodBank">Food Bank</option>
+                        </select>
+                      </div>
                     </div>
                   </form>
                 </div>
                 <div class="col col-md-4 mb-2">
                   <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#transferInventoryModal">
-                  Transfer Inventory
+                    Transfer Inventory
                   </button>
                 </div>
-
             </div>
 
             <!-- TABLE INVENTORY -->
@@ -144,28 +141,62 @@ include "../../../app/config/db_connection.php";
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="itemName" class="form-label">Item Name</label>
-              <input type="text" class="form-control" id="itemName" name="itemName" readonly>
+              <label for="sourceFoodBankSelect" class="form-label">Source Food Bank</label>
+              <select class="form-select" id="sourceFoodBankSelect" name="sourceFoodBank" required>
+                <option selected disabled value="">-- Select Source --</option>
+                <?php
+                  $sourceFoodBankData = getSourceFoodBanks($conn);
+
+                  while($row = $sourceFoodBankData->fetch_object()) {
+                    ?>
+                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strFoodBank; ?></option>
+                    <?php
+                  }
+                ?>
+              </select>
             </div>
             <div class="col-md-6">
-              <label for="availableQty" class="form-label">Available Quantity</label>
-              <input type="number" class="form-control" id="availableQty" name="availableQty" readonly>
+              <label for="targetFoodBankSelect" class="form-label">Target Food Bank</label>
+              <select class="form-select" id="targetFoodBankSelect" name="targetFoodBank" required>
+                <option selected disabled value="">-- Select Destination --</option>
+                <?php
+                  $allFoodBanks = getAllFoodBanks($conn);
+
+                  while($row = $allFoodBanks->fetch_object()) {
+                    ?>
+                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strFoodBank; ?></option>
+                    <?php
+                  }
+                  $conn->close();
+                ?>
+              </select>
             </div>
           </div>
 
           <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="transferQty" class="form-label">Quantity to Transfer</label>
-              <input type="number" class="form-control" id="transferQty" name="transferQty" required>
-            </div>
-            <div class="col-md-6">
-              <label for="targetFoodBank" class="form-label">Target Food Bank</label>
-              <select class="form-select" id="targetFoodBank" name="targetFoodBank" required>
-                <option selected disabled value="">-- Select Food Bank --</option>
+            <div class="col-md-4">
+              <label for="itemSelect" class="form-label">Item Name</label>
+              <select class="form-select" id="itemSelect" name="item" required>
+                <option selected disabled value="">-- Select Item --</option>
                 <option value="Food Bank A">Tinapay</option>
                 <option value="Food Bank B">Gatas</option>
                 <option value="Food Bank B">Sabon</option>
               </select>
+            </div>
+            <div class="col-md-4">
+              <label for="availableQty" class="form-label">Available Quantity</label>
+              <input type="number" class="form-control" id="availableQty" name="availableQty" readonly>
+            </div>
+            <div class="col-md-4">
+              <label for="itemUnit" class="form-label">Unit</label>
+              <input type="text" class="form-control" id="itemUnit" name="itemUnit" readonly>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="transferQty" class="form-label">Quantity to Transfer</label>
+              <input type="number" class="form-control" id="transferQty" name="transferQty" min="0" required>
             </div>
           </div>
 
@@ -205,6 +236,7 @@ include "../../../app/config/db_connection.php";
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
    <script src="../../../app/js/inventoryManagement.js"></script>
+   <script src="../../../app/js/inventoryTransfer.js"></script>
 <!-- <script>
         function addColumn() {
             let columnName = document.getElementById("column-name").value.trim();

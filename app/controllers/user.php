@@ -11,8 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $userData = file_get_contents('php://input');
-
     $strFullName = sanitize($_POST["fullname"]);
     $strEmail = sanitize($_POST["email"]);
     $strContact = sanitize($_POST["contact"]);
