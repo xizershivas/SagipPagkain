@@ -246,22 +246,6 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
 
     </section><!-- /About Section -->
 
-        <div class="volunteer-section section">
-        <div class="container" data-aos="fade-up">
-        <div class="row gy-4">
-            <div class="volunteer-text">
-                <h1>Become a Volunteer</h1>
-                <p>Facilitates seamless onboarding of individuals who wish to contribute their time and skills to the Sagip-Pagkain initiative. Volunteers can indicate their preferred roles, such as field support, food bank coordination, or logistics assistance.</p>
-                <a href="src/web/forms/volunteerForm.php" class="btn-custom">SIGN UP NOW <i class="bi bi-arrow-right"></i></a>
-            </div>
-            <div class="volunteer-image">
-                <img src="assets/img/volunteer/volunteers.png" alt="Volunteers">
-            </div>
-        </div>
-        </div>
-    </div>
-
-
         <!-- system Section -->
         <section id="system" class="system section">
 

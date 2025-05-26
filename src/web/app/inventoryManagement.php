@@ -86,25 +86,25 @@ include "../../../app/config/db_connection.php";
                         <datalist id="filterOptions">
                         </datalist>
                       </div>
-                      <div class="col col-md-4">
-                        <select class="form-select px-2" name="filterBy" id="filterBy" aria-label="Inventory filter">
-                          <option value="strCategory" selected>Category</option>
-                          <option value="strItem">Item</option>
-                          <option value="strUnit">Unit</option>
-                          <option value="strFoodBank">Food Bank</option>
-                        </select>
-                      </div>
+                    <div class="col col-md-4 d-flex">
+                      <select class="form-select px-2 me-2" name="filterBy1" id="filterBy1" aria-label="Inventory filter">
+                        <option value="strCategory" selected>Category</option>
+                        <option value="strItem">Item</option>
+                        <option value="strUnit">Unit</option>
+                        <option value="strFoodBank">Food Bank</option>
+                      </select>
+                      
+                    </div>
+                      
                     </div>
                   </form>
                 </div>
-                <!-- <div class="col col-md-4 mb-2">
-                  <input class="form-control d-inline-block" type="text" id="columnName" placeholder="Enter column name (optional)">
-                  <button class="btn btn-primary btn-sm" id="btnAddColumn">Add Column</button>
-                </div>
                 <div class="col col-md-4 mb-2">
-                  <input class="form-control d-inline-block" type="text" id="columnName" placeholder="Enter column name (optional)">
-                  <button class="btn btn-primary btn-sm" id="btnAddColumn">Add Column</button>
-                </div> -->
+                  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#transferInventoryModal">
+                  Transfer Inventory
+                  </button>
+                </div>
+
             </div>
 
             <!-- TABLE INVENTORY -->
@@ -126,6 +126,62 @@ include "../../../app/config/db_connection.php";
           </div>
         </div>
       </div>
+
+      <!-- Transfer Inventory Modal -->
+<div class="modal fade" id="transferInventoryModal" tabindex="-1" aria-labelledby="transferInventoryLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content text-black"> <!-- 👈 Added text-black -->
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="transferInventoryLabel" style="color: #333;">Transfer Inventory</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <form id="transferInventoryForm">
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="itemName" class="form-label">Item Name</label>
+              <input type="text" class="form-control" id="itemName" name="itemName" readonly>
+            </div>
+            <div class="col-md-6">
+              <label for="availableQty" class="form-label">Available Quantity</label>
+              <input type="number" class="form-control" id="availableQty" name="availableQty" readonly>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="transferQty" class="form-label">Quantity to Transfer</label>
+              <input type="number" class="form-control" id="transferQty" name="transferQty" required>
+            </div>
+            <div class="col-md-6">
+              <label for="targetFoodBank" class="form-label">Target Food Bank</label>
+              <select class="form-select" id="targetFoodBank" name="targetFoodBank" required>
+                <option selected disabled value="">-- Select Food Bank --</option>
+                <option value="Food Bank A">Tinapay</option>
+                <option value="Food Bank B">Gatas</option>
+                <option value="Food Bank B">Sabon</option>
+              </select>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-warning" form="transferInventoryForm">Proceed Transfer</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
     </section><!-- /Service Details Section -->
 
   </main>

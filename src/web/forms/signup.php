@@ -103,6 +103,15 @@
         <h1 class="signup-heading">Sign Up</h1>
         <form class="row g-3 needs-validation" id="frmSignUp" novalidate>
           <div class="col-12">
+            <label class="form-label fw-bold signup-form-label" for="accountType">Account Type</label>
+            <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
+              <option selected disabled value="">-- Select account type --</option>
+              <option value="donor">Donor</option>
+              <option value="partner">Partner (NGO, Cooperative, Youth Org.)</option>
+              <option value="beneficiary">Beneficiary</option>
+            </select>
+          </div>
+          <div class="col-12">
             <label class="form-label fw-bold signup-form-label" for="fullname">Full Name</label>
             <div class="input-group">
               <span class="input-group-text signup-form-icon" id="addon-fullname"><i class="bi bi-person-vcard-fill"></i></span>
@@ -121,6 +130,20 @@
             <div class="input-group">
               <span class="input-group-text signup-form-icon" id="addon-contact"><i class="bi bi-telephone-fill"></i></span>
               <input type="text" class="form-control" name="contact" id="contact" placeholder="Contact Number" aria-label="contact" aria-describedby="addon-contact">
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-bold signup-form-label" for="address">Address</label>
+            <div class="input-group">
+              <span class="input-group-text signup-form-icon" id="addon-address"><i class="bi bi-geo-alt-fill"></i></span>
+              <input type="text" class="form-control" name="address" id="address" placeholder="address" aria-label="address" aria-describedby="addon-address">
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-bold signup-form-label" for="monthlyincome">Monthly Income</label>
+            <div class="input-group">
+              <span class="input-group-text signup-form-icon" id="addon-monthlyincome"><i class="bi bi-cash-stack"></i></span>
+              <input type="text" class="form-control" name="monthlyincome" id="monthlyincome" placeholder="Monthly Income" aria-label="contact" aria-describedby="addon-monthlyincome">
             </div>
           </div>
           <div class="col-12">
@@ -145,14 +168,6 @@
               <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" aria-label="confirm-password" aria-describedby="addon-confirm-password" required>
               <span class="input-group-text signup-form-icon"><i class="bi bi-eye-fill show-hide-password"></i></span>
             </div>
-          </div>
-          <div class="col-12">
-            <label class="form-label fw-bold signup-form-label" for="accountType">Account Type</label>
-            <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
-              <option selected disabled value="">-- Select account type --</option>
-              <option value="donor">Donor</option>
-              <option value="partner">Partner (NGO, Cooperative, Youth Org.)</option>
-            </select>
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-primary w-100" id="btnSignUp">Submit</button>
@@ -223,5 +238,26 @@
 <script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../../../app/js/formValidation.js"></script>
 <script src="../../../app/js/signup.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const accountTypeSelect = document.getElementById("accountType");
+    const addressField = document.getElementById("address").closest(".col-12");
+    const incomeField = document.getElementById("monthlyincome").closest(".col-12");
+
+    // Hide by default
+    addressField.style.display = "none";
+    incomeField.style.display = "none";
+
+    accountTypeSelect.addEventListener("change", function () {
+      if (this.value === "beneficiary") {
+        addressField.style.display = "";
+        incomeField.style.display = "";
+      } else {
+        addressField.style.display = "none";
+        incomeField.style.display = "none";
+      }
+    });
+  });
+</script> 
 </body>
 </html>
