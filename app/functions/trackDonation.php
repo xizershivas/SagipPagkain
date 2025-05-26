@@ -287,7 +287,7 @@ function saveTrackDonation($conn, $trackDonationData) {
             throw new Exception("Database update operation failed", 500);
         }
 
-        generateQRCode($conn, $intBeneficiaryId, $intItemId, $intSendQuantity, $lastInsertId);
+        generateQRCode($conn, $intBeneficiaryId, $intFoodBankId, $intItemId, $intSendQuantity, $lastInsertId);
 
         $conn->commit();
 
@@ -307,7 +307,7 @@ function saveTrackDonation($conn, $trackDonationData) {
     exit();
 }
 
-function generateQRCode($conn, $intBeneficiaryId, $intItemId, $intSendQuantity, $lastInsertId) {
+function generateQRCode($conn, $intBeneficiaryId, $intFoodBankId, $intItemId, $intSendQuantity, $lastInsertId) {
     
     include "../../app/utils/phpqrcode/qrlib.php";
 
@@ -318,15 +318,28 @@ function generateQRCode($conn, $intBeneficiaryId, $intItemId, $intSendQuantity, 
     $beneficiaryResult = $beneficiaryQuery->get_result()->fetch_assoc();
 
     // Inventory Item and Item Quantity
-    $qtyQuery = $conn->prepare("SELECT SUM(IV.intQuantity) AS intQuantity, I.strItem FROM tblinventory IV INNER JOIN tblitem I ON IV.intItemId = I.intItemId WHERE IV.intItemId = ? GROUP BY IV.intItemId");
-    $qtyQuery->bind_param("i", $intItemId);
-    $qtyQuery->execute();
-    $qtyResult = $qtyQuery->get_result()->fetch_assoc();
+    $itemQuery = $conn->prepare("SELECT I.strItem FROM tblitem I WHERE I.intItemId = ?");
+    $itemQuery->bind_param("i", $intItemId);
+    $itemQuery->execute();
+    $itemResult = $itemQuery->get_result()->fetch_assoc();
+
+    // Food Bank
+    $foodBankQuery = $conn->prepare("SELECT FB.strFoodBank FROM tblfoodbank FB WHERE FB.intFoodBankId = ?");
+    $foodBankQuery->bind_param("i", $intFoodBankId);
+    $foodBankQuery->execute();
+    $foodBankResult = $foodBankQuery->get_result()->fetch_assoc();
+
+    // Date Received
+    $donationQuery = $conn->prepare("SELECT U.strUnit, DATE(TD.dtmCreatedDate) AS dtmDateReceived FROM tbltrackdonation TD INNER JOIN tblunit U ON TD.intUnitId = U.intUnitId WHERE TD.intTrackDonationId = ?");
+    $donationQuery->bind_param("i", $lastInsertId);
+    $donationQuery->execute();
+    $donationResult = $donationQuery->get_result()->fetch_assoc();
 
     $data = "Name: " . $beneficiaryResult["strName"]
-        . "\nItem: " . $qtyResult["strItem"]
-        . "\nQty Received: " . $intSendQuantity
-        . "\nQty Available: " . $qtyResult["intQuantity"];
+        . "\nFood Bank: " . $foodBankResult["strFoodBank"]
+        . "\nItem: " . $itemResult["strItem"]
+        . "\nQty Received: " . $intSendQuantity . " " . $donationResult["strUnit"]
+        . "\nDate Received: " . $donationResult["dtmDateReceived"];
 
     $filePath = '../../app/storage/media/qrcodes/' . $intBeneficiaryId . '_' . $beneficiaryResult["strName"] . '_' . uniqid(). '.png';
     QRcode::png($data, $filePath, QR_ECLEVEL_L, 1000/150);
@@ -336,7 +349,7 @@ function generateQRCode($conn, $intBeneficiaryId, $intItemId, $intSendQuantity, 
     $updateQuery->bind_param("si", $filePath, $lastInsertId);
 
     if (!$updateQuery->execute()) {
-        throw new Exception("Failed generate and update QR Code", 400);
+        throw new Exception("Failed to generate and update QR Code", 400);
     }
 }
 ?>
