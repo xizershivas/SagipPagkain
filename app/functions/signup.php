@@ -59,16 +59,18 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
             $stmt = $conn->prepare($query);
             $ysnActive = 1;
             $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysnActive, $ysn);
-
-            $query2 = "INSERT INTO tblbeneficiary (strName, strEmail, strContact, strAddress, dblSalary) 
-            VALUES (?, ?, ?, ?, ?)";
-            $stmt2 = $conn->prepare($query2);
-            $stmt2->bind_param("ssssd", $strFullName, $strEmail, $strContact, $strAddress, $dblSalary);
             break;
     }
 
     if ($strAccountType == "beneficiary") {
         if ($stmt->execute()) {
+            $intUserId = $conn->insert_id;
+
+            $query2 = "INSERT INTO tblbeneficiary (intUserId, strName, strEmail, strContact, strAddress, dblSalary) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt2 = $conn->prepare($query2);
+            $stmt2->bind_param("issssd", $intUserId, $strFullName, $strEmail, $strContact, $strAddress, $dblSalary);
+
             if ($stmt2->execute()) {
                 http_response_code(201);
                 echo json_encode(array(

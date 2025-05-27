@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/user.php";
+include "../../../app/functions/beneficiary.php";
 
 if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
@@ -99,7 +99,7 @@ if (isset($_SESSION["intUserId"])) {
                     <div class="row mb-3">
                         <div class="col-md-6">
                         <label for="beneficiaryId" class="form-label">Beneficiary ID</label>
-                        <input type="text" class="form-control border-warning" id="beneficiaryId" placeholder="Enter ID">
+                        <input type="text" class="form-control border-warning" id="beneficiaryId" value="<?= $user->intBeneficiaryId; ?>">
                         </div>
                         <div class="col-md-6">
                         <label for="requestType" class="form-label">Request Type</label>

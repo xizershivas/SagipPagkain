@@ -40,7 +40,7 @@ function signUp(e) {
 
             if (this.status == 200 || this.status == 201) {
                 alert(response.data.message);
-                window.location.href = './login.php';
+                window.location.href = '../../../index.php';
             } else {
                 alert(response.data.message);
             }
