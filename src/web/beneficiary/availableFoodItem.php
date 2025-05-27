@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/user.php";
+include "../../../app/functions/beneficiary.php";
 $userData;
 $user;
 if (isset($_SESSION["intUserId"])) {
@@ -85,8 +85,45 @@ if (isset($_SESSION["intUserId"])) {
                 <div class="card-body">
                     <h2 class="card-title">Available Food Items</h2>
                     <div class="mb-3">
-                    <label for="searchItems" class="form-label">Search Items</label>
-                    <input type="text" class="form-control border-warning" id="searchItems" placeholder="Enter item name">
+                    
+                   <!-- AVAILABLE FOOD ITEMS DATA TABLE  -->
+                    <table id="availableFoodItemsDataTable" class="display table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Item</th>
+                          <th scope="col">Quantity</th>
+                          <th scope="col">Unit</th>
+                          <th scope="col">Category</th>
+                          <th scope="col">Food Bank</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                          $allInventoryData = getAllInventoryItems($conn);
+
+                          if ($allInventoryData->num_rows > 0) {
+                            $ctr = 1;
+                            while ($row = $allInventoryData->fetch_object()) {
+                              ?>
+                              <tr>
+                                <td><?= $ctr ?></td>
+                                <td><?= $row->strItem ?></td>
+                                <td><?= $row->intQuantity ?></td>
+                                <td><?= $row->strUnit ?></td>
+                                <td><?= $row->strCategory ?></td>
+                                <td><?= $row->strFoodBank ?></td>
+                              </tr>
+                              <?php
+                              $ctr++;
+                            }
+                          }
+                          $conn->close();
+                        ?>
+                      </tbody>
+                    </table>
+                    <!-- END AVAILABLE FOOD ITEMS DATA TABLE  -->
+
                     </div>
                 </div>
                 </div>
@@ -156,26 +193,16 @@ if (isset($_SESSION["intUserId"])) {
   <!-- Data Table JS CDN -->
    <!-- <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
-   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-   <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-
-  <script src="../../../app/js/formValidation.js"></script>
-  <script src="../../../app/js/donationManagement.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
   <script>
-  $(document).ready(function() {
-    new DataTable('#donationDataTable', {
+    $(document).ready(function() {
+      new DataTable('#availableFoodItemsDataTable', {
 
-      lengthMenu: [10, 20, 30, 50, 100]
+        lengthMenu: [5, 10, 20, 50, 100]
+      });
     });
-  });
-
-  $(document).ready(function() {
-    new DataTable('#archiveDataTable', {
-
-      lengthMenu: [5, 10]
-    });
-  });
-</script>
+  </script>
 
 </body>
 

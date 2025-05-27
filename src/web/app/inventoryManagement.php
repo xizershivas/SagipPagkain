@@ -115,6 +115,7 @@ include "../../../app/functions/inventoryTransfer.php";
                   <th scope="col">Quantity</th>
                   <th scope="col">Unit</th>
                   <th scope="col">Category</th>
+		  <th scope="col">Expiration Date</th>
                   <th scope="col">Food Bank</th>
                 </tr>
               </thead>

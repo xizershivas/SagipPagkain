@@ -47,6 +47,7 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
             ,C.strCategory
             ,U.intUnitId
             ,U.strUnit
+            ,DATE_FORMAT(IV.dtmExpirationDate, '%M %d, %Y') AS dtmExpirationDate
             FROM tblinventory IV
             INNER JOIN tbldonationmanagement D ON IV.intDonationId = D.intDonationId
             INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
@@ -98,6 +99,7 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
             ,C.strCategory AS strCategory
             ,U.intUnitId
             ,U.strUnit AS strUnit
+            ,DATE_FORMAT(IV.dtmExpirationDate, '%M %d, %Y') AS dtmExpirationDate
             FROM tblinventory IV
             INNER JOIN tbldonationmanagement D ON IV.intDonationId = D.intDonationId
             INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId

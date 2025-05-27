@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $strCategory = sanitize($_POST["category"]);
     $strUnit = sanitize($_POST["unit"]);
     $strRemarks = sanitize($_POST["remarks"]);
+    $dtmExpirationDate = sanitize($_POST["date2"]);
 
     // File upload JPG/PNG
     $strDocFilePath = processDocFileUpload($intUserId);
@@ -31,7 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "strCategory" => $strCategory,
         "strUnit" => $strUnit,
         "strDocFilePath" => $strDocFilePath ? implode(",", $strDocFilePath) : "",
-        "strRemarks" => $strRemarks
+        "strRemarks" => $strRemarks,
+        "dtmExpirationDate" => $dtmExpirationDate
     ];
 
     addDonation($conn, $donationData);

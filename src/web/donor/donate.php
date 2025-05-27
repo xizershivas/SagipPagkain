@@ -192,6 +192,14 @@ if (isset($_SESSION["intUserId"])) {
                 </div>
               </div>
               <div class="col-md-4">
+                <label for="date2" class="form-label">Expiration Date</label>
+                <input type="date" class="form-control" name="date2" id="date2" value="" required>
+                <div class="invalid-feedback">
+                  Expiration Date is required
+                </div>
+              </div>
+             
+              <div class="col-md-4">
                 <label for="" class="form-label">Upload Document (JPG/PNG Max: 5MB)</label>
                 <input type="file" class="form-control" name="verification[]" id="verification" accept="image/*" multiple>
                 <!-- <div class="invalid-feedback">

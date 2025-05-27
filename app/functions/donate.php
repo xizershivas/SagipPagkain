@@ -107,10 +107,17 @@ function addDonation($conn, $donationData) {
         $strUnit = $donationData["strUnit"];
         $strDocFilePath = $donationData["strDocFilePath"];
         $strRemarks = $donationData["strRemarks"];
+        $dtmExpirationDate = $donationData["dtmExpirationDate"];
 
         if (empty($dtmDate)) {
             http_response_code(400);
             echo json_encode(["data" => ["message" => "Invalid Date"]]);
+            exit();
+        }
+
+        if (empty($dtmExpirationDate)) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Invalid Date for Expiration Date"]]);
             exit();
         }
 
@@ -123,8 +130,8 @@ function addDonation($conn, $donationData) {
         try {
             // Insert donation
             $query1 = $conn->prepare("INSERT INTO tbldonationmanagement 
-                (intUserId, strDonorName, dtmDate, strTitle, strDescription, strFoodBank, strDocFilePath, strRemarks) VALUES (?,?,?,?,?,?,?,?)");
-            $query1->bind_param("isssssss"
+                (intUserId, strDonorName, dtmDate, strTitle, strDescription, strFoodBank, strDocFilePath, strRemarks, dtmExpirationDate) VALUES (?,?,?,?,?,?,?,?,?)");
+            $query1->bind_param("issssssss"
                 ,$intUserId
                 ,$strDonorName
                 ,$dtmDate
@@ -133,6 +140,7 @@ function addDonation($conn, $donationData) {
                 ,$strFoodBank
                 ,$strDocFilePath
                 ,$strRemarks
+                ,$dtmExpirationDate
             );
 
             if (!$query1->execute()) {
@@ -171,14 +179,15 @@ function addDonation($conn, $donationData) {
 
             // Insert inventory
             $query2 = $conn->prepare("INSERT INTO tblinventory 
-                (intDonationId, intFoodBankId, intItemId, intCategoryId, intUnitId, intQuantity) VALUES (?,?,?,?,?,?)");
-            $query2->bind_param("iiiiii"
+                (intDonationId, intFoodBankId, intItemId, intCategoryId, intUnitId, intQuantity, dtmExpirationDate) VALUES (?,?,?,?,?,?,?)");
+            $query2->bind_param("iiiiiis"
                 ,$intDonationId
                 ,$intFoodBankId
                 ,$intItemId
                 ,$intCategoryId
                 ,$intUnitId
                 ,$intQuantity
+                ,$dtmExpirationDate
             );
 
             if (!$query2->execute()) {
