@@ -34,6 +34,31 @@ if ($resultInventory && $rowInventory = $resultInventory->fetch_assoc()) {
 $totalInventory = $rowInventory['totalInventory'];
 }
 
+$forecastedAvailability = "
+    SELECT 
+        MONTHNAME(dtmCreatedDate) AS MonthName, 
+        CONCAT(MONTHNAME(dtmCreatedDate), ' ', YEAR(dtmCreatedDate)) AS Label,
+        SUM(intQuantity) AS TotalQuantity 
+    FROM tbltrackdonation 
+    GROUP BY MONTH(dtmCreatedDate), YEAR(dtmCreatedDate)
+    ORDER BY YEAR(dtmCreatedDate), MONTH(dtmCreatedDate)
+";
+
+$resultForecastedAvailability = $conn->query($forecastedAvailability);
+
+$labels = [];
+$data = [];
+
+if ($resultForecastedAvailability) {
+    while ($row = $resultForecastedAvailability->fetch_assoc()) {
+        $labels[] = $row['Label'];
+        $data[] = $row['TotalQuantity'];
+    }
+}
+
+$jsonLabels = json_encode($labels);
+$jsonData = json_encode($data);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -226,23 +251,23 @@ $totalInventory = $rowInventory['totalInventory'];
 
         // Forecasted Surplus Availability
         const forecastCtx = document.getElementById('forecastedSurplusChart').getContext('2d');
-        new Chart(forecastCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jul 2024', 'Aug 2024', 'Sep 2024', 'Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025'],
-                datasets: [{
-                    label: 'Forecasted Surplus Availability',
-                    data: [266, 8686, 3750, 11890, 15030, 17990, 21535, 24660, 30150, 37930],
-                    borderColor: 'blue',
-                    fill: true,
-                    backgroundColor: 'rgba(0, 0, 255, 0.2)'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+          new Chart(forecastCtx, {
+              type: 'line',
+              data: {
+                  labels: <?php echo $jsonLabels; ?>,
+                  datasets: [{
+                      label: 'Forecasted Surplus Availability',
+                      data: <?php echo $jsonData; ?>,
+                      borderColor: 'blue',
+                      fill: true,
+                      backgroundColor: 'rgba(0, 0, 255, 0.2)'
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false
+              }
+          });
     </script>
 
 </body>
