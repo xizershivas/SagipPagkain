@@ -89,6 +89,7 @@ function uploadRequestDocument($beneficiaryId) {
 function submitBeneficiaryRequest($conn, $requestData) {
     header('Content-Type: application/json');
     
+    $intBeneficiaryId = $requestData['beneficiaryId'];
     $strRequestType = $requestData['requestType'];
     $itemsNeeded = $requestData['itemsNeeded'];
     $strUrgencyLevel = $requestData['urgencyLevel'];
@@ -100,10 +101,10 @@ function submitBeneficiaryRequest($conn, $requestData) {
     $conn->begin_transaction();
 
     try {
-        $sql1 = "INSERT INTO tblbeneficiaryrequest (strRequestType, strUrgencyLevel, dtmPickupDate, strDocument, strDescription, strNotes) VALUES(?, ?, ?, ?, ?, ?)";
+        $sql1 = "INSERT INTO tblbeneficiaryrequest (intBeneficiaryId, strRequestType, strUrgencyLevel, dtmPickupDate, strDocument, strDescription, strNotes) VALUES(?, ?, ?, ?, ?, ?, ?)";
         $stmt1 = $conn->prepare($sql1);
         if (!$stmt1) throw new Exception("Database operation failed", 500);
-        $stmt1->bind_param("ssssss", $strRequestType, $strUrgencyLevel, $dtmPickupDate, $strDocument, $strDescription, $strNotes);
+        $stmt1->bind_param("issssss", $intBeneficiaryId, $strRequestType, $strUrgencyLevel, $dtmPickupDate, $strDocument, $strDescription, $strNotes);
 
         if ($stmt1->execute()) {
             $lastInsertId = $conn->insert_id;
