@@ -1,7 +1,18 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/donationManagement.php";
+include "../../../app/functions/user.php";
+
+if (!isset($_SESSION["intUserId"])) {
+  header("Location: ../forms/login.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
+  header("Location: ../app/dashboard.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnPartner"]) && $_SESSION["ysnPartner"] == 1) {
+  header("Location: ../ngo/dashboard.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
+  header("Location: ../donor/dashboard.php");
+}
+
 $userData;
 $user;
 if (isset($_SESSION["intUserId"])) {
@@ -176,9 +187,6 @@ if (isset($_SESSION["intUserId"])) {
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-
-  <script src="../../../app/js/formValidation.js"></script>
-  <script src="../../../app/js/donationManagement.js"></script>
   <script>
   $(document).ready(function() {
     new DataTable('#donationDataTable', {

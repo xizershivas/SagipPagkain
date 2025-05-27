@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/donationManagement.php";
+include "../../../app/functions/user.php";
 $userData;
 $user;
 if (isset($_SESSION["intUserId"])) {

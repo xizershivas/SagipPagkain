@@ -23,6 +23,8 @@ function login(e) {
                     window.location.href = 'src/web/donor/dashboard.php';
                 } else if (response.data.ysnPartner) {
                     window.location.href = 'src/web/ngo/dashboard.php';
+                } else if (response.data.ysnBeneficiary) {
+                    window.location.href = 'src/web/beneficiary/assistanceRequest.php';
                 }
             } else {
                 alert(response.data.message);

@@ -7,6 +7,9 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
 } else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0) {
   header("Location: ../donor/dashboard.php");
   exit();
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnBeneficiary"]) {
+  header("Location: ../beneficiary/assistanceRequest.php");
+  exit();
 }
 ?>
 <!DOCTYPE html>

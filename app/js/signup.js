@@ -38,7 +38,7 @@ function signUp(e) {
         if (this.readyState == 4) {
             const response = JSON.parse(this.responseText);
 
-            if (this.status == 200) {
+            if (this.status == 200 || this.status == 201) {
                 alert(response.data.message);
                 window.location.href = './login.php';
             } else {

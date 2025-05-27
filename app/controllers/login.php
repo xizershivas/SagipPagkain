@@ -25,6 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['ysnDonor'] = $responseData["data"]["ysnDonor"];
         } else if ($responseData["data"]["ysnPartner"] == 1) {
             $_SESSION['ysnPartner'] = $responseData["data"]["ysnPartner"];
+        } else if ($responseData["data"]["ysnBeneficiary"] == 1) {
+            $_SESSION['ysnBeneficiary'] = $responseData["data"]["ysnBeneficiary"];
         }
 
         http_response_code(200);

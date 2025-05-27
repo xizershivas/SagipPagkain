@@ -8,6 +8,8 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../donor/dashboard.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnPartner"]) && $_SESSION["ysnPartner"] == 1) {
   header("Location: ../ngo/dashboard.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
+  header("Location: ../beneficiary/assistanceRequest.php");
 }
 
 $user = "SELECT COUNT(*) AS total FROM tbluser";

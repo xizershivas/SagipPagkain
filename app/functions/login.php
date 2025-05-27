@@ -26,6 +26,7 @@ function login($conn, $userData) {
                 "ysnAdmin" => $user->ysnAdmin,
                 "ysnDonor" => $user->ysnDonor,
                 "ysnPartner" => $user->ysnPartner,
+                "ysnBeneficiary" => $user->ysnBeneficiary,
                 "success" => true
             ]];
         }

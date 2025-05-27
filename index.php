@@ -4,8 +4,11 @@ session_start();
 if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
   header("Location: src/web/app/dashboard.php");
   exit();
-} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0) {
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnDonor"] == 1) {
   header("Location: src/web/donor/dashboard.php");
+  exit();
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnBeneficiary"] == 1) {
+  header("Location: src/web/beneficiary/assistanceRequest.php");
   exit();
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType) {
+function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress, $dblSalary) {
     // Check if User already exists
     $sql = $conn->prepare("SELECT strUsername FROM tbluser WHERE strUsername = ?");
     $sql->bind_param("s", $strUsername);
@@ -35,7 +35,9 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
     }
 
     $query;
+    $query2;
     $stmt;
+    $stmt2;
     $ysn = 1;
 
     switch ($strAccountType) {
@@ -51,27 +53,68 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
             break;
+        case "beneficiary":
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnActive, ysnBeneficiary) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $ysnActive = 1;
+            $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysnActive, $ysn);
+
+            $query2 = "INSERT INTO tblbeneficiary (strName, strEmail, strContact, strAddress, dblSalary) 
+            VALUES (?, ?, ?, ?, ?)";
+            $stmt2 = $conn->prepare($query2);
+            $stmt2->bind_param("ssssd", $strFullName, $strEmail, $strContact, $strAddress, $dblSalary);
+            break;
     }
 
-    if ($stmt->execute()) {
-        http_response_code(200);
-        echo json_encode(array(
-            "data" => array(
-                "message" => "Registration successful",
-                "fullName" => $strFullName,
-                "email" => $strEmail,
-                "contact" => $strContact,
-                "username" => $strUsername,
-                "accountType" => $strAccountType,
-                "success" => true
-            )
-        ));
+    if ($strAccountType == "beneficiary") {
+        if ($stmt->execute()) {
+            if ($stmt2->execute()) {
+                http_response_code(201);
+                echo json_encode(array(
+                    "data" => array(
+                        "message" => "Registration successful",
+                        "fullName" => $strFullName,
+                        "email" => $strEmail,
+                        "contact" => $strContact,
+                        "username" => $strUsername,
+                        "accountType" => $strAccountType,
+                        "success" => true
+                        )
+                    ));
+            } else {
+                http_response_code(500);
+                echo json_encode(["data" => ["message" => $stmt->error]]);
+            }
+        } else {
+            http_response_code(500);
+            echo json_encode(["data" => ["message" => $stmt->error]]);
+        }
+
+        $stmt->close();
+        $stmt2->close();
     } else {
-        http_response_code(500);
-        echo json_encode(["data" => ["message" => $stmt->error]]);
+        if ($stmt->execute()) {
+            http_response_code(201);
+            echo json_encode(array(
+                "data" => array(
+                    "message" => "Registration successful",
+                    "fullName" => $strFullName,
+                    "email" => $strEmail,
+                    "contact" => $strContact,
+                    "username" => $strUsername,
+                    "accountType" => $strAccountType,
+                    "success" => true
+                )
+            ));
+        } else {
+            http_response_code(500);
+            echo json_encode(["data" => ["message" => $stmt->error]]);
+        }
+
+        $stmt->close();
     }
 
-    $stmt->close();
     exit();
 }
 ?>
