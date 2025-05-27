@@ -45,7 +45,7 @@ if (isset($_SESSION["intUserId"])) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current">Admin</li>
+            <li class="current">Donor</li>
             <li><a href="donationManagement.php">Donation Management</a></li>
           </ol>
         </div>

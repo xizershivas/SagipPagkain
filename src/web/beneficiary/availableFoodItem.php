@@ -83,7 +83,7 @@ if (isset($_SESSION["intUserId"])) {
           <div class="container">
                 <div class="card mb-4">
                 <div class="card-body">
-                    <h2 class="card-title">View Available Food Items</h2>
+                    <h2 class="card-title">Available Food Items</h2>
                     <div class="mb-3">
                     <label for="searchItems" class="form-label">Search Items</label>
                     <input type="text" class="form-control border-warning" id="searchItems" placeholder="Enter item name">
@@ -91,7 +91,7 @@ if (isset($_SESSION["intUserId"])) {
                 </div>
                 </div>
 
-                <div class="card mb-4">
+                <!-- <div class="card mb-4">
                 <div class="card-body">
                     <h2 class="card-title">Filter by Category</h2>
                     <div class="mb-3">
@@ -101,9 +101,9 @@ if (isset($_SESSION["intUserId"])) {
                     </select>
                     </div>
                 </div>
-                </div>
+                </div> -->
 
-                <div class="card mb-4">
+                <!-- <div class="card mb-4">
                 <div class="card-body">
                     <h2 class="card-title">Request Specific Items</h2>
                     <form>
@@ -130,7 +130,7 @@ if (isset($_SESSION["intUserId"])) {
                     </div>
                     </form>
                 </div>
-                </div>
+                </div> -->
             </div>
 
             </div>

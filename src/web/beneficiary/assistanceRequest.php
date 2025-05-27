@@ -104,7 +104,10 @@ if (isset($_SESSION["intUserId"])) {
                         <div class="col-md-6">
                         <label for="requestType" class="form-label">Request Type</label>
                         <select class="form-select border-warning" id="requestType">
-                            <option value="">Select type</option>
+                            <option value="" selected disabled>-- Select Type --</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="regular">Regular</option>
+                            <option value="special needs">Special Needs</option>
                         </select>
                         </div>
                     </div>
@@ -118,7 +121,10 @@ if (isset($_SESSION["intUserId"])) {
                         <div class="col-md-6">
                         <label for="urgency" class="form-label">Urgency Level</label>
                         <select class="form-select border-warning" id="urgency">
-                            <option value="">Select type</option>
+                            <option value="" selected disabled>-- Select Level --</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
                         </select>
                         </div>
                         <div class="col-md-6">

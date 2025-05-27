@@ -43,7 +43,7 @@ include "../../../app/functions/user.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current">Admin</li>
+            <li class="current">Donor</li>
             <li><a href="foodBankCenter.php">Food Bank Center</a></li>
           </ol>
         </div>

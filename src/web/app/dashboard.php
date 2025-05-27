@@ -67,8 +67,8 @@ $totalInventory = $rowInventory['totalInventory'];
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-          <li class="current">Admin</li>
-           <li><a href="dashboard.php">Dashboard</a></li>
+          <li><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Admin'; ?></li>
+          <li><a href="dashboard.php">Dashboard</a></li>
           </ol>
         </div>
       </nav>
@@ -88,7 +88,9 @@ $totalInventory = $rowInventory['totalInventory'];
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
+                <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
+                  <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
+                <?php } ?>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
                 <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
                 <!-- <a href="volunteerManagement.php" class=""><i class="bi bi-people"></i><span>Volunteer Management</span></a> -->
