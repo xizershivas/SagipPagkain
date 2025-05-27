@@ -71,7 +71,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnStaff"]) && $_SESSION["ysnStaff"] == 0)  { ?>
+                <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
                   <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
                 <?php } ?>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
