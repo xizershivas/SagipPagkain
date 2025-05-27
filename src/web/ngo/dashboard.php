@@ -9,6 +9,8 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../app/dashboard.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
   header("Location: ../donor/dashboard.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnStaff"]) && $_SESSION["ysnStaff"] == 1) {
+  header("Location: ../app/dashboard.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
   header("Location: ../beneficiary/assistanceRequest.php");
 }

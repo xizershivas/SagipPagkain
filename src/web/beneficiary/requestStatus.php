@@ -100,11 +100,13 @@ if (isset($_SESSION["intUserId"])) {
                     <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="requestId" class="form-label">Request ID</label>
-                        <input type="text" class="form-control border-warning" id="requestId" placeholder="Enter ID">
+                         <select class="form-select border-warning" name="requestNo" id="requestNo">
+                           <option value="" selected readonly>-- Select Request No --</option>
+                         </select>
                     </div>
                     <div class="col-md-6">
                         <label for="requestDate" class="form-label">Request Date</label>
-                        <input type="text" class="form-control border-warning" id="requestDate" placeholder="dd/mm/yyy">
+                        <input type="date" class="form-control border-warning" id="requestDate" placeholder="dd/mm/yyy" readonly>
                     </div>
                     </div>
 

@@ -11,6 +11,8 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../ngo/dashboard.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
   header("Location: ../donor/dashboard.php");
+} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnStaff"]) && $_SESSION["ysnStaff"] == 1) {
+  header("Location: ../app/dashboard.php");
 }
 
 $userData;
@@ -95,15 +97,15 @@ if (isset($_SESSION["intUserId"])) {
                     <div class="card mb-4">
                 <div class="card-body">
                     <h2 class="card-title"></h2>
-                    <form>
+                    <form id="beneficiaryRequestForm">
                     <div class="row mb-3">
                         <div class="col-md-6">
                         <label for="beneficiaryId" class="form-label">Beneficiary ID</label>
-                        <input type="text" class="form-control border-warning" id="beneficiaryId" value="<?= $user->intBeneficiaryId; ?>">
+                        <input type="text" class="form-control border-warning" name="beneficiaryId" id="beneficiaryId" value="<?= $user->intBeneficiaryId; ?>">
                         </div>
                         <div class="col-md-6">
                         <label for="requestType" class="form-label">Request Type</label>
-                        <select class="form-select border-warning" id="requestType">
+                        <select class="form-select border-warning" name="requestType" id="requestType" required>
                             <option value="" selected disabled>-- Select Type --</option>
                             <option value="emergency">Emergency</option>
                             <option value="regular">Regular</option>
@@ -113,14 +115,26 @@ if (isset($_SESSION["intUserId"])) {
                     </div>
 
                     <div class="mb-3">
-                        <label for="itemsNeeded" class="form-label">Items Needed</label>
-                        <textarea class="form-control border-warning" id="itemsNeeded" placeholder="Enter Item" rows="3"></textarea>
+                      <label for="itemsNeeded" class="form-label">Items Needed</label>
+                      <select class="form-select border-warning" name="itemsNeeded[]" id="itemsNeeded" aria-label="Items Needed Select" multiple size="5" required>
+                        <?php
+                          $allItems = getItems($conn);
+
+                          if ($allItems->num_rows > 0) {
+                            while($item = $allItems->fetch_object()) {
+                              ?>
+                                <option value="<?= $item->intItemId ?>"><?= $item->strItem ?></option>
+                              <?php
+                            }
+                          }
+                        ?>
+                      </select>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                        <label for="urgency" class="form-label">Urgency Level</label>
-                        <select class="form-select border-warning" id="urgency">
+                        <label for="urgencyLevel" class="form-label">Urgency Level</label>
+                        <select class="form-select border-warning" name="urgencyLevel" id="urgencyLevel" required>
                             <option value="" selected disabled>-- Select Level --</option>
                             <option value="high">High</option>
                             <option value="medium">Medium</option>
@@ -129,37 +143,37 @@ if (isset($_SESSION["intUserId"])) {
                         </div>
                         <div class="col-md-6">
                         <label for="pickupDate" class="form-label">Preferred Pickup Date</label>
-                        <input type="date" class="form-control border-warning" id="pickupDate">
+                        <input type="date" class="form-control border-warning" name="pickupDate" id="pickupDate" required>
                         </div>
                     </div>
-                    </form>
+
                 </div>
                 </div>
 
                 <div class="card mb-4">
                 <div class="card-body">
                     <h2 class="card-title">Upload Documents</h2>
-                    <form>
+
                     <div class="mb-3">
                         <label for="document" class="form-label">Select Document</label>
-                        <input type="file" class="form-control border-warning" id="document">
+                        <input type="file" class="form-control border-warning" name="document" id="document">
                     </div>
 
                     <div class="mb-3">
-                        <label for="docDescription" class="form-label">Description</label>
-                        <textarea class="form-control border-warning" id="docDescription" placeholder="Enter Description" rows="3"></textarea>
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control border-warning" name="description" id="description" placeholder="Enter Description" rows="3"></textarea>
                     </div>
-                    </form>
+
                 </div>
                 </div>
 
                 <div class="card mb-4">
                 <div class="card-body">
                     <h2 class="card-title">Submit Form</h2>
-                    <form>
+
                     <div class="mb-3">
-                        <label for="additionalNotes" class="form-label">Additional Notes</label>
-                        <textarea class="form-control border-warning" id="additionalNotes" placeholder="Enter additional notes" rows="3"></textarea>
+                        <label for="notes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control border-warning" name="notes" id="notes" placeholder="Enter additional notes" rows="3"></textarea>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
@@ -193,22 +207,7 @@ if (isset($_SESSION["intUserId"])) {
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-  <script>
-  $(document).ready(function() {
-    new DataTable('#donationDataTable', {
-
-      lengthMenu: [10, 20, 30, 50, 100]
-    });
-  });
-
-  $(document).ready(function() {
-    new DataTable('#archiveDataTable', {
-
-      lengthMenu: [5, 10]
-    });
-  });
-</script>
-
+   <script src="../../../app/js/beneficiary.js"></script>
 </body>
 
 </html>

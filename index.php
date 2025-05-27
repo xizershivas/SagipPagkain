@@ -13,6 +13,9 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
 } else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnStaff"] == 1) {
   header("Location: src/web/app/dashboard.php");
   exit();
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnPartner"] == 1) {
+  header("Location: src/web/ngo/dashboard.php");
+  exit();
 }
 ?>
 
