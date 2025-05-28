@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
-include "../../../app/functions/user.php";
+include "../../../app/functions/requestStatus.php";
 $userData;
 $user;
 if (isset($_SESSION["intUserId"])) {
@@ -58,7 +58,7 @@ if (isset($_SESSION["intUserId"])) {
         <div class="container-fluid">
           <ol>
             <li class="current">Beneficiary</li>
-            <li><a href="availableFoodItem.php">View Available food items</a></li>
+            <li><a href="requestStatus.php">Track Available Status</a></li>
           </ol>
         </div>
       </nav>
@@ -99,9 +99,19 @@ if (isset($_SESSION["intUserId"])) {
                     <h2 class="card-title">Request Status Details</h2>
                     <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="requestId" class="form-label">Request ID</label>
+                        <label for="requestNo" class="form-label">Request ID</label>
                          <select class="form-select border-warning" name="requestNo" id="requestNo">
-                           <option value="" selected readonly>-- Select Request No --</option>
+                           <option value="" selected disabled>-- Select Request No --</option>
+                           <?php
+                            $allRequestNo = getAllRequestNo($conn, $user->intBeneficiaryId);
+
+                            while ($row = $allRequestNo->fetch_object()) {
+                              ?>
+                                <option value="<?= $row->intBeneficiaryRequestId ?>"><?= $row->strRequestNo ?></option>
+                              <?php
+                            }
+                            $conn->close();
+                           ?>
                          </select>
                     </div>
                     <div class="col-md-6">
@@ -123,39 +133,25 @@ if (isset($_SESSION["intUserId"])) {
                     <hr>
                     <h5>Recent Assistance Details</h5>
                     <div class="table-responsive">
-                    <table id="assistanceTable" class="table table-striped table-bordered">
-                    <thead>
+                      <table id="requestTrackDataTable" class="table table-striped table-bordered">
+                      <thead>
                         <tr>
-                            <th>Item</th>
-                            <th>Category</th>
-                            <th>Date</th>
-                            <th>Date Expired</th>
-                            <th>Actions</th>
+                          <th scope="col">Item</th>
+                          <th scope="col">Request Type</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Pickup Date</th>
+                          <th scope="col">Request Date</th>
+                          <th scope="col">Approved</th>
+                          <th scope="col">Actions</th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Rice</td>
-                            <td>Grains</td>
-                            <td>March 15, 2024</td>
-                            <td>September 15, 2024</td>
-                            <td class="action-links">
-                            <a href="#" class="text-info">Edit</a>
-                            <a href="#" class="text-danger">Delete</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Canned Goods</td>
-                            <td>Preserved Food</td>
-                            <td>February 28, 2024</td>
-                            <td>February 28, 2026</td>
-                            <td class="action-links">
-                            <a href="#" class="text-info">Edit</a>
-                            <a href="#" class="text-danger">Delete</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                      </thead>
+                      <tbody>
+                        <?php
+                          $beneficiaryRequestData = getAllBeneficiaryRequest($conn, $user->intBeneficiaryId);
+                          
+                        ?>
+                      </tbody>
+                      </table>
                     </div>
                 </div>
                 </div>
@@ -186,21 +182,12 @@ if (isset($_SESSION["intUserId"])) {
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-
-  <script src="../../../app/js/formValidation.js"></script>
-  <script src="../../../app/js/donationManagement.js"></script>
+  <script src="../../../app/js/requestStatus.js"></script>
   <script>
   $(document).ready(function() {
-    new DataTable('#donationDataTable', {
+    new DataTable('#requestTrackDataTable', {
 
-      lengthMenu: [10, 20, 30, 50, 100]
-    });
-  });
-
-  $(document).ready(function() {
-    new DataTable('#archiveDataTable', {
-
-      lengthMenu: [5, 10]
+      lengthMenu: [5, 10, 25, 50, 100]
     });
   });
 </script>

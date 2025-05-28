@@ -46,7 +46,7 @@ if (isset($_SESSION["intUserId"])) {
         <div class="container-fluid">
           <ol>
             <li class="current">Beneficiary</li>
-            <li><a href="availableFoodItem.php">View Available food items</a></li>
+            <li><a href="requestHistory.php">Request History</a></li>
           </ol>
         </div>
       </nav>
