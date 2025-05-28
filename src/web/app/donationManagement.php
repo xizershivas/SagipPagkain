@@ -190,7 +190,7 @@ if (isset($_SESSION["intUserId"])) {
                         </div>
                       </div>
                       <div class="mb-3 col col-md-4">
-                        <label for="remarks" class="form-label fw-bold">Remarks</label>
+                        <label for="remarks" class="form-label fw-bold">Notes</label>
                         <input type="text" class="form-control" name="remarks" id="remarks">
                       </div>
                     </div>
