@@ -31,6 +31,7 @@ function getRequestDate($conn, $reqId) {
 function getAllBeneficiaryRequest($conn, $intBeneficiaryId) {
     $stmt = $conn->prepare("
         SELECT
+            BR.intBeneficiaryRequestId,
             BR.strRequestNo,
             I.strItem,
             BR.strRequestType,
@@ -50,5 +51,32 @@ function getAllBeneficiaryRequest($conn, $intBeneficiaryId) {
     return $stmt->get_result();
 }
 
+function deleteBeneficiaryRequest($conn, $intBeneficiaryRequestId) {
+    header('Content-Type: application/json');
 
+    $conn->begin_transaction();
+
+    try {
+        $stmt = $conn->prepare("DELETE FROM tblbeneficiaryrequest WHERE intBeneficiaryRequestId = ?");
+        $stmt->bind_param("i", $intBeneficiaryRequestId);
+
+        if (!$stmt->execute()) {
+            throw new Exception('Database failed to process request', 500);
+        }
+
+        $stmt2 = $conn->prepare("DELETE FROM tblbeneficiaryrequestdetail WHERE intBeneficiaryRequestId = ?");
+        $stmt2->bind_param("i", $intBeneficiaryRequestId);
+        $stmt2->execute();
+
+        $conn->commit();
+ 
+        http_response_code(200);
+        echo json_encode(["data" => ["message" => "Beneficiary Request deleted successfully."]]);
+    } catch (Exception $ex) {
+        $conn->rollback();
+        $code = $ex->getCode();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => "Failed to submit request. " . $ex->getMessage()]]);
+    }
+}
 ?>

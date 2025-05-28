@@ -142,7 +142,7 @@ if (isset($_SESSION["intUserId"])) {
                           <th scope="col">Pickup Date</th>
                           <th scope="col">Request Date</th>
                           <th scope="col">Approved</th>
-                          <!-- <th scope="col">Actions</th> -->
+                          <th scope="col">Action</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -159,6 +159,7 @@ if (isset($_SESSION["intUserId"])) {
                               <td><?= htmlspecialchars($row->dtmPickupDate) ?></td>
                               <td><?= htmlspecialchars($row->dtmCreatedDate) ?></td>
                               <td><?= $row->ysnApproved ? 'Yes' : 'No' ?></td>
+                              <td><a href="javascript:void(0)" class="btn-delete-req" data-id="<?= $row->intBeneficiaryRequestId ?>"><i class="bi bi-trash-fill"></i></a></td>
                             </tr>
                         <?php
                           }
