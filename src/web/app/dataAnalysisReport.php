@@ -20,14 +20,14 @@ $result = $conn->query($sql);
 $data = [];
 
 while ($row = $result->fetch_assoc()) {
-    $data[] = $row;
+  $data[] = $row;
 }
 
 $uniqueItems = [];
 foreach ($data as $row) {
-    if (!isset($uniqueItems[$row['intItemId']])) {
-        $uniqueItems[$row['intItemId']] = $row['strItem'];
-    }
+  if (!isset($uniqueItems[$row['intItemId']])) {
+    $uniqueItems[$row['intItemId']] = $row['strItem'];
+  }
 }
 
 echo "<script>const forecastData = " . json_encode($data) . ";</script>";
@@ -100,11 +100,20 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
           <div class="col-lg-9 ps-lg-5 tbl grid-report mt-0" data-aos="fade-up" data-aos-delay="200">
             <h1>Food Demand Forecast</h1>
 
-            <!-- ADD DROPDOWN FOR ITEM FILTER HERE -->
-            <label for="itemFilter"><b>Filter by Item:</b></label>
-            <select id="itemFilter" style="margin-bottom: 15px; padding: 5px;">
-              <option value="all">All Items</option>
-            </select>
+            <div class="row">
+              <div class="col col-md-10">
+                <!-- ADD DROPDOWN FOR ITEM FILTER HERE -->
+                <label for="itemFilter"><b>Filter by Item:</b></label>
+                <select id="itemFilter" style="margin-bottom: 15px; padding: 5px;">
+                  <option value="all">All Items</option>
+                </select>
+              </div>
+              <div class="col col-md-2">
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportFilterModal">
+                  Generate Report
+                </button>
+              </div>
+            </div>
 
             <canvas id="forecastChart" width="900" height="400"></canvas>
 
@@ -114,6 +123,56 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
       </div>
     </section>
   </main>
+
+  <!-- Filter Modal -->
+<div class="modal fade" id="reportFilterModal" tabindex="-1" aria-labelledby="reportFilterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reportFilterModalLabel" style="color:Black;">Generate Admin Report</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" action="../../../app/functions/export_report.php">
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="month" class="form-label" style="color:Black;">Month</label>
+              <input type="month" class="form-control" name="month" id="month">
+            </div>
+            <div class="col-md-4">
+              <label for="category" class="form-label" style="color:Black;">Category</label>
+              <select name="category" id="category" class="form-select">
+                <option value="">All Categories</option>
+                <?php
+                $result = $conn->query("SELECT intCategoryId, strCategory FROM tblcategory");
+                while ($row = $result->fetch_assoc()) {
+                  echo '<option value="' . $row['intCategoryId'] . '">' . htmlspecialchars($row['strCategory']) . '</option>';
+                }
+                ?>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="foodbank" class="form-label" style="color:Black;">Food Bank</label>
+              <select name="foodbank" id="foodbank" class="form-select">
+                <option value="">All Locations</option>
+                <?php
+                $result = $conn->query("SELECT intFoodBankId, strFoodBank FROM tblfoodbank");
+                while ($row = $result->fetch_assoc()) {
+                  echo '<option value="' . $row['intFoodBankId'] . '">' . htmlspecialchars($row['strFoodBank']) . '</option>';
+                }
+                ?>
+              </select>
+            </div>
+          </div>
+          <p style="color:Black;"><i>*To generate all the data, simply click the 'Generate Excel Report' button.</i></p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Generate Excel Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
   <!-- Include global footer  -->
   <?php include '../global/footer.php'; ?>
@@ -171,12 +230,22 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
       const inputY = tf.tensor2d(ys, [ys.length, 1]);
 
       const model = tf.sequential();
-      model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
-      model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
+      model.add(tf.layers.dense({
+        units: 1,
+        inputShape: [1]
+      }));
+      model.compile({
+        optimizer: 'sgd',
+        loss: 'meanSquaredError'
+      });
 
-      await model.fit(inputX, inputY, { epochs: 300 });
+      await model.fit(inputX, inputY, {
+        epochs: 300
+      });
 
-      const nextX = tf.tensor2d([[xs.length + 1]]);
+      const nextX = tf.tensor2d([
+        [xs.length + 1]
+      ]);
       const prediction = model.predict(nextX);
       const value = await prediction.data();
 
@@ -312,4 +381,5 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
     });
   </script>
 </body>
+
 </html>

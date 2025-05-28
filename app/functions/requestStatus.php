@@ -29,34 +29,35 @@ function getRequestDate($conn, $reqId) {
 }
 
 function getAllBeneficiaryRequest($conn, $intBeneficiaryId) {
-    $sql = "SELECT
-            BR.strRequestType
+    $beneficiaryRequestData = $conn->query("
+            SELECT
+            I.strItem
+            , BR.strRequestType
             , BR.strDescription
             , BR.dtmPickupDate
             , BR.dtmCreatedDate
             , BR.ysnApproved
-            , I.strItem
             FROM tblbeneficiaryrequest BR
             INNER JOIN tblbeneficiaryrequestdetail BRD
                 ON BR.intBeneficiaryRequestId = BRD.intBeneficiaryRequestId
             INNER JOIN tblitem I
                 ON BRD.intItemId = I.intItemId
             WHERE BR.intBeneficiaryId = ?
-    ";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $intBeneficiaryId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $data = $result->fetch_all(MYSQLI_ASSOC);
-
-    $beneficiaryRequestData = [];
-
-    foreach($data as $row) {
-        $beneficiaryRequestData[] = $row;
-    }
+    ");
 
     return $beneficiaryRequestData;
+    // $stmt = $conn->prepare($sql);
+    // $stmt->bind_param("i", $intBeneficiaryId);
+    // $stmt->execute();
+    // $result = $stmt->get_result();
+
+    // $beneficiaryRequestData = [];
+
+    // while($row = $result->fetch_object()) {
+    //     $beneficiaryRequestData[] = $row;
+    // }
+
+    // return $beneficiaryRequestData;
 }
 
 ?>

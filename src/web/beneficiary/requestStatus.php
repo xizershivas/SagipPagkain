@@ -146,10 +146,6 @@ if (isset($_SESSION["intUserId"])) {
                         </tr>
                       </thead>
                       <tbody>
-                        <?php
-                          $beneficiaryRequestData = getAllBeneficiaryRequest($conn, $user->intBeneficiaryId);
-                          
-                        ?>
                       </tbody>
                       </table>
                     </div>
