@@ -29,35 +29,26 @@ function getRequestDate($conn, $reqId) {
 }
 
 function getAllBeneficiaryRequest($conn, $intBeneficiaryId) {
-    $beneficiaryRequestData = $conn->query("
-            SELECT
-            I.strItem
-            , BR.strRequestType
-            , BR.strDescription
-            , BR.dtmPickupDate
-            , BR.dtmCreatedDate
-            , BR.ysnApproved
-            FROM tblbeneficiaryrequest BR
-            INNER JOIN tblbeneficiaryrequestdetail BRD
-                ON BR.intBeneficiaryRequestId = BRD.intBeneficiaryRequestId
-            INNER JOIN tblitem I
-                ON BRD.intItemId = I.intItemId
-            WHERE BR.intBeneficiaryId = ?
+    $stmt = $conn->prepare("
+        SELECT
+            BR.strRequestNo,
+            I.strItem,
+            BR.strRequestType,
+            BR.strDescription,
+            BR.dtmPickupDate,
+            DATE_FORMAT(BR.dtmCreatedDate, '%Y-%m-%d') AS dtmCreatedDate,
+            BR.ysnApproved
+        FROM tblbeneficiaryrequest BR
+        INNER JOIN tblbeneficiaryrequestdetail BRD
+            ON BR.intBeneficiaryRequestId = BRD.intBeneficiaryRequestId
+        INNER JOIN tblitem I
+            ON BRD.intItemId = I.intItemId
+        WHERE BR.intBeneficiaryId = ?
     ");
-
-    return $beneficiaryRequestData;
-    // $stmt = $conn->prepare($sql);
-    // $stmt->bind_param("i", $intBeneficiaryId);
-    // $stmt->execute();
-    // $result = $stmt->get_result();
-
-    // $beneficiaryRequestData = [];
-
-    // while($row = $result->fetch_object()) {
-    //     $beneficiaryRequestData[] = $row;
-    // }
-
-    // return $beneficiaryRequestData;
+    $stmt->bind_param("i", $intBeneficiaryId);
+    $stmt->execute();
+    return $stmt->get_result();
 }
+
 
 ?>

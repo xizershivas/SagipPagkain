@@ -58,7 +58,7 @@ if (isset($_SESSION["intUserId"])) {
         <div class="container-fluid">
           <ol>
             <li class="current">Beneficiary</li>
-            <li><a href="requestStatus.php">Track Available Status</a></li>
+            <li><a href="requestStatus.php">Request History</a></li>
           </ol>
         </div>
       </nav>
@@ -77,9 +77,9 @@ if (isset($_SESSION["intUserId"])) {
               <h4>Services List</h4>
               <div class="services-list">
               <a href="assistanceRequest.php"><i class="bi bi-pencil-square"></i><span>Request for Assistance</span></a>
-                <a href="requestStatus.php" class="active"><i class="bi bi-search"></i><span> Track Available Status</span></a>
+                <a href="requestStatus.php" class="active"><i class="bi bi-clock-history"></i><span>Request History</span></a>
                 <a href="availableFoodItem.php"><i class="bi bi-box"></i><span> View Available Food Items</span></a>
-                <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a>
+                <!-- <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a> -->
               </div>
             </div><!-- End Services List -->
 
@@ -101,7 +101,7 @@ if (isset($_SESSION["intUserId"])) {
                     <div class="col-md-6">
                         <label for="requestNo" class="form-label">Request ID</label>
                          <select class="form-select border-warning" name="requestNo" id="requestNo">
-                           <option value="" selected disabled>-- Select Request No --</option>
+                           <option value="" selected>-- Select Request No --</option>
                            <?php
                             $allRequestNo = getAllRequestNo($conn, $user->intBeneficiaryId);
 
@@ -110,7 +110,6 @@ if (isset($_SESSION["intUserId"])) {
                                 <option value="<?= $row->intBeneficiaryRequestId ?>"><?= $row->strRequestNo ?></option>
                               <?php
                             }
-                            $conn->close();
                            ?>
                          </select>
                     </div>
@@ -136,16 +135,35 @@ if (isset($_SESSION["intUserId"])) {
                       <table id="requestTrackDataTable" class="table table-striped table-bordered">
                       <thead>
                         <tr>
+                          <th scope="col">Request ID</th>
                           <th scope="col">Item</th>
                           <th scope="col">Request Type</th>
                           <th scope="col">Description</th>
                           <th scope="col">Pickup Date</th>
                           <th scope="col">Request Date</th>
                           <th scope="col">Approved</th>
-                          <th scope="col">Actions</th>
+                          <!-- <th scope="col">Actions</th> -->
                         </tr>
                       </thead>
                       <tbody>
+                        <?php
+                          $beneficiaryRequestData = getAllBeneficiaryRequest($conn, $user->intBeneficiaryId);
+
+                          while ($row = $beneficiaryRequestData->fetch_object()) {
+                        ?>
+                            <tr>
+                              <td><?= htmlspecialchars($row->strRequestNo) ?></td>
+                              <td><?= htmlspecialchars($row->strItem) ?></td>
+                              <td><?= htmlspecialchars($row->strRequestType) ?></td>
+                              <td><?= htmlspecialchars($row->strDescription) ?></td>
+                              <td><?= htmlspecialchars($row->dtmPickupDate) ?></td>
+                              <td><?= htmlspecialchars($row->dtmCreatedDate) ?></td>
+                              <td><?= $row->ysnApproved ? 'Yes' : 'No' ?></td>
+                            </tr>
+                        <?php
+                          }
+                          $conn->close();
+                        ?>
                       </tbody>
                       </table>
                     </div>
@@ -179,14 +197,6 @@ if (isset($_SESSION["intUserId"])) {
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
   <script src="../../../app/js/requestStatus.js"></script>
-  <script>
-  $(document).ready(function() {
-    new DataTable('#requestTrackDataTable', {
-
-      lengthMenu: [5, 10, 25, 50, 100]
-    });
-  });
-</script>
 
 </body>
 
