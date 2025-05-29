@@ -27,6 +27,7 @@ function setTableData({ inventoryData }) {
             const tdCategory = document.createElement('td');
             const tdExpiDate = document.createElement('td');
             const tdFoodBank = document.createElement('td');
+            const tdTransfer = document.createElement('td');
  
             tdRowNo.textContent = index;
             tdItem.textContent = d.strItem;
@@ -35,7 +36,20 @@ function setTableData({ inventoryData }) {
             tdCategory.textContent = d.strCategory;
             tdExpiDate.textContent = d.dtmExpirationDate;
             tdFoodBank.textContent = d.strFoodBank;
- 
+            tdTransfer.innerHTML = `<a href='javascript:void(0)' class="btn-transfer" title='Transfer Item' 
+                data-intInventoryId=${d.intInventoryId} 
+                data-intFoodBankId=${d.intFoodBankId} 
+                data-intItemId=${d.intItemId} 
+                data-intQuantity=${d.intQuantity} 
+                data-intUnitId=${d.intUnitId} 
+                data-strUnit=${d.strUnit} 
+                data-intCategoryId=${d.intCategoryId} 
+                data-strCategory=${d.strCategory} 
+                data-dtmExpirationDate="${d.dtmExpirationDate}" 
+                data-bs-toggle='modal' 
+                data-bs-target='#transferInventoryModal'>
+                <i class='bi bi-arrow-right-square-fill'></i></a>`;
+            
             tr.append(tdRowNo);
             tr.append(tdItem);
             tr.append(tdQuantity);
@@ -43,9 +57,15 @@ function setTableData({ inventoryData }) {
             tr.append(tdCategory);
             tr.append(tdExpiDate);
             tr.append(tdFoodBank);
+            tr.append(tdTransfer);
  
             tableBody.append(tr);
         });
+
+        const btnTransferList = document.getElementsByClassName('btn-transfer');
+        for (let btnTransfer of btnTransferList) {
+            btnTransfer.addEventListener('click', setInventoryTransferData);
+        }
     }
 }
  
@@ -105,6 +125,36 @@ function filterOption(e) {
  
     xmlhttp.open('GET', `../../../app/controllers/inventoryManagement.php?filter=${filter}`, true);
     xmlhttp.send();
+}
+
+function setSelectedItem(intItemId) {
+    itemSelect.value = intItemId;
+}
+
+function setInventoryTransferData(e) {
+    const {
+        intinventoryid,
+        intfoodbankid,
+        intitemid,
+        intquantity,
+        intunitid,
+        intcategoryid,
+        dtmexpirationdate
+    } = e.currentTarget.dataset;
+
+    const d = new Date(dtmexpirationdate);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const date = String(d.getDate()).padStart(2, '0');
+
+    inventoryId.value = intinventoryid;
+    sourceFoodBankSelect.value = intfoodbankid;
+    itemSelect.value = intitemid;
+    availableQty.value = intquantity;
+    unitSelect.value = intunitid;
+    categorySelect.value = intcategoryid;
+    expirationDate.value = `${year}-${month}-${date}`;
+    transferQty.setAttribute('max', intquantity);
 }
  
 filterBy.addEventListener('change', filterOption);

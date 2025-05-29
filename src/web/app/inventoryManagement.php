@@ -99,11 +99,11 @@ include "../../../app/functions/inventoryTransfer.php";
                     </div>
                   </form>
                 </div>
-                <div class="col col-md-4 mb-2">
+                <!-- <div class="col col-md-4 mb-2">
                   <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#transferInventoryModal">
                     Transfer Inventory
                   </button>
-                </div>
+                </div> -->
             </div>
 
             <!-- TABLE INVENTORY -->
@@ -115,8 +115,9 @@ include "../../../app/functions/inventoryTransfer.php";
                   <th scope="col">Quantity</th>
                   <th scope="col">Unit</th>
                   <th scope="col">Category</th>
-		  <th scope="col">Expiration Date</th>
+		              <th scope="col">Expiration Date</th>
                   <th scope="col">Food Bank</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
@@ -130,7 +131,7 @@ include "../../../app/functions/inventoryTransfer.php";
       <!-- Transfer Inventory Modal -->
 <div class="modal fade" id="transferInventoryModal" tabindex="-1" aria-labelledby="transferInventoryLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content text-black"> <!-- 👈 Added text-black -->
+    <div class="modal-content text-black"> <!-- Added text-black -->
 
       <!-- Header -->
       <div class="modal-header">
@@ -143,9 +144,10 @@ include "../../../app/functions/inventoryTransfer.php";
         <form id="transferInventoryForm">
 
           <div class="row mb-3">
+            <input type="hidden" id="inventoryId" name="inventoryId">
             <div class="col-md-6">
               <label for="sourceFoodBankSelect" class="form-label">Source Food Bank</label>
-              <select class="form-select" id="sourceFoodBankSelect" name="sourceFoodBank" required>
+              <select class="form-select" id="sourceFoodBankSelect" name="sourceFoodBank">
                 <option selected disabled value="">-- Select Source --</option>
                 <?php
                   $sourceFoodBankData = getSourceFoodBanks($conn);
@@ -170,7 +172,6 @@ include "../../../app/functions/inventoryTransfer.php";
                     <option value="<?= $row->intFoodBankId; ?>"><?= $row->strFoodBank; ?></option>
                     <?php
                   }
-                  $conn->close();
                 ?>
               </select>
             </div>
@@ -179,24 +180,61 @@ include "../../../app/functions/inventoryTransfer.php";
           <div class="row mb-3">
             <div class="col-md-4">
               <label for="itemSelect" class="form-label">Item Name</label>
-              <select class="form-select" id="itemSelect" name="item" required>
+              <select class="form-select" id="itemSelect" name="item" >
                 <option selected disabled value="">-- Select Item --</option>
-                <option value="Food Bank A">Tinapay</option>
-                <option value="Food Bank B">Gatas</option>
-                <option value="Food Bank B">Sabon</option>
+                <?php
+                  $allItems = getAllItems($conn);
+
+                  while($row = $allItems->fetch_object()) {
+                    ?>
+                    <option value="<?= $row->intItemId; ?>"><?= $row->strItem; ?></option>
+                    <?php
+                  }
+                ?>
               </select>
             </div>
+            <div class="col-md-4">
+              <label for="categorySelect" class="form-label">Category</label>
+              <select class="form-select" id="categorySelect" name="category" >
+                <option selected disabled value="">-- Select Category --</option>
+                <?php
+                  $allCategories = getAllCategories($conn);
+
+                  while($row = $allCategories->fetch_object()) {
+                    ?>
+                    <option value="<?= $row->intCategoryId; ?>"><?= $row->strCategory; ?></option>
+                    <?php
+                  }
+                ?>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="unitSelect" class="form-label">Unit</label>
+              <select class="form-select" id="unitSelect" name="unit">
+                <option selected disabled value="">-- Select Unit --</option>
+                <?php
+                  $allUnits = getAllUnits($conn);
+
+                  while($row = $allUnits->fetch_object()) {
+                    ?>
+                    <option value="<?= $row->intUnitId; ?>"><?= $row->strUnit; ?></option>
+                    <?php
+                  }
+                  $conn->close();
+                ?>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-3">
             <div class="col-md-4">
               <label for="availableQty" class="form-label">Available Quantity</label>
               <input type="number" class="form-control" id="availableQty" name="availableQty" readonly>
             </div>
             <div class="col-md-4">
-              <label for="itemUnit" class="form-label">Unit</label>
-              <input type="text" class="form-control" id="itemUnit" name="itemUnit" readonly>
+              <label for="expirationDate" class="form-label">Expiration Date</label>
+              <input type="date" class="form-control" id="expirationDate" name="expirationDate" readonly>
             </div>
-          </div>
-
-          <div class="row mb-3">
             <div class="col-md-4">
               <label for="transferQty" class="form-label">Quantity to Transfer</label>
               <input type="number" class="form-control" id="transferQty" name="transferQty" min="0" required>

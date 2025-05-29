@@ -5,6 +5,10 @@ const availableQty = document.querySelector('#availableQty');
 const itemUnit = document.querySelector('#itemUnit');
 const transferQty = document.querySelector('#transferQty');
 const transferInventoryForm = document.querySelector('#transferInventoryForm');
+const categorySelect = document.querySelector('#categorySelect');
+const expirationDate = document.querySelector('#expirationDate');
+const inventoryId = document.querySelector('#inventoryId');
+
 const itemDetails = {};
 
 function populateItemSelect({ data }) {
@@ -46,7 +50,7 @@ async function getAvailableItems() {
     }
 }
 
-function showItemDetails(e) {
+function showItemDetails(e, dataId = null) {
     transferQty.value = 0;
     const intItemId = e.target.value;
     availableQty.value = itemDetails[intItemId].intQuantity;
@@ -57,7 +61,7 @@ function showItemDetails(e) {
 async function processInventoryTransfer(e) {
     e.preventDefault();
 
-    const formData = new FormData(this);
+    const formData = new FormData(e.target);
 
     try {
         if (sourceFoodBankSelect.value == targetFoodBankSelect.value) {
