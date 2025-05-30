@@ -2,7 +2,7 @@
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // Populate input datalist
-function getDataListOptions($conn, $filter, $search = "") {
+function getDataListOptions($conn, $filter = "strCategory", $search = "", $page = 1, $limit = 5) {
     header("Content-Type: application/json");
 
     try {
@@ -22,7 +22,7 @@ function getDataListOptions($conn, $filter, $search = "") {
             $dataListOptions[] = $row;
         }
 
-        getInventoryData($conn, $dataListOptions, $filter, $search);
+        getInventoryData($conn, $dataListOptions, $filter, $search, $page, $limit);
     } catch (Exception $ex) {
         http_response_code(500);
         echo json_encode(["data" => ["message" => "Internal server error, ".$ex->getMessage()]]);
@@ -31,8 +31,17 @@ function getDataListOptions($conn, $filter, $search = "") {
     exit();
 }
 
-function getInventoryData($conn, $dataListOptions, $filter, $search) {
+function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page, $limit) {
     header("Content-Type: application/json");
+
+    $totalQuery = $conn->query("SELECT COUNT(*) AS total FROM tblinventory WHERE intQuantity > 0");
+    $totalResult = $totalQuery->fetch_assoc();
+    $totalRecords = $totalResult['total'];
+
+    $page = max(1, intval($page)); // ensure at least page 1
+    $limit = max(1, intval($limit)); // ensure at least 1 item per page
+
+    $offset = ($page - 1) * $limit;
 
     try {
         if (empty($search)) {
@@ -54,7 +63,8 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            WHERE IV.intQuantity > 0";
+            WHERE IV.intQuantity > 0
+            LIMIT $limit OFFSET $offset";
 
             $query = $conn->query($sql);
 
@@ -76,7 +86,11 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
             }
 
             http_response_code(200);
-            echo json_encode(["data" => ["dataListOptions" => $dataListOptions, "inventoryData" => $inventoryData]]);
+            echo json_encode(["data" => [
+                "dataListOptions" => $dataListOptions, 
+                "inventoryData" => $inventoryData, 
+                "totalRecords" => $totalRecords
+            ]]);
         } 
         else {
             $dbTable;
@@ -107,7 +121,8 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            WHERE $dbTable.$filter LIKE ?";
+            WHERE $dbTable.$filter LIKE ?
+            LIMIT $limit OFFSET $offset";
     
             $query = $conn->prepare($sql);
             
@@ -135,7 +150,11 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
             }
     
             http_response_code(200);
-            echo json_encode(["data" => ["dataListOptions" => $dataListOptions, "inventoryData" => $responseData]]);
+            echo json_encode(["data" => [
+                "dataListOptions" => $dataListOptions, 
+                "inventoryData" => $inventoryData, 
+                "totalRecords" => $totalRecords
+            ]]);
         }
     } catch (Exception $ex) {
         http_response_code(500);

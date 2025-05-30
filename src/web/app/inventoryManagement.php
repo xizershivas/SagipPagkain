@@ -80,15 +80,17 @@ include "../../../app/functions/inventoryTransfer.php";
           </div>
           
           <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
-             <div class="row">
+             <div class="row justify-content-between">
                 <div class="col col-md-4 mb-2">
                   <form id="frmInventoryFilter">
                     <div class="row g-2">
+
                       <div class="col col-md-8">
                         <input type="search" class="form-control" list="filterOptions" name="searchItem" id="searchItem" placeholder="Search" required>
                         <datalist id="filterOptions">
-                        </datalist>
+                          </datalist>
                       </div>
+
                       <div class="col col-md-4 d-flex">
                         <select class="form-select px-2 me-2" name="filterBy" id="filterBy" aria-label="Inventory filter">
                           <option value="strCategory" selected>Category</option>
@@ -97,14 +99,20 @@ include "../../../app/functions/inventoryTransfer.php";
                           <option value="strFoodBank">Food Bank</option>
                         </select>
                       </div>
+
                     </div>
                   </form>
                 </div>
-                <!-- <div class="col col-md-4 mb-2">
-                  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#transferInventoryModal">
-                    Transfer Inventory
-                  </button>
-                </div> -->
+                <div class="col-md-4 text-end">
+                  <label class="form-label text-black" for="entriesPerPage">Entries Per Page</label>
+                  <select class="form-select-sm d-inline" name="entriesPerPage" id="entriesPerPageSelect">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </div>
             </div>
 
             <!-- TABLE INVENTORY -->
@@ -124,6 +132,26 @@ include "../../../app/functions/inventoryTransfer.php";
               <tbody id="tableBody">
               </tbody>
             </table><!-- END TABLE INVENTORY -->
+
+            <!-- INVENTORY PAGING -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center" id="paginationNav">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <!-- END INVENTORY PAGING -->
 
           </div>
         </div>
