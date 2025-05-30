@@ -24,10 +24,53 @@ if (isset($_SESSION["intUserId"])) {
 
   <!-- Data Table CSS CDN -->
   <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
-  <!-- <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    .step-circle {
+      width: 60px;
+      height: 60px;
+      font-size: 1.2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      color: white;
+    }
 
-  <link href="../../../app/css/donationManagement.css" rel="stylesheet">
+    .step-line {
+      height: 2px;
+    }
+
+    .step-label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .step-date {
+      font-size: 0.85rem;
+      color: gray;
+    }
+
+    .step-complete {
+      background-color: #15a22a !important;
+    }
+
+    .step-pending {
+      background-color: #e31f1f !important;
+    }
+
+    .line-complete {
+      background-color: #15a22a;
+    }
+
+    .line-pending {
+      background-color: lightgray;
+    }
+	.align-items-center {
+	  margin-bottom: 40px;
+	}
+  </style>
 </head>
   <style>
     .table-header {
@@ -97,6 +140,7 @@ if (isset($_SESSION["intUserId"])) {
                 <div class="card mt-4">
                 <div class="card-body">
                     <h2 class="card-title">Request Status Details</h2>
+                    <br>
                     <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="requestNo" class="form-label">Request ID</label>
@@ -121,15 +165,23 @@ if (isset($_SESSION["intUserId"])) {
 
                 </div>
 
+                <div class=" p-4 shadow-lg">
+                <h2 class="card-title">Tracking Status</h2>
+                <br>
+                  <div class="d-flex flex-column flex-md-row align-items-center justify-content-between text-center" id="stepper">
+                    <!-- Steps will be inserted here by JS -->
+                  </div>
+                </div>
+
                 <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                     <h2 class="card-title">Track table</h2>
+                    <br>
                     <div class="text-muted small text-end">
                         <div>List of items</div>
                     </div>
                     </div>
-                    <hr>
                     <h5>Recent Assistance Details</h5>
                     <div class="table-responsive">
                       <table id="requestTrackDataTable" class="table table-striped table-bordered">
@@ -197,7 +249,54 @@ if (isset($_SESSION["intUserId"])) {
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script> -->
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-  <script src="../../../app/js/requestStatus.js"></script>
+   <script src="../../../app/js/requestStatus.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    //temporary data
+    const steps = [
+      { label: "Request Created", date: "May 30, 2025", status: "approved" },
+      { label: "Waiting for Approval", date: "May 30, 2025 - 9:30 AM", status: "pending" },
+      { label: "Approved - Ready for Pick Up", date: "May 30, 2025 - 10:00 AM", status: "pending" }
+    ];
+
+    const stepper = document.getElementById("stepper");
+
+
+    steps.forEach((step, index) => {
+      const stepNumber = index + 1;
+      const isLast = stepNumber === steps.length;
+
+      const circleClass = step.status === "approved" ? "step-complete" : "step-pending";
+      const lineClass = step.status === "approved" ? "line-complete" : "line-pending";
+
+      // Step circle
+      const stepHTML = `
+        <div class="mb-4 mb-md-0 d-flex flex-column align-items-center">
+          <div class="step-circle ${circleClass}">
+            ${stepNumber}
+          </div>
+          <div class="step-label">${step.label}</div>
+          <div class="step-date">${step.status === "approved" ? step.date : ''}</div>
+        </div>
+      `;
+
+      stepper.insertAdjacentHTML("beforeend", stepHTML);
+
+      // Line (except after last)
+		if (!isLast) {
+		  stepper.insertAdjacentHTML(
+			"beforeend",
+			`
+			<div class="d-none d-md-flex align-items-center flex-grow-1 px-2">
+			  <div class="w-100 step-line ${lineClass}"></div>
+			</div>
+			`
+		  );
+		}
+
+    });
+  </script>
 
 </body>
 
