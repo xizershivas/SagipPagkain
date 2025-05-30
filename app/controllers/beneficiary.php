@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $urgencyLevel = sanitize($_POST['urgencyLevel']);
     $pickupDate = $_POST['pickupDate'];
     $description = sanitize($_POST['description']);
-    $notes = sanitize($_POST['notes']);
+    $purpose = sanitize($_POST['purpose']);
 
     $uploadFilePath = uploadRequestDocument($beneficiaryId);
 
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'pickupDate' => $pickupDate,
         'document' => $uploadFilePath,
         'description' => $description,
-        'notes' => $notes
+        'purpose' => $purpose
     ];
 
     submitBeneficiaryRequest($conn, $requestData);

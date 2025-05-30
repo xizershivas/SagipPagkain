@@ -111,10 +111,13 @@ while ($row = $result->fetch_assoc()) {
               <h4>Services List</h4>
               <div class="services-list">
                 <a href="dashboard.php" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <a href="trackDonation.php"><i class="bi bi-trophy"></i><span>Track Donation</span></a>
+                <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
-                <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
-                <a href="foodCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
-                <a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>
+                <!--<a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>-->
+                <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
+                <!--<a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>-->
+                <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a>
               </div>
             </div><!-- End Services List -->
 

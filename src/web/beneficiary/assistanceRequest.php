@@ -172,9 +172,15 @@ if (isset($_SESSION["intUserId"])) {
                     <h2 class="card-title">Submit Form</h2>
 
                     <div class="mb-3">
-                        <label for="notes" class="form-label">Additional Notes</label>
-                        <textarea class="form-control border-warning" name="notes" id="notes" placeholder="Enter additional notes" rows="3"></textarea>
+                      <label for="purpose" class="form-label">Purpose</label>
+                      <select class="form-select border-warning" name="purpose" id="purpose" aria-label="Select purpose">
+                        <option value="" selected disabled>-- Select Purpose --</option>
+                        <option value="1">Human Consumption</option>
+                        <option value="2">Animal Consumption</option>
+                        <option value="3">Fertilizer</option>
+                      </select>
                     </div>
+
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
                     </div>

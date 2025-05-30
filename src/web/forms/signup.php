@@ -146,6 +146,13 @@
               <input type="text" class="form-control" name="monthlyincome" id="monthlyincome" placeholder="Monthly Income" aria-label="contact" aria-describedby="addon-monthlyincome">
             </div>
           </div>
+         <div class="col-12">
+           <label class="form-label fw-bold signup-form-label" for="uploadDocu">Upload Document</label>
+           <div class="input-group">
+             <span class="input-group-text signup-form-icon" id="addon-uploadDocu"><i class="bi bi-cash-stack"></i></span>
+             <input type="file" class="form-control" name="uploadDocu" id="uploadDocu" aria-label="contact" aria-describedby="addon-uploadDocu" accept=".pdf">
+           </div>
+         </div>
           <div class="col-12">
             <label class="form-label fw-bold signup-form-label" for="username">Username</label>
             <div class="input-group">
@@ -243,15 +250,17 @@
     const accountTypeSelect = document.getElementById("accountType");
     const addressField = document.getElementById("address").closest(".col-12");
     const incomeField = document.getElementById("monthlyincome").closest(".col-12");
-
+    const Docu = document.getElementById("uploadDocu").closest(".col-12");
     // Hide by default
     addressField.style.display = "none";
     incomeField.style.display = "none";
+    Docu.style.display = "none";
 
     accountTypeSelect.addEventListener("change", function () {
       if (this.value === "beneficiary") {
         addressField.style.display = "";
         incomeField.style.display = "";
+        Docu.style.display = "";
       } else {
         addressField.style.display = "none";
         incomeField.style.display = "none";

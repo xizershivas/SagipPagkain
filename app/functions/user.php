@@ -3,7 +3,10 @@ function getUserData($conn) {
     $allUserData = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
     return $allUserData;
 }
-
+function getDonorDate($conn) {
+    $allUserData = $conn->query("SELECT * FROM tbluser WHERE ysnDonor = 1");
+    return $allUserData;
+}
 function addUser($conn, $userData) {
     header('Content-Type: application/json');
 
