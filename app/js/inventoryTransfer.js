@@ -8,6 +8,7 @@ const transferInventoryForm = document.querySelector('#transferInventoryForm');
 const categorySelect = document.querySelector('#categorySelect');
 const expirationDate = document.querySelector('#expirationDate');
 const inventoryId = document.querySelector('#inventoryId');
+const donationId = document.querySelector('#donationId');
 
 const itemDetails = {};
 

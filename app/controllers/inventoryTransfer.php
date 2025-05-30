@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["foodBankId"])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $intInventoryId = intval($_POST["inventoryId"]);
+    $intDonationId = intval($_POST["donationId"]);
     $intSourceFoodBankId = intval($_POST["sourceFoodBank"]);
     $intTargetFoodBankId = intval($_POST["targetFoodBank"]);
     $intItemId = intval($_POST["item"]);
@@ -23,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $data = [
         "intInventoryId" => $intInventoryId,
+        "intDonationId" => $intDonationId,
         "intSourceFoodBankId" => $intSourceFoodBankId,
         "intTargetFoodBankId" => $intTargetFoodBankId,
         "intItemId" => $intItemId,
@@ -34,8 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     ];
 
     saveInventoryTransferDetails($conn, $data);
-    // processInventoryTransfer($conn, $data);
-error_log(print_r($_POST, true));
+    
     $conn->close();
 }
 ?>

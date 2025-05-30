@@ -18,6 +18,7 @@ include "../../../app/functions/inventoryTransfer.php";
 
   <!-- Data Table CSS CDN -->
   <!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" /> -->
+  <link href="../../../app/css/inventoryManagement.css" rel="stylesheet">
 </head>
 
 <body class="services-details-page">
@@ -84,7 +85,7 @@ include "../../../app/functions/inventoryTransfer.php";
                   <form id="frmInventoryFilter">
                     <div class="row g-2">
                       <div class="col col-md-8">
-                        <input class="form-control" list="filterOptions" name="searchItem" id="searchItem" placeholder="Search" required>
+                        <input type="search" class="form-control" list="filterOptions" name="searchItem" id="searchItem" placeholder="Search" required>
                         <datalist id="filterOptions">
                         </datalist>
                       </div>
@@ -145,6 +146,7 @@ include "../../../app/functions/inventoryTransfer.php";
 
           <div class="row mb-3">
             <input type="hidden" id="inventoryId" name="inventoryId">
+            <input type="hidden" id="donationId" name="donationId">
             <div class="col-md-6">
               <label for="sourceFoodBankSelect" class="form-label">Source Food Bank</label>
               <select class="form-select" id="sourceFoodBankSelect" name="sourceFoodBank">

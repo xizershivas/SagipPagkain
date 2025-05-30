@@ -53,7 +53,8 @@ function getInventoryData($conn, $dataListOptions, $filter, $search) {
             INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
-            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId";
+            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
+            WHERE IV.intQuantity > 0";
 
             $query = $conn->query($sql);
 

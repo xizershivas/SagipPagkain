@@ -175,14 +175,14 @@ if (isset($_SESSION["intUserId"])) {
 
                 <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center mb-0">
                     <h2 class="card-title">Track table</h2>
                     <br>
                     <div class="text-muted small text-end">
                         <div>List of items</div>
                     </div>
                     </div>
-                    <h5>Recent Assistance Details</h5>
+                    <!-- <h5>Recent Assistance Details</h5> -->
                     <div class="table-responsive">
                       <table id="requestTrackDataTable" class="table table-striped table-bordered">
                       <thead>

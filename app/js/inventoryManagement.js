@@ -10,7 +10,7 @@ function setTableData({ inventoryData }) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
         td.textContent = "No records found";
-        td.setAttribute('colspan', 7);
+        td.setAttribute('colspan', 8);
         td.style.textAlign = 'center';
         tr.append(td);
         tableBody.append(tr);
@@ -38,6 +38,7 @@ function setTableData({ inventoryData }) {
             tdFoodBank.textContent = d.strFoodBank;
             tdTransfer.innerHTML = `<a href='javascript:void(0)' class="btn-transfer" title='Transfer Item' 
                 data-intInventoryId=${d.intInventoryId} 
+                data-intDonationId=${d.intDonationId} 
                 data-intFoodBankId=${d.intFoodBankId} 
                 data-intItemId=${d.intItemId} 
                 data-intQuantity=${d.intQuantity} 
@@ -134,6 +135,7 @@ function setSelectedItem(intItemId) {
 function setInventoryTransferData(e) {
     const {
         intinventoryid,
+        intdonationid,
         intfoodbankid,
         intitemid,
         intquantity,
@@ -147,6 +149,7 @@ function setInventoryTransferData(e) {
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const date = String(d.getDate()).padStart(2, '0');
 
+    donationId.value = intdonationid;
     inventoryId.value = intinventoryid;
     sourceFoodBankSelect.value = intfoodbankid;
     itemSelect.value = intitemid;
