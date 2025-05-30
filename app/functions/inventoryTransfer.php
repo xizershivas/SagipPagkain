@@ -11,6 +11,21 @@ function getAllFoodBanks($conn) {
     return $allFoodBanks;
 }
 
+function getAllItems($conn) {
+    $allItems = $conn->query("SELECT * FROM tblitem");
+    return $allItems;
+}
+
+function getAllCategories($conn) {
+    $allCategories = $conn->query("SELECT * FROM tblcategory");
+    return $allCategories;
+}
+
+function getAllUnits($conn) {
+    $allUnits = $conn->query("SELECT * FROM tblunit");
+    return $allUnits;
+}
+
 function getAvailableItems($conn, $intFoodBankId) {
     header("Content-Type: application/json");
 
@@ -46,30 +61,41 @@ function getAvailableItems($conn, $intFoodBankId) {
 function saveInventoryTransferDetails($conn, $data) {
     header("Content-Type: application/json");
 
+    $intInventoryId = $data["intInventoryId"];
     $intSourceFoodBankId = $data["intSourceFoodBankId"];
     $intTargetFoodBankId = $data["intTargetFoodBankId"];
     $intItemId = $data["intItemId"];
+    $intCategoryId = $data["intCategoryId"];
+    $intUnitId = $data["intUnitId"];
     $intAvailableQty = $data["intAvailableQty"];
-    $strUnit = $data["strUnit"];
+    $dtmExpirationDate = $data["dtmExpirationDate"];
     $intTransferQty = $data["intTransferQty"];
-
-    $unitQuery = $conn->prepare("SELECT intUnitId FROM tblunit WHERE strUnit = ?");
-    $unitQuery->bind_param("s", $strUnit);
-    $unitQuery->execute();
-    $unitResult = $unitQuery->get_result()->fetch_object();
-    $intUnitId = $unitResult->intUnitId;
 
     $conn->begin_transaction();
 
     try {
-        $sql = "INSERT INTO tblinventorytransfer (intSourceFoodBankId, intTargetFoodBankId, intItemId, intAvailableQty, intUnitId, intTransferQty)  VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO tblinventorytransfer (
+                    intInventoryId, intSourceFoodBankId, intTargetFoodBankId, 
+                    intItemId, intCategoryId, intUnitId, 
+                    intAvailableQty, dtmExpirationDate, intTransferQty
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
             throw new Exception("Database operation failed", 500);
         }
 
-        $stmt->bind_param("iiiiii", $intSourceFoodBankId, $intTargetFoodBankId, $intItemId, $intAvailableQty, $intUnitId, $intTransferQty);
+        $stmt->bind_param("iiiiiiisi", 
+            $intInventoryId,
+            $intSourceFoodBankId,
+            $intTargetFoodBankId,
+            $intItemId,
+            $intCategoryId,
+            $intUnitId,
+            $intAvailableQty,
+            $dtmExpirationDate,
+            $intTransferQty
+        );
         
         if (!$stmt->execute()) {
             throw new Exception("Failed to process data", 400);
@@ -90,72 +116,72 @@ function saveInventoryTransferDetails($conn, $data) {
 }
 
 function processInventoryTransfer($conn, $data) {
-    // header("Content-Type: application/json");
+    header("Content-Type: application/json");
 
-    // $intSourceFoodBankId = $data["intSourceFoodBankId"];
-    // $intTargetFoodBankId = $data["intTargetFoodBankId"];
-    // $intItemId = $data["intItemId"];
-    // $intAvailableQty = $data["intAvailableQty"];
-    // $strUnit = $data["strUnit"];
-    // $intTransferQty = $data["intTransferQty"];
+    $intSourceFoodBankId = $data["intSourceFoodBankId"];
+    $intTargetFoodBankId = $data["intTargetFoodBankId"];
+    $intItemId = $data["intItemId"];
+    $intAvailableQty = $data["intAvailableQty"];
+    $strUnit = $data["strUnit"];
+    $intTransferQty = $data["intTransferQty"];
 
-    // $unitQuery = $conn->prepare("SELECT intUnitId FROM tblunit WHERE strUnit = ?");
-    // $unitQuery->bind_param("s", $strUnit);
-    // $unitQuery->execute();
-    // $unitResult = $unitQuery->get_result()->fetch_object();
-    // $intUnitId = $unitResult->intUnitId;
+    $unitQuery = $conn->prepare("SELECT intUnitId FROM tblunit WHERE strUnit = ?");
+    $unitQuery->bind_param("s", $strUnit);
+    $unitQuery->execute();
+    $unitResult = $unitQuery->get_result()->fetch_object();
+    $intUnitId = $unitResult->intUnitId;
 
-    // $conn->begin_transaction();
+    $conn->begin_transaction();
 
-    // try {
-    //     // Deduct from source inventory
-    //     $deductSql = "UPDATE tblinventory 
-    //                   SET intQuantity = intQuantity - ? 
-    //                   WHERE intFoodBankId = ? AND intItemId = ? AND intUnitId = ?";
-    //     $deductStmt = $conn->prepare($deductSql);
-    //     $deductStmt->bind_param("iiii", $intTransferQty, $intSourceFoodBankId, $intItemId, $intUnitId);
-    //     if (!$deductStmt->execute()) {
-    //         throw new Exception("Failed to deduct inventory from source", 400);
-    //     }
+    try {
+        // Deduct from source inventory
+        $deductSql = "UPDATE tblinventory 
+                      SET intQuantity = intQuantity - ? 
+                      WHERE intFoodBankId = ? AND intItemId = ? AND intUnitId = ?";
+        $deductStmt = $conn->prepare($deductSql);
+        $deductStmt->bind_param("iiii", $intTransferQty, $intSourceFoodBankId, $intItemId, $intUnitId);
+        if (!$deductStmt->execute()) {
+            throw new Exception("Failed to deduct inventory from source", 400);
+        }
 
-    //     // Add to target inventory
-    //     // First, check if an entry exists for the target food bank
-    //     $checkSql = "SELECT intQuantity FROM tblinventory 
-    //                  WHERE intFoodBankId = ? AND intItemId = ? AND intUnitId = ?";
-    //     $checkStmt = $conn->prepare($checkSql);
-    //     $checkStmt->bind_param("iii", $intTargetFoodBankId, $intItemId, $intUnitId);
-    //     $checkStmt->execute();
-    //     $result = $checkStmt->get_result();
+        // Add to target inventory
+        // First, check if an entry exists for the target food bank
+        $checkSql = "SELECT intQuantity FROM tblinventory 
+                     WHERE intFoodBankId = ? AND intItemId = ? AND intUnitId = ?";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->bind_param("iii", $intTargetFoodBankId, $intItemId, $intUnitId);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
 
-    //     if ($result->num_rows > 0) {
-    //         // Entry exists, update it
-    //         $updateSql = "UPDATE tblinventory 
-    //                       SET intQuantity = intQuantity + ? 
-    //                       WHERE intFoodBankId = ? AND intItemId = ? AND intUnitId = ?";
-    //         $updateStmt = $conn->prepare($updateSql);
-    //         $updateStmt->bind_param("iiii", $intTransferQty, $intTargetFoodBankId, $intItemId, $intUnitId);
-    //         if (!$updateStmt->execute()) {
-    //             throw new Exception("Failed to add inventory to target", 400);
-    //         }
-    //     } else {
-    //         // Entry does not exist, insert it
-    //         $insertSql = "INSERT INTO tblinventory (intFoodBankId, intItemId, intQuantity, intUnitId) 
-    //                       VALUES (?, ?, ?, ?)";
-    //         $insertStmt = $conn->prepare($insertSql);
-    //         $insertStmt->bind_param("iiii", $intTargetFoodBankId, $intItemId, $intTransferQty, $intUnitId);
-    //         if (!$insertStmt->execute()) {
-    //             throw new Exception("Failed to insert inventory for target", 400);
-    //         }
-    //     }
+        if ($result->num_rows > 0) {
+            // Entry exists, update it
+            $updateSql = "UPDATE tblinventory 
+                          SET intQuantity = intQuantity + ? 
+                          WHERE intFoodBankId = ? AND intItemId = ? AND intUnitId = ?";
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bind_param("iiii", $intTransferQty, $intTargetFoodBankId, $intItemId, $intUnitId);
+            if (!$updateStmt->execute()) {
+                throw new Exception("Failed to add inventory to target", 400);
+            }
+        } else {
+            // Entry does not exist, insert it
+            $insertSql = "INSERT INTO tblinventory (intFoodBankId, intItemId, intQuantity, intUnitId) 
+                          VALUES (?, ?, ?, ?)";
+            $insertStmt = $conn->prepare($insertSql);
+            $insertStmt->bind_param("iiii", $intTargetFoodBankId, $intItemId, $intTransferQty, $intUnitId);
+            if (!$insertStmt->execute()) {
+                throw new Exception("Failed to insert inventory for target", 400);
+            }
+        }
 
-    //     $conn->commit();
-    //     echo json_encode(["data" => ["message" => "Inventory transfer processed successfully."]]);
-    // } catch (Exception $ex) {
-    //     $conn->rollback();
-    //     http_response_code(400);
-    //     echo json_encode(["data" => ["message" => "Failed to process inventory transfer. " . $ex->getMessage()]]);
-    // }
+        $conn->commit();
+        echo json_encode(["data" => ["message" => "Inventory transfer processed successfully."]]);
+    } catch (Exception $ex) {
+        $conn->rollback();
+        http_response_code(400);
+        echo json_encode(["data" => ["message" => "Failed to process inventory transfer. " . $ex->getMessage()]]);
+    }
 
-    // exit();
+    exit();
 }
 ?>

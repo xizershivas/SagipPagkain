@@ -11,25 +11,31 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["foodBankId"])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $intInventoryId = intval($_POST["inventoryId"]);
     $intSourceFoodBankId = intval($_POST["sourceFoodBank"]);
     $intTargetFoodBankId = intval($_POST["targetFoodBank"]);
     $intItemId = intval($_POST["item"]);
+    $intCategoryId = intval($_POST["category"]);
+    $intUnitId = intval($_POST["unit"]);
     $intAvailableQty = intval($_POST["availableQty"]);
-    $strUnit = sanitize($_POST["itemUnit"]);
+    $dtmExpirationDate = $_POST["expirationDate"];
     $intTransferQty = intval($_POST["transferQty"]);
 
     $data = [
+        "intInventoryId" => $intInventoryId,
         "intSourceFoodBankId" => $intSourceFoodBankId,
         "intTargetFoodBankId" => $intTargetFoodBankId,
         "intItemId" => $intItemId,
+        "intCategoryId" => $intCategoryId,
+        "intUnitId" => $intUnitId,
         "intAvailableQty" => $intAvailableQty,
-        "strUnit" => $strUnit,
+        "dtmExpirationDate" => $dtmExpirationDate,
         "intTransferQty" => $intTransferQty
     ];
 
     saveInventoryTransferDetails($conn, $data);
     // processInventoryTransfer($conn, $data);
-
+error_log(print_r($_POST, true));
     $conn->close();
 }
 ?>
