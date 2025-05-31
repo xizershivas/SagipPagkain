@@ -73,8 +73,8 @@ if (isset($_SESSION["intUserId"])) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="dashboard.php" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <a href="trackDonation.php"><i class="bi bi-trophy"></i><span>Track Donation</span></a>
+                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <a href="trackDonation.php" class="active"><i class="bi bi-trophy"></i><span>Track Donation</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
                 <!--<a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>-->
