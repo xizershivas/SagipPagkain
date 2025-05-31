@@ -31,6 +31,7 @@
   <!-- Main CSS File -->
   <link href="../../../app/css/app.css" rel="stylesheet">
   <link href="../../../app/css/signup.css" rel="stylesheet">
+  
 
 </head>
 <body>
@@ -47,41 +48,7 @@
       </a>
 
       <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="../../../index.php#about">
-            <div>
-              <h6>Our Role in</h6>
-              <h5><span>FOOD SYSTEMS</span></h5>
-            </div>
-          </a></li>
-          <li><a href="../../../index.php#system">
-            <div>
-              <h6>Our</h6>
-              <h5>APPROACH</h5>
-            </div>
-          </a></li>
-          <li><a href="../../../index.php#stats">
-            <div>
-              <h5>IMPACT</h5>
-            </div>
-          </a></li>
-          <li><a href="../../../index.php#services">
-            <div>
-              <h6>About</h6>
-              <h6>Sagip pagkain</h6>
-            </div>
-          </a></li>
-          <li><a href="../../../index.php#recent-posts">
-            <div>
-              <h5>COMMUNITY-LED</h5>
-            </div>
-          </a></li>
-          <li><a href="../../../index.php#contact">
-            <div>
-            <h5>OUR SUPPORT</h5>
-          </div>
-          </a></li>
-        </ul>
+        
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
