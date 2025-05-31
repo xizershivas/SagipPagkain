@@ -135,7 +135,7 @@ if (isset($_SESSION["intUserId"])) {
           </div>
 
           <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
-          <div class="container">
+          <div class="container" style="padding-bottom: 2%">
 
                 <div class="card mt-4">
                 <div class="card-body">
@@ -250,7 +250,6 @@ if (isset($_SESSION["intUserId"])) {
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
    <script src="../../../app/js/requestStatus.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     //temporary data

@@ -105,15 +105,16 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
 
       <div class="container">
         <div class="row">
-          <!-- Left Content Column -->
-          <div class="col-lg-8">
+        <div class="col-lg-3">
+          <br>  
+        </div>
+   
+          <div class="col-lg-6">
             <h2 data-aos="fade-up" data-aos-delay="100">Welcome to Sagip Pagkain</h2>
             <p data-aos="fade-up" data-aos-delay="200">Food banking is key to the solution</p>
-          </div>
 
-          <!-- Right Login Column -->
-          <div class="col-lg-4">
-            <div class="login-container">
+            <br>
+            <div class="login-container" style="width: 65%;margin-left: 10%;">
               <div class="login-box" style="background-color: rgba(248, 249, 250, 0.9); border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
                 <div class="login-img"></div>
                 <div class="login-form">
@@ -140,6 +141,11 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
               </div>
             </div>
           </div>
+
+          <div class="col-lg-3">
+          <br>  
+        </div>
+
         </div>
       </div>
 
