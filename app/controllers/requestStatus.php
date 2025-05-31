@@ -15,4 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $conn->close();
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'));
+    $intBeneficiaryRequestId = intval($data->requestId);
+    submitRequest($conn, $intBeneficiaryRequestId);
+    $conn->close();
+}
+
 ?>

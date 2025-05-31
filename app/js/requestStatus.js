@@ -149,10 +149,27 @@ async function deleteBeneficiaryRequest(e) {
     }
 }
 
-function submitForApproval() {
+async function submitForApproval() {
     if (!confirm("Are you sure you want to submit this for approval?")) return;
 
-    alert('submitted');
+    const requestId = requestNo.value;
+
+    try {
+      const res = await fetch('../../../app/controllers/requestStatus.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ requestId })
+      });
+
+      const resData = await res.json();
+
+      alert(resData.data.message);
+      window.location.reload();
+    } catch (e) {
+      alert(e.message);
+    }
 }
 
 requestNo.addEventListener('change', getRequestDetails);

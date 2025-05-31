@@ -41,7 +41,8 @@ function getAllBeneficiaryRequest($conn, $intBeneficiaryId) {
             BR.strDescription,
             BR.dtmPickupDate,
             DATE_FORMAT(BR.dtmCreatedDate, '%Y-%m-%d') AS dtmCreatedDate,
-            BR.intApproved
+            BR.intApproved,
+            BR.ysnSubmitted
         FROM tblbeneficiaryrequest BR
         INNER JOIN tblbeneficiaryrequestdetail BRD
             ON BR.intBeneficiaryRequestId = BRD.intBeneficiaryRequestId
@@ -75,6 +76,31 @@ function deleteBeneficiaryRequest($conn, $intBeneficiaryRequestId) {
  
         http_response_code(200);
         echo json_encode(["data" => ["message" => "Beneficiary Request deleted successfully."]]);
+    } catch (Exception $ex) {
+        $conn->rollback();
+        $code = $ex->getCode();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => "Failed to submit request. " . $ex->getMessage()]]);
+    }
+}
+
+function submitRequest($conn, $intBeneficiaryRequestId) {
+    header('Content-Type: application/json');
+
+    $conn->begin_transaction();
+
+    try {
+        $stmt = $conn->prepare("UPDATE tblbeneficiaryrequest SET ysnSubmitted = 1 WHERE intBeneficiaryRequestId = ?");
+        $stmt->bind_param("i", $intBeneficiaryRequestId);
+
+        if (!$stmt->execute()) {
+            throw new Exception('Database failed to process request', 500);
+        }
+
+        $conn->commit();
+ 
+        http_response_code(200);
+        echo json_encode(["data" => ["message" => "Request submitted successfully."]]);
     } catch (Exception $ex) {
         $conn->rollback();
         $code = $ex->getCode();

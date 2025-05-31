@@ -212,9 +212,15 @@ if (isset($_SESSION["intUserId"])) {
                               <td><?= htmlspecialchars($row->dtmPickupDate) ?></td>
                               <td><?= htmlspecialchars($row->dtmCreatedDate) ?></td>
                               <td>
-                                  <?= $row->intApproved == 0 ? "Created" : ($row->intApproved == 1 ? "Approved" : "Rejected") ?>
+                                  <?= ($row->intApproved == 0 && $row->ysnSubmitted == 1) ? "Waiting for Approval" : ($row->intApproved == 0 ? "Created" : ($row->intApproved == 1 ? "Approved" : "Rejected")) ?>
                               </td>
-                              <td><a href="javascript:void(0)" class="btn-delete-req" data-id="<?= $row->intBeneficiaryRequestId ?>"><i class="bi bi-trash-fill"></i></a></td>
+                              <td>
+                                <?php if (!$row->ysnSubmitted) { ?>
+                                <a href="javascript:void(0)" class="btn-delete-req" data-id="<?= $row->intBeneficiaryRequestId ?>">
+                                  <i class="bi bi-trash-fill"></i>
+                                </a>
+                                <?php } ?>
+                              </td>
                             </tr>
                         <?php
                           }
