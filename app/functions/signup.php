@@ -55,10 +55,10 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
             break;
         case "beneficiary":
             $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnActive, ysnBeneficiary) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, 0, ?)";
             $stmt = $conn->prepare($query);
             $ysnActive = 1;
-            $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysnActive, $ysn);
+            $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
             break;
     }
 
