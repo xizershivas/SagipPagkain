@@ -3,8 +3,52 @@ session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
 
+
+function getCoordinates($address)
+{
+    $apiKey = 'AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs';
+    $address = urlencode($address);
+    $url = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key={$apiKey}";
+
+    $response = file_get_contents($url);
+    $data = json_decode($response, true);
+
+    if ($data['status'] == 'OK') {
+        $latitude = $data['results'][0]['geometry']['location']['lat'];
+        $longitude = $data['results'][0]['geometry']['location']['lng'];
+        return array('latitude' => $latitude, 'longitude' => $longitude);
+    } else {
+        return false;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $foodBankName = $conn->real_escape_string($_POST['foodBankName']);
+    $address = $conn->real_escape_string($_POST['address']);
+
+    $coords = getCoordinates($address);
+
+    if ($coords !== false) {
+        $latitude = $coords['latitude'];
+        $longitude = $coords['longitude'];
+
+        $sql = "INSERT INTO tblfoodbank (strFoodBank, strAddress, dblLatitude, dblLongitude) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssdd", $foodBankName, $address, $latitude, $longitude);
+        
+        if ($stmt->execute()) {
+            $message = "Food Bank added successfully!";
+        } else {
+            $message = "Error inserting data: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        $message = "Could not get coordinates for the address.";
+    }
+}
+
 // Get food bank data with item counts
-$foodBankQuery = "SELECT fb.intFoodBankId, fb.strFoodBank, fb.dblLatitude, fb.dblLongitude,
+$foodBankQuery = "SELECT fb.intFoodBankId, fb.strFoodBank, fb.dblLatitude, fb.dblLongitude,fb.strAddress,
                   COUNT(DISTINCT i.intItemId) as itemCount,
                   SUM(i.intQuantity) as totalStock
                   FROM tblfoodbank fb
@@ -16,11 +60,14 @@ $foodBanks = array();
 
 while ($row = mysqli_fetch_assoc($foodBankResult)) {
     // Get detailed inventory
-    $inventoryQuery = "SELECT i.intQuantity, it.strItem, u.strUnit
-                      FROM tblinventory i 
-                      JOIN tblitem it ON i.intItemId = it.intItemId 
-                      JOIN tblunit u ON i.intUnitId = u.intUnitId 
-                      WHERE i.intFoodBankId = " . $row['intFoodBankId'];
+    $inventoryQuery = "SELECT DISTINCT SUM(i.intQuantity) AS intQuantity, it.strItem, u.strUnit
+    FROM tblinventory i 
+    JOIN tblitem it ON i.intItemId = it.intItemId 
+    JOIN tblunit u ON i.intUnitId = u.intUnitId 
+    WHERE i.intFoodBankId = " . $row['intFoodBankId'] . "
+    GROUP BY  it.strItem, u.strUnit";
+
+
     
     $inventoryResult = mysqli_query($conn, $inventoryQuery);
     $inventory = array();
@@ -38,6 +85,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         'name' => $row['strFoodBank'],
         'lat' => $row['dblLatitude'],
         'lng' => $row['dblLongitude'],
+        'address' => $row['strAddress'],
         'itemCount' => $row['itemCount'],
         'stock' => $row['totalStock'] ?? 0,
         'items' => $inventory
@@ -65,6 +113,12 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
 
   <link href="../../../app/css/foodCenter.css" rel="stylesheet">
 </head>
+
+<style>
+  .pac-container {
+    z-index: 2000 !important;
+  }
+</style>
 
 <body class="services-details-page">
 
@@ -191,34 +245,37 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     var locations = <?php echo json_encode($foodBanks); ?>;
     var locationList = document.getElementById("locationList");
     var currentFoodBankId = null;
-
+   
     locations.forEach(location => {
-        var marker = L.marker([location.lat, location.lng]).addTo(map);
-        marker.bindPopup(`
-            <div class="text-left">
-                <h6 class="mb-1"><b>${location.name}</b></h6>
-                <p class="mb-1">Total Items: ${location.itemCount}</p>
-                <p class="mb-1">Total Quantity: ${location.stock}</p>
-                <div class="d-flex gap-2 mt-2">
-                    <button class="btn btn-sm btn-warning" onclick="openEditModal('${location.id}', '${location.name}')">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteFoodBank('${location.id}')">Delete</button>
-                    <a href="#" 
-                       class="btn btn-sm btn-primary stock-link" 
-                       data-bs-toggle="modal" 
-                       data-bs-target="#stockModal"
-                       data-id="${location.id}"
-                       data-items='${JSON.stringify(location.items)}' 
-                       data-location="${location.name}" style="color: #fff;">
-                       View Stock
-                    </a>
-                </div>
+
+    var marker = L.marker([location.lat, location.lng]).addTo(map);
+    
+    marker.bindPopup(`
+        <div class="text-left">
+            <h6 class="mb-1"><b>${location.address?.split(",")[0].trim()}</b></h6>
+            <p class="mb-1">Total Items: ${location.itemCount}</p>
+            <p class="mb-1">Total Quantity: ${location.stock}</p>
+            <div class="d-flex gap-2 mt-2">
+               <button class="btn btn-sm btn-warning" onclick="openEditModal('${location.id}', '${(location.strAddress || '').split(',')[0].trim()}')">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteFoodBank('${location.id}')">Delete</button>
+                <a href="#" 
+                   class="btn btn-sm btn-primary stock-link" 
+                   data-bs-toggle="modal" 
+                   data-bs-target="#stockModal"
+                   data-id="${location.id}"
+                   data-items='${JSON.stringify(location.items)}' 
+                   data-location="${(location.strAddress || '').split(',')[0].trim()}" style="color: #fff;">
+                   View Stock
+                </a>
             </div>
-        `);
+        </div>
+    `);
+
 
         // Add to list
         var listItem = document.createElement("li");
         listItem.className = "list-group-item";
-        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
+        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.address}`;
         listItem.onclick = function () {
             map.setView([location.lat, location.lng], 13);
         };
@@ -257,153 +314,6 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         }
     });
 
-    // Add Food Bank
-    function addFoodBank() {
-        const strFoodBank = document.getElementById('strFoodBank').value.trim();
-        if (!strFoodBank) {
-            alert('Please enter a food bank address');
-            return;
-        }
-        
-        fetch('api/foodBankCrud.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `action=add&strFoodBank=${encodeURIComponent(strFoodBank)}`
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text().then(text => {
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    console.error('Server response:', text);
-                    throw new Error('Invalid JSON response from server');
-                }
-            });
-        })
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                throw new Error(data.message || 'Error adding food bank');
-            }
-        })
-        .catch(error => {
-            console.error('Error details:', error);
-            alert('Error: ' + error.message);
-        });
-    }
-
-    // Edit Food Bank
-    function openEditModal(id = null, name = null) {
-        // If called from map pin
-        if (id && name) {
-            currentFoodBankId = id;
-            document.getElementById('editFoodBankId').value = id;
-            document.getElementById('editStrFoodBank').value = name;
-        } else {
-            // If called from stock modal, use current values
-            document.getElementById('editFoodBankId').value = currentFoodBankId;
-            document.getElementById('editStrFoodBank').value = document.getElementById('modalLocationName').textContent;
-        }
-        
-        // Close other modals if open
-        bootstrap.Modal.getInstance(document.getElementById('stockModal'))?.hide();
-        
-        // Show edit modal
-        new bootstrap.Modal(document.getElementById('editFoodBankModal')).show();
-    }
-
-    // Function to update food bank
-    function updateFoodBank() {
-        const id = document.getElementById('editFoodBankId').value;
-        const strFoodBank = document.getElementById('editStrFoodBank').value.trim();
-        
-        if (!strFoodBank) {
-            alert('Please enter a food bank address');
-            return;
-        }
-
-        fetch('api/foodBankCrud.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `action=update&intFoodBankId=${encodeURIComponent(id)}&strFoodBank=${encodeURIComponent(strFoodBank)}`
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text().then(text => {
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    console.error('Server response:', text);
-                    throw new Error('Invalid JSON response from server');
-                }
-            });
-        })
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                throw new Error(data.message || 'Error updating food bank');
-            }
-        })
-        .catch(error => {
-            console.error('Error details:', error);
-            alert('Error: ' + error.message);
-        });
-    }
-
-    // Modified delete function to accept optional id parameter
-    function deleteFoodBank(id = null) {
-        const foodBankId = id || currentFoodBankId;
-        if (!foodBankId) {
-            alert('No food bank selected');
-            return;
-        }
-        
-        if (confirm('Are you sure you want to delete this food bank?')) {
-            fetch('api/foodBankCrud.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `action=delete&intFoodBankId=${encodeURIComponent(foodBankId)}`
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text().then(text => {
-                    try {
-                        return JSON.parse(text);
-                    } catch (e) {
-                        console.error('Server response:', text);
-                        throw new Error('Invalid JSON response from server');
-                    }
-                });
-            })
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    throw new Error(data.message || 'Error deleting food bank');
-                }
-            })
-            .catch(error => {
-                console.error('Error details:', error);
-                alert('Error: ' + error.message);
-            });
-        }
-    }
-
     // Search functionality
     function filterLocations() {
         var input = document.getElementById("searchBox").value.toLowerCase(); 
@@ -419,29 +329,41 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     }
   </script>
 
-  <!-- Add Food Bank Modal -->
-  <div class="modal fade" id="addFoodBankModal" tabindex="-1">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title">Add Food Bank</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">
-                  <form id="addFoodBankForm">
-                      <div class="mb-3" style="color: #333;">
-                          <label for="strFoodBank" class="form-label">Food Bank Address</label>
-                          <input type="text" class="form-control" id="strFoodBank" required>
-                      </div>
-                  </form>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" onclick="addFoodBank()">Add Food Bank</button>
-              </div>
-          </div>
+
+ <!-- Add Food Bank Modal -->
+<div class="modal fade" id="addFoodBankModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Food Bank</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+      <div class="modal-body">
+        <?php if (!empty($message)): ?>
+          <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
+        <?php endif; ?>
+
+        <form action="" method="POST" enctype="multipart/form-data" id="foodBankForm">
+          <div class="mb-3">
+            <label for="foodBankName" class="form-label">Food Bank Name:</label>
+            <input type="text" class="form-control" id="foodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address:</label>
+            <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address of the Foodbank" required />
+          </div>
+
+          <!-- Move buttons inside the form -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add Food Bank</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
   </div>
+</div>
 
   <!-- Edit Food Bank Modal -->
   <div class="modal fade" id="editFoodBankModal" tabindex="-1">
@@ -470,7 +392,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
 
   <!-- Stock Details Modal -->
   <div class="modal fade" id="stockModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-dialog modal-dialog-scro  llable">
           <div class="modal-content">
               <div class="modal-header">
                   <h5 class="modal-title">Stock Details - <span id="modalLocationName"></span></h5>
@@ -494,6 +416,20 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
           </div>
       </div>
   </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs&libraries=places"></script>
+
+  <script>
+    function initAutocomplete() {
+      const input = document.getElementById('address');
+      const autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode'],
+        componentRestrictions: { country: "ph" } 
+      });
+    }
+    google.maps.event.addDomListener(window, 'load', initAutocomplete);
+  </script>
+  
 </body>
 
 </html>
