@@ -3,7 +3,7 @@ include "../config/db_connection.php";
 include "../functions/user.php";
 include "../utils/sanitize.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["intUserId"])) {
     $intUserId = intval(sanitize($_GET["intUserId"]));
     editUser($conn, $intUserId);
 
@@ -45,16 +45,35 @@ if ($_SERVER["REQUEST_METHOD"] == "PUT") {
 
     // Check if JSON decoding was successful
     if (json_last_error() === JSON_ERROR_NONE) {
-        $intUserId = $userData->intUserId;
+        $intUserId = intval($userData->intUserId);
         $strUsername = sanitize($userData->strUsername);
         $strEmail = sanitizeEmail($userData->strEmail) ?? '';
+        $strFullName = sanitize($userData->strFullName);
+        $strContact = sanitize($userData->strContact) ?? '';
+        $strAddress = sanitize($userData->strAddress) ?? '';
+        $dblSalary = floatval($userData->dblSalary) ?? 0;
         $ysnActive = $userData->ysnActive ?? 0;
         $ysnAdmin = $userData->ysnAdmin ?? 0;
         $ysnDonor = $userData->ysnDonor ?? 0;
         $ysnStaff = $userData->ysnStaff ?? 0;
         $ysnPartner = $userData->ysnPartner ?? 0;
 
-        updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnActive, $ysnAdmin, $ysnDonor, $ysnStaff, $ysnPartner);
+        $userData = [
+            "intUserId" => $userData->intUserId
+            , "strUsername" => $strUsername
+            , "strEmail" => $strEmail
+            , "strFullName" => $strFullName
+            , "strContact" => $strContact
+            , "strAddress" => $strAddress
+            , "dblSalary" => $dblSalary
+            , "ysnActive" => $ysnActive
+            , "ysnAdmin" => $ysnAdmin
+            , "ysnDonor" => $ysnDonor
+            , "ysnStaff" => $ysnStaff
+            , "ysnPartner" => $ysnPartner
+        ];
+
+        updateUser($conn, $userData);
     }
 
     $conn->close();

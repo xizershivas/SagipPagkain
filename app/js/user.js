@@ -12,12 +12,18 @@ let intUserId = 0;
 
 function setFormData({ data }) {
     frmUser.elements.user.value = data.strUsername;
-    frmUser.elements.email.value = data.strEmail;
+    frmUser.elements.userEmail.value = data.strEmail;
+    frmUser.elements.fullName.value = data.strFullName;
+    frmUser.elements.userContact.value = data.strContact;
+    frmUser.elements.address.value = data.strAddress;
+    frmUser.elements.salary.value = data.dblSalary;
+    frmUser.elements.document.value = data.strDocument;
     frmUser.elements.active.checked = data.ysnActive ? true : false;
     frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
     frmUser.elements.donor.checked = data.ysnDonor ? true : false;
     frmUser.elements.staff.checked = data.ysnStaff ? true : false;
     frmUser.elements.partner.checked = data.ysnPartner ? true : false;
+    frmUser.elements.beneficiary.checked = data.ysnBeneficiary ? true : false;
 }
 
 function editUser(e) {
@@ -44,7 +50,11 @@ function updateUser() {
     const userData = {
         intUserId: intUserId,
         strUsername: frmUser.elements.user.value,
-        strEmail: frmUser.elements.email.value,
+        strEmail: frmUser.elements.userEmail.value,
+        strFullName: frmUser.elements.fullName.value,
+        strContact: frmUser.elements.userContact.value,
+        strAddress: frmUser.elements.address.value,
+        dblSalary: frmUser.elements.salary.value,
         ysnActive: frmUser.elements.active.checked ? true : false,
         ysnAdmin: frmUser.elements.admin.checked ? true : false,
         ysnDonor: frmUser.elements.donor.checked ? true : false,
@@ -59,6 +69,7 @@ function updateUser() {
             const response = JSON.parse(this.responseText);
 
             if (this.status == 200) {
+                alert(response.data.message);
                 window.location.reload(); // Refresh to reload Data Table
             } else {
                 alert(response.data.message);

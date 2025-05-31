@@ -172,21 +172,67 @@ include "../../../app/functions/user.php";
                 <button type="button" class="btn btn-success w-25" id="btnAddUser" data-bs-toggle="modal" data-bs-target="#modalFrmAddUser">Add New User</button>
               </div>
 
-               <!-- USER FORM (HIDDEN) -->
+               <!-- EDIT USER FORM (HIDDEN) -->
               <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                   <div class="modal-content">
 
                     <div class="text-black mb-3 bg-light p-3">
                       <form id="frmUser">
-                        <div class="mb-3">
-                          <label for="user" class="form-label">User</label>
-                          <input type="text" class="form-control" name="user" id="user" value="" disabled>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="user" class="form-label">User</label>
+                              <input type="text" class="form-control" name="user" id="user" value="" disabled>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="userEmail" class="form-label">Email</label>
+                              <input type="email" class="form-control" name="userEmail" id="userEmail" value="">
+                            </div>
+                          </div>
                         </div>
-                        <div class="mb-3">
-                          <label for="email" class="form-label">Email</label>
-                          <input type="email" class="form-control" name="email" id="email" value="">
+
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="fullName" class="form-label">Full Name</label>
+                              <input type="text" class="form-control" name="fullName" id="fullName" value="">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="userContact" class="form-label">Contact</label>
+                              <input type="text" class="form-control" name="userContact" id="userContact" value="">
+                            </div>
+                          </div>
                         </div>
+
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="address" class="form-label">Address</label>
+                              <input type="text" class="form-control" name="address" id="address" value="">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="salary" class="form-label">Salary</label>
+                              <input type="number" class="form-control" name="salary" id="salary" value="">
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="document" class="form-label">Document Uploaded</label>
+                              <input type="text" class="form-control" name="document" id="document" value="" readonly>
+                            </div>
+                          </div>
+                        </div>
+
                         <div class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" role="switch" name="active" id="active">
                           <label class="form-check-label" for="active">Active</label>
@@ -207,6 +253,10 @@ include "../../../app/functions/user.php";
                           <input class="form-check-input" type="checkbox" role="switch" name="partner" id="partner">
                           <label class="form-check-label" for="partner">Partner access</label>
                         </div>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" name="beneficiary" id="beneficiary">
+                          <label class="form-check-label" for="beneficiary">Beneficiary access</label>
+                        </div>
                       </form>
                     </div>
 
@@ -218,7 +268,7 @@ include "../../../app/functions/user.php";
                   </div>
                 </div>
               </div>
-              <!-- END USER FORM -->
+              <!-- END EDIT USER FORM -->
 
 
               <!-- DATA TABLE -->
@@ -232,6 +282,7 @@ include "../../../app/functions/user.php";
                     <th scope="col">Donor</th>
                     <th scope="col">Staff</th>
                     <th scope="col">Partner</th>
+                    <th scope="col">Beneficiary</th>
                     <th scope="col" colspan="2">Action</th>
                   </tr>
                 </thead>
@@ -250,6 +301,7 @@ include "../../../app/functions/user.php";
                         <td><?php echo $user->ysnDonor ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><?php echo $user->ysnStaff ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><?php echo $user->ysnPartner ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnBeneficiary ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
                         <td><a class="btn-edit-user" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
                         <td><a class="btn-delete-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class="bi bi-trash-fill"></i></a></td>
                       </tr>

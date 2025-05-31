@@ -115,12 +115,34 @@ function addUser($conn, $userData) {
 }
 
 function editUser($conn, $intUserId) {
+    header('Content-Type: application/json');
+
     if (!filter_var($intUserId, FILTER_VALIDATE_INT)) {
         http_response_code(400);
         echo json_encode(array("data" => array("message" => "Invalid request")));
         exit();
     } else {
-        $query = $conn->prepare("SELECT * FROM tbluser WHERE intUserId = ?");
+        $sql = "SELECT U.intUserId
+                , U.strUsername
+                , U.strFullName
+                , U.strContact
+                , U.strEmail
+                , U.ysnActive
+                , U.ysnAdmin
+                , U.ysnDonor
+                , U.ysnStaff
+                , U.ysnPartner
+                , U.ysnBeneficiary
+                , B.intBeneficiaryId
+                , B.strAddress
+                , B.dblSalary
+                , B.strDocument
+                FROM tbluser U
+                LEFT JOIN tblbeneficiary B
+                    ON U.intUserId = B.intUserId
+                WHERE U.intUserId = ?";
+
+        $query = $conn->prepare($sql);
 
         if (!$query) {
             http_response_code(500);
@@ -148,40 +170,103 @@ function editUser($conn, $intUserId) {
     }
 }
 
-function updateUser($conn, $intUserId, $strUsername, $strEmail, $ysnActive, $ysnAdmin, $ysnDonor, $ysnStaff, $ysnPartner) {
-    $query = $conn->prepare("UPDATE tbluser SET strEmail = ?, ysnActive = ?, ysnAdmin = ?, ysnDonor = ?, ysnStaff = ?, ysnPartner = ? WHERE intUserId = ? AND strUsername = ?");
-    $query->bind_param("siiiiiis", $strEmail, $ysnActive, $ysnAdmin, $ysnDonor, $ysnStaff, $ysnPartner, $intUserId, $strUsername);
+function updateUser($conn, $userData) {
+    header("Content-Type: application/json");
 
-    if ($query->execute()) {
-        if ($query->affected_rows > 0) {
-            $data = array(
-                "userId" => $intUserId,
-                "username" => $strUsername,
-                "email" => $strEmail,
-                "active" => $ysnActive,
-                "admin" => $ysnAdmin,
-                "donor" => $ysnDonor,
-                "staff" => $ysnStaff,
-                "partner" => $ysnPartner
-            );
-            
-            http_response_code(200);
-            echo json_encode(array("data" => $data));
-        } else {
-            http_response_code(202);
-            echo json_encode(array("data" => array("message" => "No rows were affected")));
+    $intUserId = $userData["intUserId"];
+    $strUsername = $userData["strUsername"];
+    $strEmail = $userData["strEmail"];
+    $strFullName = $userData["strFullName"];
+    $strContact = $userData["strContact"];
+    $strAddress = $userData["strAddress"];
+    $dblSalary = $userData["dblSalary"];
+    $ysnActive = $userData["ysnActive"];
+    $ysnAdmin = $userData["ysnAdmin"];
+    $ysnDonor = $userData["ysnDonor"];
+    $ysnStaff = $userData["ysnStaff"];
+    $ysnPartner = $userData["ysnPartner"];
+
+    try
+    {
+        $sql = "UPDATE tbluser U 
+                LEFT JOIN tblbeneficiary B
+                    ON U.intUserId = B.intUserId
+                SET U.strEmail = ?
+                    , U.strFullName = ?
+                    , U.strContact = ?
+                    , B.strName = ?
+                    , B.strEmail = ?
+                    , B.strContact = ?
+                    , B.strAddress = ?
+                    , B.dblSalary = ?
+                    , U.ysnActive = ?
+                    , U.ysnAdmin = ?
+                    , U.ysnDonor = ?
+                    , U.ysnStaff = ?
+                    , U.ysnPartner = ? 
+                WHERE U.intUserId = ?";
+
+        $query = $conn->prepare($sql);
+
+        if (!$query) {
+            throw new Exception("Database operation failed", 500);
         }
-    } else {
-        http_response_code(400);
-        echo json_encode(array("data" => array("message" => $query->error)));
+
+        $query->bind_param("sssssssdiiiiii", 
+            $strEmail
+            , $strFullName
+            , $strContact
+            , $strFullName
+            , $strEmail
+            , $strContact
+            , $strAddress
+            , $dblSalary
+            , $ysnActive
+            , $ysnAdmin
+            , $ysnDonor
+            , $ysnStaff
+            , $ysnPartner
+            , $intUserId
+        );
+
+        if ($query->execute()) {
+            if ($query->affected_rows > 0) {
+                http_response_code(200);
+                echo json_encode(["data" => ["message" => "User details updated successfully", "user" => $userData]]);
+            } else {
+                http_response_code(202);
+                echo json_encode(["data" => ["message" => "No rows were affected"]]);
+            }
+        } else {
+            throw new Exception($query->error, 500);
+        }
+
+        $query->close();
+    } catch (Exception $ex) {
+        $code = $ex->getCode();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => $ex->getMessage()]]);
     }
 
-    $query->close();
     exit();
 }
 
 function deleteUser($conn, $intUserId) {
-    $query = $conn->prepare("DELETE FROM tbluser WHERE intUserId = ?");
+    header("Content-Type: application/json");
+
+    $sql = "DELETE U, B
+            FROM tbluser U
+            LEFT JOIN tblbeneficiary B
+                ON U.intUserId = B.intUserId
+            WHERE U.intUserId = ?";
+
+    $query = $conn->prepare($sql);
+
+    if (!$query) {
+        echo json_encode(["data" => ["message" => "Database operation failed"]]);
+        exit();
+    }
+
     $query->bind_param("i", $intUserId);
 
     if ($query->execute()) {

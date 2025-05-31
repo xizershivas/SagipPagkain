@@ -25,8 +25,8 @@ function getDonationData($conn, $user) {
             INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
-            WHERE D.intUserId = $intUserId"
+            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId"
+            // WHERE D.intUserId = $intUserId
         );
     }
 

@@ -67,23 +67,25 @@ if (isset($_SESSION["intUserId"])) {
     .line-pending {
       background-color: lightgray;
     }
-	.align-items-center {
-	  margin-bottom: 40px;
-	}
-  </style>
-</head>
-  <style>
+
+    .align-items-center {
+      margin-bottom: 40px;
+    }
+
     .table-header {
       background-color: #f8f9fa;
       font-weight: bold;
     }
+
     .text-green {
       color: green;
     }
+    
     .action-links a {
       margin-right: 10px;
     }
   </style>
+</head>
 
 <body class="services-details-page">
 
