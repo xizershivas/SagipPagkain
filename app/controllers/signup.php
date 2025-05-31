@@ -19,8 +19,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $dblSalary = floatval($_POST["monthlyincome"]);
     }
 
-    register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress, $dblSalary);
-
+    $uploadFilePath = uploadRequestDocument($strUsername);
+    
+    register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress, $dblSalary, $uploadFilePath);
+    
     $conn->close();
 }
 ?>

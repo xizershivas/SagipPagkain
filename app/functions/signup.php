@@ -1,5 +1,5 @@
 <?php
-function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress, $dblSalary) {
+function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress, $dblSalary, $uploadFilePath) {
     // Check if User already exists
     $sql = $conn->prepare("SELECT strUsername FROM tbluser WHERE strUsername = ?");
     $sql->bind_param("s", $strUsername);
@@ -66,10 +66,10 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
         if ($stmt->execute()) {
             $intUserId = $conn->insert_id;
 
-            $query2 = "INSERT INTO tblbeneficiary (intUserId, strName, strEmail, strContact, strAddress, dblSalary) 
-            VALUES (?, ?, ?, ?, ?, ?)";
+            $query2 = "INSERT INTO tblbeneficiary (intUserId, strName, strEmail, strContact, strAddress, dblSalary, strDocument) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt2 = $conn->prepare($query2);
-            $stmt2->bind_param("issssd", $intUserId, $strFullName, $strEmail, $strContact, $strAddress, $dblSalary);
+            $stmt2->bind_param("issssds", $intUserId, $strFullName, $strEmail, $strContact, $strAddress, $dblSalary, $uploadFilePath);
 
             if ($stmt2->execute()) {
                 http_response_code(201);
@@ -118,5 +118,55 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
     }
 
     exit();
+}
+
+function uploadRequestDocument($strUsername) {
+    header('Content-Type: application/json');
+ 
+    if (isset($_FILES['uploadDocu']) && $_FILES['uploadDocu']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['uploadDocu']['tmp_name'];
+        $fileSize = $_FILES['uploadDocu']['size'];
+        $fileType = $_FILES['uploadDocu']['type'];
+        $fileName = $_FILES['uploadDocu']['name'];
+        $fileInfo = pathinfo($fileName);
+        $fileBaseName = $fileInfo["filename"];
+        $fileExtension = $fileInfo["extension"];
+        $targetDir = $_SERVER["DOCUMENT_ROOT"] 
+        . DIRECTORY_SEPARATOR . "SagipPagkain" 
+        . DIRECTORY_SEPARATOR . "app" 
+        . DIRECTORY_SEPARATOR . "storage" 
+        . DIRECTORY_SEPARATOR . "documents" . DIRECTORY_SEPARATOR;
+        $uploadFilePath = $targetDir . $strUsername . "_" . $fileBaseName . "_" . date("Ymd") . "." . $fileExtension;
+ 
+        $ctr = 1;
+        while (file_exists($uploadFilePath)) {
+            $uploadFilePath = $targetDir . $strUsername . "_" . $fileBaseName . "_" . date("Ymd") . "_" . $ctr . "." . $fileExtension;
+            $ctr++;
+        }
+ 
+        $allowedTypes = [
+            'application/pdf'
+        ];
+ 
+        if (!in_array($fileType, $allowedTypes)) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Invalid image type"]]);
+        } else if ($fileSize > 5000000) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "Image is too large"]]);
+        } else if (file_exists($uploadFilePath)) {
+            http_response_code(400);
+            echo json_encode(["data" => ["message" => "File already exist"]]);
+        } else {
+            if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
+                return $fileName;
+            } else {
+                http_response_code(500);
+                echo json_encode(["data" => ["message" => "Server encountered an error, upload failed."]]);
+            }
+        }
+    }
+ 
+    return '';
 }
 ?>
