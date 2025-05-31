@@ -1,7 +1,36 @@
 <?php
 session_start();
-include "../../../app/config/db_connection.php";
+include "../../../app/config/db_connection.php"; 
 include "../../../app/functions/user.php";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteFoodBankId'])) {
+  header('Content-Type: application/json');
+
+  $deleteId = intval($_POST['deleteFoodBankId']);
+
+  $conn->query("DELETE FROM tblinventory WHERE intFoodBankId = $deleteId");
+
+  if ($conn->query("DELETE FROM tblfoodbank WHERE intFoodBankId = $deleteId")) {
+      echo json_encode(["status" => "success", "message" => "Food Bank deleted successfully."]);
+  } else {
+      echo json_encode(["status" => "error", "message" => "Error deleting food bank."]);
+  }
+  exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['foodBankId']) && isset($_POST['foodBankName'])) {
+  $id = intval($_POST['foodBankId']);
+  $name = $conn->real_escape_string($_POST['foodBankName']);
+
+  $sql = "UPDATE tblfoodbank SET strFoodBank = '$name' WHERE intFoodBankId = $id";
+
+  if ($conn->query($sql)) {
+    echo json_encode(['status' => 'success']);
+  } else {
+    echo json_encode(['status' => 'error', 'message' => $conn->error]);
+  }
+  exit;
+}
 
 
 function getCoordinates($address)
@@ -225,6 +254,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
   <!-- Include global JS -->
   <?php include '../global/script.php'; ?>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // Initialize the map and set to Laguna
     var map = L.map('map').setView([14.2044, 121.3473], 10);
@@ -256,7 +286,6 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
             <p class="mb-1">Total Items: ${location.itemCount}</p>
             <p class="mb-1">Total Quantity: ${location.stock}</p>
             <div class="d-flex gap-2 mt-2">
-               <button class="btn btn-sm btn-warning" onclick="openEditModal('${location.id}', '${(location.strAddress || '').split(',')[0].trim()}')">Edit</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteFoodBank('${location.id}')">Delete</button>
                 <a href="#" 
                    class="btn btn-sm btn-primary stock-link" 
@@ -365,41 +394,16 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
   </div>
 </div>
 
-  <!-- Edit Food Bank Modal -->
-  <div class="modal fade" id="editFoodBankModal" tabindex="-1">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title">Edit Food Bank</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">
-                  <form id="editFoodBankForm">
-                      <input type="hidden" id="editFoodBankId">
-                      <div class="mb-3" style="color: #333;">
-                          <label for="editStrFoodBank" class="form-label">Food Bank Address</label>
-                          <input type="text" class="form-control" id="editStrFoodBank" required>
-                      </div>
-                  </form>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" onclick="updateFoodBank()">Update Food Bank</button>
-              </div>
-          </div>
-      </div>
-  </div>
-
   <!-- Stock Details Modal -->
   <div class="modal fade" id="stockModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-scro  llable">
+      <div class="modal-dialog modal-dialog-scrollable">
           <div class="modal-content">
               <div class="modal-header">
                   <h5 class="modal-title">Stock Details - <span id="modalLocationName"></span></h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
-                  <table class="table table-bordered table-sm">
+                  <table class="table">
                       <thead>
                           <tr>
                               <th>Item</th>
@@ -407,27 +411,138 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                               <th>Unit</th>
                           </tr>
                       </thead>
-                      <tbody id="modalStockTableBody"></tbody>
+                      <tbody id="modalStockTableBody">
+                      </tbody>
                   </table>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               </div>
           </div>
       </div>
   </div>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs&libraries=places"></script>
+  <!-- Update Food Bank Modal -->
+  <div class="modal fade" id="updateFoodBankModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Update Food Bank</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <?php if (!empty($message)): ?>
+            <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
+          <?php endif; ?>
 
+          <form action="" method="POST" enctype="multipart/form-data" id="updateFoodBankForm">
+            <input type="hidden" id="updateFoodBankId" name="foodBankId">
+            <div class="mb-3">
+              <label for="updateFoodBankName" class="form-label">Food Bank Name:</label>
+              <input type="text" class="form-control" id="updateFoodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
+            </div>
+            <div class="mb-3">
+              <label for="updateAddress" class="form-label">Address:</label>
+              <input type="text" class="form-control" id="updateAddress" name="address" placeholder="Enter Address of the Foodbank" required />
+            </div>
+
+            <!-- Move buttons inside the form -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Update Food Bank</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs&libraries=places"></script>
   <script>
+    // Initialize Google Maps Places Autocomplete
     function initAutocomplete() {
-      const input = document.getElementById('address');
-      const autocomplete = new google.maps.places.Autocomplete(input, {
-        types: ['geocode'],
-        componentRestrictions: { country: "ph" } 
+      const addressInputs = ['address', 'updateAddress'];
+      
+      addressInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+          const autocomplete = new google.maps.places.Autocomplete(input, {
+            types: ['geocode'],
+            componentRestrictions: { country: "ph" }
+          });
+        }
       });
     }
+
+    // Initialize autocomplete when the page loads
     google.maps.event.addDomListener(window, 'load', initAutocomplete);
+
+    // Update Food Bank Function
+    async function updateFoodBank(foodBankId) {
+      try {
+        // Find the food bank data from the locations array
+        const foodBank = locations.find(loc => loc.id === parseInt(foodBankId));
+        if (!foodBank) return;
+        
+        // Populate the update modal
+        document.getElementById('updateFoodBankId').value = foodBank.id;
+        document.getElementById('updateFoodBankName').value = foodBank.name;
+        document.getElementById('updateAddress').value = foodBank.address;
+        
+        // Show the modal
+        const updateModal = new bootstrap.Modal(document.getElementById('updateFoodBankModal'));
+        updateModal.show();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Update Food Bank Form Handler
+    document.getElementById('updateFoodBankForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      try {
+        const response = await fetch(window.location.href, {
+          method: 'POST',
+          body: new FormData(this)
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+          alert('Food Bank updated successfully!');
+          window.location.reload();
+        } else {
+          throw new Error(data.message || 'Failed to update food bank');
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+
+    // Delete Food Bank Function
+    async function deleteFoodBank(foodBankId) {
+      if (!confirm('Are you sure you want to delete this food bank?')) return;
+
+      try {
+        const formData = new FormData();
+        formData.append('deleteFoodBankId', foodBankId);
+
+        const response = await fetch(window.location.href, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          alert(data.message);
+          window.location.reload();
+        } else {
+          throw new Error(data.message || 'Failed to delete food bank');
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    }
   </script>
   
 </body>
