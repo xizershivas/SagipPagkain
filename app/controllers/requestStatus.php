@@ -4,7 +4,7 @@ include "../functions/requestStatus.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reqId"])) {
     $reqId = intval($_GET["reqId"]);
-    getRequestDate($conn, $reqId);
+    getRequestDetails($conn, $reqId);
     $conn->close();
 }
 

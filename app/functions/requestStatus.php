@@ -9,17 +9,20 @@ function getAllRequestNo($conn, $intBeneficiaryId) {
     return $allRequestNo;
 }
 
-function getRequestDate($conn, $reqId) {
+function getRequestDetails($conn, $reqId) {
     header('Content-Type: application/json');
 
-    $stmt = $conn->prepare("SELECT dtmCreatedDate FROM tblbeneficiaryrequest WHERE intBeneficiaryRequestId = ?");
+    $stmt = $conn->prepare("SELECT * FROM tblbeneficiaryrequest WHERE intBeneficiaryRequestId = ?");
     $stmt->bind_param("i", $reqId);
     $stmt->execute();
     $result = $stmt->get_result()->fetch_object();
 
     if ($result) {
+        $data = (array)$result;
+        $data["dtmCreatedDate"] = date('Y-m-d', strtotime($data['dtmCreatedDate']));
+
         http_response_code(200);
-        echo json_encode(["data" => date('Y-m-d', strtotime($result->dtmCreatedDate))]);
+        echo json_encode(["data" => $data]);
     } else {
         http_response_code(404);
         echo json_encode(["data" => ["message" => "Failed to retrieve data"]]);
@@ -38,7 +41,7 @@ function getAllBeneficiaryRequest($conn, $intBeneficiaryId) {
             BR.strDescription,
             BR.dtmPickupDate,
             DATE_FORMAT(BR.dtmCreatedDate, '%Y-%m-%d') AS dtmCreatedDate,
-            BR.ysnApproved
+            BR.intApproved
         FROM tblbeneficiaryrequest BR
         INNER JOIN tblbeneficiaryrequestdetail BRD
             ON BR.intBeneficiaryRequestId = BRD.intBeneficiaryRequestId

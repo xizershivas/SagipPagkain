@@ -171,6 +171,7 @@ if (isset($_SESSION["intUserId"])) {
                   <div class="d-flex flex-column flex-md-row align-items-center justify-content-between text-center" id="stepper">
                     <!-- Steps will be inserted here by JS -->
                   </div>
+                  <button class="btn btn-primary d-none" id="btnSubmitForApproval">Submit for approval</button>
                 </div>
 
                 <div class="card">
@@ -210,7 +211,9 @@ if (isset($_SESSION["intUserId"])) {
                               <td><?= htmlspecialchars($row->strDescription) ?></td>
                               <td><?= htmlspecialchars($row->dtmPickupDate) ?></td>
                               <td><?= htmlspecialchars($row->dtmCreatedDate) ?></td>
-                              <td><?= $row->ysnApproved ? 'Yes' : 'No' ?></td>
+                              <td>
+                                  <?= $row->intApproved == 0 ? "Created" : ($row->intApproved == 1 ? "Approved" : "Rejected") ?>
+                              </td>
                               <td><a href="javascript:void(0)" class="btn-delete-req" data-id="<?= $row->intBeneficiaryRequestId ?>"><i class="bi bi-trash-fill"></i></a></td>
                             </tr>
                         <?php
@@ -250,53 +253,6 @@ if (isset($_SESSION["intUserId"])) {
    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
    <script src="../../../app/js/requestStatus.js"></script>
-
-  <script>
-    //temporary data
-    const steps = [
-      { label: "Request Created", date: "May 30, 2025", status: "approved" },
-      { label: "Waiting for Approval", date: "May 30, 2025 - 9:30 AM", status: "pending" },
-      { label: "Approved - Ready for Pick Up", date: "May 30, 2025 - 10:00 AM", status: "pending" }
-    ];
-
-    const stepper = document.getElementById("stepper");
-
-
-    steps.forEach((step, index) => {
-      const stepNumber = index + 1;
-      const isLast = stepNumber === steps.length;
-
-      const circleClass = step.status === "approved" ? "step-complete" : "step-pending";
-      const lineClass = step.status === "approved" ? "line-complete" : "line-pending";
-
-      // Step circle
-      const stepHTML = `
-        <div class="mb-4 mb-md-0 d-flex flex-column align-items-center">
-          <div class="step-circle ${circleClass}">
-            ${stepNumber}
-          </div>
-          <div class="step-label">${step.label}</div>
-          <div class="step-date">${step.status === "approved" ? step.date : ''}</div>
-        </div>
-      `;
-
-      stepper.insertAdjacentHTML("beforeend", stepHTML);
-
-      // Line (except after last)
-		if (!isLast) {
-		  stepper.insertAdjacentHTML(
-			"beforeend",
-			`
-			<div class="d-none d-md-flex align-items-center flex-grow-1 px-2">
-			  <div class="w-100 step-line ${lineClass}"></div>
-			</div>
-			`
-		  );
-		}
-
-    });
-  </script>
-
 </body>
 
 </html>
