@@ -257,8 +257,21 @@ include "../../../app/functions/user.php";
                             <label for="uploadDocInput" class="form-label">Document Uploaded</label>
                             <input type="file" class="form-control" name="uploadDocInput" id="uploadDocInput" value="">
 
-                            <div class="mt-2" id="docContainer">
+                            <div class="mt-2 position-relative" id="docContainer">
                               <iframe class="w-100" id="uploadDocPreview" src="" frameborder="0"></iframe>
+                              <a class="btn btn-sm btn-success position-absolute" 
+                                id="btnViewDoc" 
+                                href="" 
+                                target="_blank"
+                                style="top: 10px; left: 10px; z-index: 10;">View
+                              </a>
+                              <a class="btn btn-sm btn-primary position-absolute" 
+                                id="btnDownloadDoc" 
+                                href="" 
+                                target="_blank"
+                                style="top: 10px; left: 70px; z-index: 10;"
+                                download>Download
+                              </a>
                             </div>
 
                           </div>
