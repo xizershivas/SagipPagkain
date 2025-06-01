@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 $month = $_POST['month'] ?? '';
 $category = $_POST['category'] ?? '';
 $foodbank = $_POST['foodbank'] ?? '';
+$donor = $_POST['donor'] ?? '';
 
 $where = [];
 $params = [];
@@ -32,10 +33,15 @@ if ($foodbank) {
     $params[] = $foodbank;
     $types .= 'i';
 }
+if ($donor) {
+    $where[] = 'u1.intUserId = ?';
+    $params[] = $donor;
+    $types .= 'i';
+}
 
 $whereSql = $where ? 'WHERE ' . implode(' OR ', $where) : '';
 
-$sql = "SELECT
+$sql = "SELECT DISTINCT
     dm.dtmDate AS Date,
     fb.strFoodBank AS Location,
     it.strItem AS Item,

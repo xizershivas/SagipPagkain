@@ -241,6 +241,18 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
                 ?>
               </select>
             </div>
+             <div class="col-md-3">
+              <label for="donor" class="form-label" style="color:Black;">Donor</label>
+              <select name="donor" id="donor" class="form-select">
+                <option value="">All Donors</option>
+                <?php
+                $result = $conn->query("SELECT DISTINCT intUserId, strDonorName FROM tbldonationmanagement");
+                while ($row = $result->fetch_assoc()) {
+                  echo '<option value="' . $row['intUserId'] . '">' . htmlspecialchars($row['strDonorName']) . '</option>';
+                }
+                ?>
+              </select>
+            </div>
           </div>
           <p style="color:Black;"><i>*To generate all the data, simply click the 'Generate Excel Report' button.</i></p>
         </div>
