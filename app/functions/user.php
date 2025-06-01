@@ -193,13 +193,15 @@ function editUser($conn, $intUserId) {
             }
 
             $user = $result->fetch_object();
-            $filename = basename($user->strDocument);
-            // Detect localhost or live
-            $isLocal = $_SERVER['HTTP_HOST'] === 'localhost' || str_contains($_SERVER['HTTP_HOST'], '127.0.0.1');
-            // Adjust the base path
-            $basePath = $isLocal ? '/SagipPagkain' : '';
-            $fileUrl = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $basePath . "/app/storage/documents/" . $filename;
-            $user->strDocument = $fileUrl;
+            if ($user->strDocument) {
+                $filename = basename($user->strDocument);
+                // Detect localhost or live
+                $isLocal = $_SERVER['HTTP_HOST'] === 'localhost' || str_contains($_SERVER['HTTP_HOST'], '127.0.0.1');
+                // Adjust the base path
+                $basePath = $isLocal ? '/SagipPagkain' : '';
+                $fileUrl = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $basePath . "/app/storage/documents/" . $filename;
+                $user->strDocument = $fileUrl;
+            }
 
             http_response_code(200);
             echo json_encode(["data" => $user]);
