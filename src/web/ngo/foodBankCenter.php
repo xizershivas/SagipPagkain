@@ -297,7 +297,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         // Add to list
         var listItem = document.createElement("li");
         listItem.className = "list-group-item";
-        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.address}`;
+        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
         listItem.onclick = function () {
             map.setView([location.lat, location.lng], 13);
         };
