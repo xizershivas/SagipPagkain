@@ -8,6 +8,19 @@ if (isset($_SESSION["intUserId"])) {
   $userData = getUserData($conn, $_SESSION["intUserId"]);
   $user = $userData->fetch_object();
 }
+
+
+function getRecommendedItems($conn) {
+    $sql = "
+        SELECT itm.strItem, COUNT(*) AS requestCount
+        FROM tblbeneficiaryrequestdetail brd
+        INNER JOIN tblitem itm ON brd.intItemId = itm.intItemId
+        GROUP BY brd.intItemId
+        ORDER BY requestCount DESC
+        LIMIT 5
+    ";
+    return $conn->query($sql);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,99 +93,85 @@ if (isset($_SESSION["intUserId"])) {
             </div>
           </div>
 
-          <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
-          <div class="container">
-                <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Available Food Items</h2>
-                    <div class="mb-3">
-                    
-                   <!-- AVAILABLE FOOD ITEMS DATA TABLE  -->
-                    <table id="availableFoodItemsDataTable" class="display table table-striped">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Item</th>
-                          <th scope="col">Quantity</th>
-                          <th scope="col">Unit</th>
-                          <th scope="col">Category</th>
-                          <th scope="col">Food Bank</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php
-                          $allInventoryData = getAllInventoryItems($conn);
+         <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
+                  <div class="container">
+                    <div class="card mb-4">
+                      <div class="card-body">
+                        <h2 class="card-title">Available Food Items</h2>
+                        <div class="mb-3">
 
-                          if ($allInventoryData->num_rows > 0) {
-                            $ctr = 1;
-                            while ($row = $allInventoryData->fetch_object()) {
-                              ?>
+                          <!-- AVAILABLE FOOD ITEMS DATA TABLE -->
+                          <table id="availableFoodItemsDataTable" class="display table table-striped">
+                            <thead>
                               <tr>
-                                <td><?= $ctr ?></td>
-                                <td><?= $row->strItem ?></td>
-                                <td><?= $row->intQuantity ?></td>
-                                <td><?= $row->strUnit ?></td>
-                                <td><?= $row->strCategory ?></td>
-                                <td><?= $row->strFoodBank ?></td>
+                                <th scope="col">#</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Food Bank</th>
                               </tr>
+                            </thead>
+                            <tbody>
                               <?php
-                              $ctr++;
+                              $allInventoryData = getAllInventoryItems($conn);
+
+                              if ($allInventoryData->num_rows > 0) {
+                                $ctr = 1;
+                                while ($row = $allInventoryData->fetch_object()) {
+                                  echo "<tr>
+                                          <td>{$ctr}</td>
+                                          <td>{$row->strItem}</td>
+                                          <td>{$row->intQuantity}</td>
+                                          <td>{$row->strUnit}</td>
+                                          <td>{$row->strCategory}</td>
+                                          <td>{$row->strFoodBank}</td>
+                                        </tr>";
+                                  $ctr++;
+                                }
+                              }
+                              ?>
+                            </tbody>
+                          </table>
+                          <!-- END AVAILABLE FOOD ITEMS DATA TABLE -->
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- START Recommended Items Section -->
+                    <div class="card mb-4">
+                      <div class="card-body">
+                        <h4 class="card-title">Suggested Items to Request</h4>
+                        <p class="card-text">
+                          Based on previous request trends, you might consider requesting the following items:
+                        </p>
+                        <ul class="list-group list-group-flush">
+                          <?php
+                          $recommendedItems = getRecommendedItems($conn);
+                          if ($recommendedItems->num_rows > 0) {
+                            while ($rec = $recommendedItems->fetch_object()) {
+                              echo "<li class='list-group-item d-flex justify-content-between align-items-center'>
+                                      {$rec->strItem}
+                                      <span class='badge bg-primary rounded-pill'>{$rec->requestCount} requests</span>
+                                    </li>";
                             }
+                          } else {
+                            echo "<li class='list-group-item'>No previous data available for suggestions.</li>";
                           }
-                          $conn->close();
-                        ?>
-                      </tbody>
-                    </table>
-                    <!-- END AVAILABLE FOOD ITEMS DATA TABLE  -->
+                          ?>
+                        </ul>
+                      </div>
+                    </div>
+                    <!-- END Recommended Items Section -->
 
-                    </div>
+                  </div>
                 </div>
-                </div>
-
-                <!-- <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Filter by Category</h2>
-                    <div class="mb-3">
-                    <label for="category" class="form-label">Select Category</label>
-                    <select class="form-select border-warning" id="category">
-                        <option value="">select category</option>
-                    </select>
-                    </div>
-                </div>
-                </div> -->
-
-                <!-- <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Request Specific Items</h2>
-                    <form>
-                    <div class="mb-3">
-                        <label for="itemName" class="form-label">Item Name</label>
-                        <input type="text" class="form-control border-warning" id="itemName" placeholder="Enter item name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Quantity Needed</label>
-                        <input type="number" class="form-control border-warning" id="quantity" placeholder="Enter quantity">
-                    </div>
-                    <div class="mb-3">
-                        <label for="urgencyLevel" class="form-label">Urgency Level</label>
-                        <select class="form-select border-warning" id="urgencyLevel">
-                        <option value="">Select urgency</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="itemNotes" class="form-label">Additional Notes</label>
-                        <textarea class="form-control border-warning" id="itemNotes" placeholder="Enter notes" rows="3"></textarea>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
-                    </div>
-                    </form>
-                </div>
-                </div> -->
             </div>
-
+          
             </div>
         </div>
+
       </div>
     </section><!-- /Service Details Section -->
 
