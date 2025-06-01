@@ -292,7 +292,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                    data-bs-target="#stockModal"
                    data-id="${location.id}"
                    data-items='${JSON.stringify(location.items)}' 
-                   data-location="${(location.strAddress || '').split(',')[0].trim()}" style="color: #fff;">
+                   data-location="${(location.name || '').split(',')[0].trim()}" style="color: #fff;">
                    View Stock
                 </a>
             </div>
@@ -303,7 +303,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         // Add to list
         var listItem = document.createElement("li");
         listItem.className = "list-group-item";
-        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.address}`;
+        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
         listItem.onclick = function () {
             map.setView([location.lat, location.lng], 13);
         };
