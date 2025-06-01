@@ -281,7 +281,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     
     marker.bindPopup(`
         <div class="text-left">
-            <h6 class="mb-1"><b>${location.address?.split(",")[0].trim()}</b></h6>
+            <h6 class="mb-1"><b>${location.name}</b></h6>
             <p class="mb-1">Total Items: ${location.itemCount}</p>
             <p class="mb-1">Total Quantity: ${location.stock}</p>
             <div class="d-flex gap-2 mt-2">
@@ -292,7 +292,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                    data-bs-target="#stockModal"
                    data-id="${location.id}"
                    data-items='${JSON.stringify(location.items)}' 
-                   data-location="${(location.name || '').split(',')[0].trim()}" style="color: #fff;">
+                   data-location="${location.name}" style="color: #fff;">
                    View Stock
                 </a>
             </div>

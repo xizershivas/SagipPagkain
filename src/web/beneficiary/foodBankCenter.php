@@ -186,7 +186,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                 <a href="assistanceRequest.php"><i class="bi bi-pencil-square"></i><span>Request for Assistance</span></a>
                 <a href="requestStatus.php"><i class="bi bi-clock-history"></i><span>Request History</span></a>
                 <a href="foodBankCenter.php" class="active"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
-                <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a>
+                <!-- <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a> -->
                 <a href="availableFoodItem.php"><i class="bi bi-box"></i><span> View Available Food Items</span></a>
               </div>
             </div><!-- End Services List -->
@@ -293,7 +293,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         // Add to list
         var listItem = document.createElement("li");
         listItem.className = "list-group-item";
-        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.address}`;
+        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
         listItem.onclick = function () {
             map.setView([location.lat, location.lng], 13);
         };
