@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
+include "../../../app/functions/user.php";
 
 $sql = "SELECT 
     DATE_FORMAT(t.dtmCreatedDate, '%Y-%m') AS month,
@@ -50,20 +51,20 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
 <body class="services-details-page">
   <?php include '../global/header.php'; ?>
 
-  <main class="main">
-    <div class="page-title" data-aos="fade">
-      <nav class="breadcrumbs">
-        <div class="container-fluid">
-          <ol>
-            <li class="current">Admin</li>
-            <li><a href="dataAnalysisReport.php">Data Analysis And Reporting</a></li>
-          </ol>
-        </div>
-      </nav>
-    </div>
+<main class="main">
+  <div class="page-title" data-aos="fade">
+    <nav class="breadcrumbs">
+      <div class="container-fluid">
+        <ol>
+          <li class="current">Admin</li>
+          <li><a href="dataAnalysisReport.php">Data Analysis And Reporting</a></li>
+        </ol>
+      </div>
+    </nav>
+  </div>
      <div class="page-title" data-aos="fade">
       <div class="heading">
-        
+
       </div>
       <nav class="breadcrumbs">
         <div class="container-fluid">
@@ -74,61 +75,144 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
         </div>
       </nav>
     </div><!-- End Page Title -->
-    <section id="service-details" class="service-details section">
-      <div class="container-fluid">
-        <div class="row gy-5">
-          <div class="col-lg-3 mt-0" data-aos="fade-up" data-aos-delay="100">
-            <div class="service-box">
-              <h4>Services List</h4>
-              <div class="services-list">
-                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
-                <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
-                <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
-                <a href="dataAnalysisReport.php" class="active"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
-                <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
-                <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
-              </div>
-            </div>
-
-            <div class="help-box d-flex flex-column justify-content-center align-items-center">
-              <i class="bi bi-headset help-icon"></i>
-              <h4>Have a Question?</h4>
-              <p class="d-flex align-items-center mt-2 mb-0">
-                <i class="bi bi-telephone me-2"></i> <span>+1 5589 55488 55</span>
-              </p>
-              <p class="d-flex align-items-center mt-1 mb-0">
-                <i class="bi bi-envelope me-2"></i> <a href="mailto:contact@example.com">contact@example.com</a>
-              </p>
+  <section id="service-details" class="service-details section">
+    <div class="container-fluid">
+      <div class="row gy-5">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mt-0" data-aos="fade-up" data-aos-delay="100">
+          <div class="service-box">
+            <h4>Services List</h4>
+            <div class="services-list">
+             <a href="dashboard.php" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
+                  <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
+                <?php } ?>
+                <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
+                <!--<a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>-->
+                <!-- <a href="volunteerManagement.php" class=""><i class="bi bi-people"></i><span>Volunteer Management</span></a> -->
+                <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
+                <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
+                <!--<a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>-->
+                <!--<a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>-->
+                <!--<a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>-->
             </div>
           </div>
 
-          <div class="col-lg-9 ps-lg-5 tbl grid-report mt-0" data-aos="fade-up" data-aos-delay="200">
-            <h1>Food Demand Forecast</h1>
-
-            <div class="row">
-              <div class="col col-md-10">
-                <!-- ADD DROPDOWN FOR ITEM FILTER HERE -->
-                <label for="itemFilter"><b>Filter by Item:</b></label>
-                <select id="itemFilter" style="margin-bottom: 15px; padding: 5px;">
-                  <option value="all">All Items</option>
-                </select>
-              </div>
-              <div class="col col-md-2">
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportFilterModal">
-                  Generate Report
-                </button>
-              </div>
-            </div>
-
-            <canvas id="forecastChart" width="900" height="400"></canvas>
-
-            <div id="output" style="margin-top:20px;"></div>
+          <div class="help-box d-flex flex-column justify-content-center align-items-center">
+            <i class="bi bi-headset help-icon"></i>
+            <h4>Have a Question?</h4>
+            <p class="d-flex align-items-center mt-2 mb-0">
+              <i class="bi bi-telephone me-2"></i> <span>+1 5589 55488 55</span>
+            </p>
+            <p class="d-flex align-items-center mt-1 mb-0">
+              <i class="bi bi-envelope me-2"></i> <a href="mailto:contact@example.com">contact@example.com</a>
+            </p>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
+
+        <!-- Content -->
+        <div class="col-lg-9" data-aos="fade-up" data-aos-delay="200">
+          <!-- Tabs -->
+          <ul class="nav nav-tabs custom-tabs mb-3" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button style="color: black;" class="nav-link active" id="demand-tab" data-bs-toggle="tab" data-bs-target="#demand" type="button" role="tab" aria-controls="demand" aria-selected="true">
+                <i class="fa-solid fa-list" style="color: black;"></i> Food Demand
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button style="color: black;" class="nav-link" id="surplus-tab" data-bs-toggle="tab" data-bs-target="#surplus" type="button" role="tab" aria-controls="surplus" aria-selected="false">
+                <i class="fa-solid fa-check-circle" style="color: black;"></i> Food Surplus
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Contents -->
+          <div class="tab-content" id="myTabContent">
+            <!-- Food Demand Tab -->
+            <div class="tab-pane fade show active" id="demand" role="tabpanel" aria-labelledby="demand-tab">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Food Demand Forecast</h5>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-10">
+                      <label for="itemFilter"><b>Filter by Item:</b></label>
+                      <select id="itemFilter" class="form-select mt-1">
+                        <option value="all">All Items</option>
+                      </select>
+                    </div>
+                    <div class="col-md-2 text-end">
+                      <button type="button" class="btn btn-warning mt-4" data-bs-toggle="modal" data-bs-target="#reportFilterModal">
+                        Generate Report
+                      </button>
+                    </div>
+                  </div>
+
+                  <canvas id="forecastChart" width="900" height="400"></canvas>
+                  <div id="output" class="mt-4"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Food Surplus Tab -->
+            <div class="tab-pane fade" id="surplus" role="tabpanel" aria-labelledby="surplus-tab">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Food Surplus</h5>
+                    <p class="card-text">
+                      This section displays a list of surplus food items currently available in the inventory.
+                      Only items with a total quantity greater than 50 units are shown. These items may be
+                      redistributed to food banks, charities, or communities in need. Quantities are calculated
+                      across all donations and categorized by item and unit.
+                      <br><br>
+                      <strong>Note:</strong>
+                      <ul>
+                        <li>To initiate the transfer of inventory, kindly proceed to the Inventory Management section.</li>
+                      </ul>
+                    </p>
+                      <?php
+
+                      $query = "
+                        SELECT itm.strItem, unt.strUnit, SUM(inv.intQuantity) AS total_quantity
+                        FROM tblinventory inv
+                        LEFT JOIN tblitem itm ON inv.intItemId = itm.intItemId
+                        LEFT JOIN tblunit unt ON inv.intUnitId = unt.intUnitId
+                        GROUP BY itm.strItem, unt.strUnit
+                        HAVING total_quantity > 50 ORDER BY total_quantity DESC";
+
+                      $result = mysqli_query($conn, $query);
+
+                      if (mysqli_num_rows($result) > 0) {
+                        echo '<div class="table-responsive">';
+                        echo '<table class="table table-striped table-bordered">';
+                        echo '<thead><tr>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                              </tr></thead><tbody>';
+                        while ($row = mysqli_fetch_assoc($result)) {
+                          echo '<tr>';
+                          echo '<td>' . htmlspecialchars($row['strItem']) . '</td>';
+                          echo '<td>' . htmlspecialchars($row['total_quantity']) . '</td>';
+                          echo '<td>' . htmlspecialchars($row['strUnit']) . '</td>';
+                          echo '</tr>';
+                        }
+                        echo '</tbody></table>';
+                        echo '</div>';
+                      } else {
+                        echo '<div class="alert alert-info">No surplus items found above 50 units.</div>';
+                      }
+                      ?>
+                </div>
+              </div>
+            </div>
+          </div> <!-- End tab-content -->
+        </div> <!-- End col-lg-9 -->
+      </div> <!-- End row -->
+    </div> <!-- End container -->
+  </section>
+</main>
+
 
   <!-- Filter Modal -->
 <div class="modal fade" id="reportFilterModal" tabindex="-1" aria-labelledby="reportFilterModalLabel" aria-hidden="true">
@@ -197,7 +281,11 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+  <!-- Include Bootstrap JS (via CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Include FontAwesome (for icons) -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
   <script>
     // Your existing groupDataByItemAndLocation function (unchanged)
     function groupDataByItemAndLocation(data) {
