@@ -164,7 +164,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Donor'; ?></li>
+            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Beneficiary'; ?></li>
             <li><a href="foodBankCenter.php">Food Bank Center</a></li>
           </ol>
         </div>
@@ -271,7 +271,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     
     marker.bindPopup(`
         <div class="text-left">
-            <h6 class="mb-1"><b>${location.address?.split(",")[0].trim()}</b></h6>
+            <h6 class="mb-1"><b>${location.name?.split(",")[0].trim()}</b></h6>
             <p class="mb-1">Total Items: ${location.itemCount}</p>
             <p class="mb-1">Total Quantity: ${location.stock}</p>
             <div class="d-flex gap-2 mt-2">

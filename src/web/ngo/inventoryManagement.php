@@ -62,6 +62,7 @@ include "../../../app/functions/inventoryTransfer.php";
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
                 <a href="inventoryManagement.php" class="active"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
+                <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
               </div>
             </div><!-- End Services List -->
 

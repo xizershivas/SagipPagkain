@@ -2,7 +2,9 @@
 session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
-
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
@@ -14,54 +16,41 @@ if (!isset($_SESSION["intUserId"])) {
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
   header("Location: ../beneficiary/assistanceRequest.php");
 }
-
-$intUserId = $_SESSION['intUserId']; 
-
-$donor = "SELECT COUNT(tdonor.ysnStatus) AS totalDonation 
-          FROM tbluser user
-          JOIN tbltrackdonation tdonor ON user.intUserId = tdonor.intUserId
-          JOIN tbldonationmanagement donation ON USER.intUserId = donation.intUserId
-          WHERE user.intUserId = $intUserId
-          AND user.ysnPartner = 1
-          AND tdonor.ysnStatus = 1";
-
+ 
+$intUserId = $_SESSION['intUserId'];
+ 
+$donor = "SELECT COUNT(intUserId) AS totalDonation 
+FROM tbluser  user WHERE user.ysnDonor = 1";
+ 
 $resultDonor = $conn->query($donor);
-
+ 
 $totalDonation = 0;
-
+ 
 if ($resultDonor && $rowDonor = $resultDonor->fetch_assoc()) {
     $totalDonation = $rowDonor['totalDonation'];
 }
-
-$totalRecipient = "SELECT COUNT(tdonor.ysnStatus) AS totalRecipient 
-          FROM tbluser user
-          JOIN tbltrackdonation tdonor ON user.intUserId = tdonor.intUserId
-          JOIN tbldonationmanagement donation ON USER.intUserId = donation.intUserId
-          WHERE user.intUserId = $intUserId
-          AND user.ysnPartner = 1";
-
+ 
+$totalRecipient = "SELECT intUserId FROM tbltrackdonation WHERE ysnStatus = 1 GROUP BY intUserId";
 $resultotalRecipient = $conn->query($totalRecipient);
-
-$totalRecipient = 0;
-
-if ($resultotalRecipient && $Recipient = $resultotalRecipient->fetch_assoc()) {
-    $totaltotalRecipient = $Recipient['totalRecipient'];
-}
-
-$totalUsers = "SELECT COUNT(*) AS totalUser 
-          FROM tbluser user
-          JOIN tbltrackdonation tdonor ON user.intUserId = tdonor.intUserId
-          WHERE user.intUserId = $intUserId
-          AND user.ysnPartner = 1";
-
+$recipientCount = $resultotalRecipient->num_rows;
+ 
+ 
+// $totalRecipient = 0;
+ 
+// if ($resultotalRecipient && $Recipient = $resultotalRecipient->fetch_assoc()) {
+//     $totaltotalRecipient = $Recipient['totalRecipient'];
+// }
+ 
+$totalUsers = "SELECT COUNT(*) AS totalUser FROM tbluser user
+            JOIN tbltrackdonation tdonor ON user.intUserId = tdonor.intUserId";
+ 
 $resultotalUsers = $conn->query($totalUsers);
-
-$totalUsers = 0;
-
-if ($resulTotalUsers && $user = $resultotalUsers->fetch_assoc()) {
-    $totalUsers = $user['totalUser'];
-}
-
+$userCount = $resultotalUsers->fetch_assoc()['totalUser'];
+ 
+// if ($userCount && $user = $userCount->fetch_assoc()) {
+//     $totalUsers = $user['totalUser'];
+// }
+ 
 $sql = "SELECT DATE_FORMAT(donor.dtmDate, '%b %Y') AS month, COUNT(*) AS total
         FROM tbluser user
         INNER JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
@@ -69,17 +58,17 @@ $sql = "SELECT DATE_FORMAT(donor.dtmDate, '%b %Y') AS month, COUNT(*) AS total
         AND user.ysnPartner = 1
         GROUP BY month
         ORDER BY donor.dtmDate ASC";
-
+ 
 $result = $conn->query($sql);
-
+ 
 $monthlyLabels = [];
 $monthlyData = [];
-
+ 
 while ($row = $result->fetch_assoc()) {
     $monthlyLabels[] = $row['month'];
     $monthlyData[] = $row['total'];
 }
-
+ 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -138,6 +127,7 @@ while ($row = $result->fetch_assoc()) {
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
                 <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
+                <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -165,7 +155,7 @@ while ($row = $result->fetch_assoc()) {
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Number of Recipients</h6>
-                        <h2 class="text-success"><?= htmlspecialchars($totalRecipient) ?></h2>
+                        <h2 class="text-success"><?= htmlspecialchars($recipientCount) ?></h2>
                     </div>
                 </div>
             </div>
@@ -173,7 +163,7 @@ while ($row = $result->fetch_assoc()) {
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Number of Users</h6>
-                        <h2 class="text-warning"><?= htmlspecialchars($totalUsers) ?></h2>
+                        <h2 class="text-warning"><?= htmlspecialchars($userCount) ?></h2>
                     </div>
                 </div>
             </div>

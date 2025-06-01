@@ -164,7 +164,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Admin'; ?></li>
+            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Donor'; ?></li>
             <li><a href="foodBankCenter.php">Food Bank Center</a></li>
           </ol>
         </div>
@@ -191,6 +191,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                 <a href="foodBankCenter.php" class="active"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
                 <!--<a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>-->
                 <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a>
+                <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
               </div>
             </div><!-- End Services List -->
 
@@ -274,7 +275,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     
     marker.bindPopup(`
         <div class="text-left">
-            <h6 class="mb-1"><b>${location.address?.split(",")[0].trim()}</b></h6>
+            <h6 class="mb-1"><b>${location.name}</b></h6>
             <p class="mb-1">Total Items: ${location.itemCount}</p>
             <p class="mb-1">Total Quantity: ${location.stock}</p>
             <div class="d-flex gap-2 mt-2">

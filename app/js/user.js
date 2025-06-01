@@ -28,6 +28,7 @@ function setFormData({ data }) {
     frmUser.elements.partner.checked = data.ysnPartner ? true : false;
     frmUser.elements.beneficiary.checked = data.ysnBeneficiary ? true : false;
     // PDF Preview
+    uploadDocPreview.src = "";
     if (data.strDocument) {
         uploadDocPreview.src = data.strDocument;
     }
