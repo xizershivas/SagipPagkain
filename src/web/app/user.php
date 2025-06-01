@@ -180,10 +180,11 @@ include "../../../app/functions/user.php";
                     <div class="text-black mb-3 bg-light p-3">
                       <form id="frmUser">
                         <div class="row">
+                          <input type="hidden" name="userId" id="userId">
                           <div class="col-md-6">
                             <div class="mb-3">
                               <label for="user" class="form-label">User</label>
-                              <input type="text" class="form-control" name="user" id="user" value="" disabled>
+                              <input type="text" class="form-control" name="user" id="user" value="" readonly>
                             </div>
                           </div>
                           <div class="col-md-6">
@@ -219,49 +220,55 @@ include "../../../app/functions/user.php";
                           <div class="col-md-6">
                             <div class="mb-3">
                               <label for="salary" class="form-label">Salary</label>
-                              <input type="number" class="form-control" name="salary" id="salary" value="">
+                              <input type="number" class="form-control" name="salary" id="salary" value="" step="0.01">
                             </div>
                           </div>
                         </div>
 
                         <div class="row">
-                          <div class="col-md-6">
-                            <div class="mb-3">
-                              <label for="document" class="form-label">Document Uploaded</label>
-                              <input type="text" class="form-control" name="document" id="document" value="" readonly>
+                          <div class="col-12 col-md-6">
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" role="switch" name="active" id="active">
+                              <label class="form-check-label" for="active">Active</label>
                             </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin">
+                              <label class="form-check-label" for="admin">Admin access</label>
+                            </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" role="switch" name="donor" id="donor">
+                              <label class="form-check-label" for="donor">Donor access</label>
+                            </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" role="switch" name="staff" id="staff">
+                              <label class="form-check-label" for="staff">Staff access</label>
+                            </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" role="switch" name="partner" id="partner">
+                              <label class="form-check-label" for="partner">Partner access</label>
+                            </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" role="switch" name="beneficiary" id="beneficiary">
+                              <label class="form-check-label" for="beneficiary">Beneficiary access</label>
+                            </div>
+                          </div>
+
+                          <div class="col-12 col-md-6">
+                            <label for="uploadDocInput" class="form-label">Document Uploaded</label>
+                            <input type="file" class="form-control" name="uploadDocInput" id="uploadDocInput" value="">
+
+                            <div class="mt-2" id="docContainer">
+                              <iframe class="w-100" id="uploadDocPreview" src="" frameborder="0"></iframe>
+                            </div>
+
                           </div>
                         </div>
 
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="active" id="active">
-                          <label class="form-check-label" for="active">Active</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="admin" id="admin">
-                          <label class="form-check-label" for="admin">Admin access</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="donor" id="donor">
-                          <label class="form-check-label" for="donor">Donor access</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="staff" id="staff">
-                          <label class="form-check-label" for="staff">Staff access</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="partner" id="partner">
-                          <label class="form-check-label" for="partner">Partner access</label>
-                        </div>
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" role="switch" name="beneficiary" id="beneficiary">
-                          <label class="form-check-label" for="beneficiary">Beneficiary access</label>
-                        </div>
                       </form>
                     </div>
 
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-primary me-1" id="btnSave">Save</button>
+                      <button type="submit" class="btn btn-primary me-1" id="btnSave" form="frmUser">Save</button>
                       <button type="button" class="btn btn-secondary" id="btnClose" data-bs-dismiss="modal">Close</button>
                     </div>
 

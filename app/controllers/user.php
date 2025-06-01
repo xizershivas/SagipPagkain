@@ -3,14 +3,14 @@ include "../config/db_connection.php";
 include "../functions/user.php";
 include "../utils/sanitize.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["intUserId"])) {
+if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["intUserId"])) {
     $intUserId = intval(sanitize($_GET["intUserId"]));
     editUser($conn, $intUserId);
-
     $conn->close();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// CREATE
+if (!isset($_POST["_method"]) && $_SERVER["REQUEST_METHOD"] === "POST") {
     $strFullName = sanitize($_POST["fullname"]);
     $strEmail = sanitize($_POST["email"]);
     $strContact = sanitize($_POST["contact"]);
@@ -36,50 +36,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "PUT") {
-    // Get the RAW PUT data
-    $inputData = file_get_contents('php://input');
+// UPDATE
+if (isset($_POST["_method"]) && $_POST["_method"] === "PUT") {
+    $intUserId = intval($_POST["userId"]);
+    $strUsername = sanitize($_POST["user"]);
+    $strEmail = sanitizeEmail($_POST["userEmail"]) ?? '';
+    $strFullName = sanitize($_POST["fullName"]);
+    $strContact = sanitize($_POST["userContact"]) ?? '';
+    $strAddress = sanitize($_POST["address"]) ?? '';
+    $dblSalary = floatval($_POST["salary"]) ?? 0;
+    $ysnActive = isset($_POST["active"]) ? 1 : 0;
+    $ysnAdmin = isset($_POST["admin"]) ? 1 : 0;
+    $ysnDonor = isset($_POST["donor"]) ? 1 : 0;
+    $ysnStaff = isset($_POST["staff"]) ? 1 : 0;
+    $ysnPartner = isset($_POST["partner"]) ? 1 : 0;
+    $ysnBeneficiary = isset($_POST["beneficiary"]) ? 1 : 0;
 
-    // Decode the JSON data into an object
-    $userData = json_decode($inputData);
+    $userData = [
+        "intUserId" => $intUserId
+        , "strUsername" => $strUsername
+        , "strEmail" => $strEmail
+        , "strFullName" => $strFullName
+        , "strContact" => $strContact
+        , "strAddress" => $strAddress
+        , "dblSalary" => $dblSalary
+        , "ysnActive" => $ysnActive
+        , "ysnAdmin" => $ysnAdmin
+        , "ysnDonor" => $ysnDonor
+        , "ysnStaff" => $ysnStaff
+        , "ysnPartner" => $ysnPartner
+        , "ysnBeneficiary" => $ysnBeneficiary
+    ];
 
-    // Check if JSON decoding was successful
-    if (json_last_error() === JSON_ERROR_NONE) {
-        $intUserId = intval($userData->intUserId);
-        $strUsername = sanitize($userData->strUsername);
-        $strEmail = sanitizeEmail($userData->strEmail) ?? '';
-        $strFullName = sanitize($userData->strFullName);
-        $strContact = sanitize($userData->strContact) ?? '';
-        $strAddress = sanitize($userData->strAddress) ?? '';
-        $dblSalary = floatval($userData->dblSalary) ?? 0;
-        $ysnActive = $userData->ysnActive ?? 0;
-        $ysnAdmin = $userData->ysnAdmin ?? 0;
-        $ysnDonor = $userData->ysnDonor ?? 0;
-        $ysnStaff = $userData->ysnStaff ?? 0;
-        $ysnPartner = $userData->ysnPartner ?? 0;
-
-        $userData = [
-            "intUserId" => $userData->intUserId
-            , "strUsername" => $strUsername
-            , "strEmail" => $strEmail
-            , "strFullName" => $strFullName
-            , "strContact" => $strContact
-            , "strAddress" => $strAddress
-            , "dblSalary" => $dblSalary
-            , "ysnActive" => $ysnActive
-            , "ysnAdmin" => $ysnAdmin
-            , "ysnDonor" => $ysnDonor
-            , "ysnStaff" => $ysnStaff
-            , "ysnPartner" => $ysnPartner
-        ];
-
-        updateUser($conn, $userData);
-    }
+    updateUser($conn, $userData);
 
     $conn->close();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
+if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
     // Get the RAW DELETE data
     $inputData = file_get_contents('php://input');
 

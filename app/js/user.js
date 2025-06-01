@@ -8,22 +8,30 @@ const btnClose = document.querySelector('#btnClose');
 const btnShowHideList = document.getElementsByClassName('show-hide-password');
 const password = document.querySelector('#password');
 const confirmPassword = document.querySelector('#confirmPassword');
+const uploadDocInput = document.querySelector('#uploadDocInput');
+const uploadDocPreview = document.querySelector('#uploadDocPreview');
 let intUserId = 0;
 
+
 function setFormData({ data }) {
+    frmUser.elements.userId.value = data.intUserId;
     frmUser.elements.user.value = data.strUsername;
     frmUser.elements.userEmail.value = data.strEmail;
     frmUser.elements.fullName.value = data.strFullName;
     frmUser.elements.userContact.value = data.strContact;
     frmUser.elements.address.value = data.strAddress;
     frmUser.elements.salary.value = data.dblSalary;
-    frmUser.elements.document.value = data.strDocument;
     frmUser.elements.active.checked = data.ysnActive ? true : false;
     frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
     frmUser.elements.donor.checked = data.ysnDonor ? true : false;
     frmUser.elements.staff.checked = data.ysnStaff ? true : false;
     frmUser.elements.partner.checked = data.ysnPartner ? true : false;
     frmUser.elements.beneficiary.checked = data.ysnBeneficiary ? true : false;
+    // PDF Preview
+    if (data.strDocument) {
+        uploadDocPreview.src = data.strDocument;
+    }
+
 }
 
 function editUser(e) {
@@ -46,22 +54,11 @@ function editUser(e) {
     xmlhttp.send();
 }
 
-function updateUser() {
-    const userData = {
-        intUserId: intUserId,
-        strUsername: frmUser.elements.user.value,
-        strEmail: frmUser.elements.userEmail.value,
-        strFullName: frmUser.elements.fullName.value,
-        strContact: frmUser.elements.userContact.value,
-        strAddress: frmUser.elements.address.value,
-        dblSalary: frmUser.elements.salary.value,
-        ysnActive: frmUser.elements.active.checked ? true : false,
-        ysnAdmin: frmUser.elements.admin.checked ? true : false,
-        ysnDonor: frmUser.elements.donor.checked ? true : false,
-        ysnStaff: frmUser.elements.staff.checked ? true : false,
-        ysnPartner: frmUser.elements.partner.checked ? true : false,
-    };
+function updateUser(e) {
+    e.preventDefault();
 
+    const formData = new FormData(this);
+    formData.append('_method', 'PUT');
     const xmlhttp = new XMLHttpRequest();
 
     xmlhttp.onreadystatechange = function() {
@@ -77,9 +74,8 @@ function updateUser() {
         }
     };
 
-    xmlhttp.open('PUT', '../../../app/controllers/user.php', true);
-    xmlhttp.setRequestHeader('Content-Type', 'application/json');
-    xmlhttp.send(JSON.stringify(userData));
+    xmlhttp.open('POST', '../../../app/controllers/user.php', true);
+    xmlhttp.send(formData);
 }
 
 function deleteUser(e) {
@@ -160,6 +156,22 @@ async function addUser(e) {
     }
 }
 
+function documentPreview() {
+    const file = this.files[0];
+    if (file && file.type === 'application/pdf') {
+        const fileReader = new FileReader();
+        fileReader.onload = function (e) {
+            const docData = e.target.result;
+            uploadDocPreview.src = docData;
+            uploadDocPreview.style.display = 'block';
+        };
+        fileReader.readAsDataURL(file);
+    } else {
+        alert("Please select a valid PDF file.");
+        uploadDocPreview.style.display = 'none';
+    }
+}
+
 // Attach Event Handler for Editing User
 for (let btnEdit of btnEditUserList) {
     btnEdit.addEventListener('click', editUser);
@@ -174,5 +186,6 @@ for (let btnShowHide of btnShowHideList) {
     btnShowHide.addEventListener('click', showHidePassword);
 }
 
-btnSave.addEventListener('click', updateUser);
+frmUser.addEventListener('submit', updateUser);
 frmAddUser.addEventListener('submit', addUser);
+uploadDocInput.addEventListener('change', documentPreview);

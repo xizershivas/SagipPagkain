@@ -114,60 +114,150 @@ function addUser($conn, $userData) {
     exit();
 }
 
+function getUserAccessLevel($conn, $intUserId) {
+    $stmt = $conn->prepare("SELECT ysnBeneficiary FROM tbluser WHERE intUserId = ? LIMIT 1");
+    if (!$stmt) throw new Exception("Database operation failed", 500);
+    $stmt->bind_param("i", $intUserId);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_object();
+    return $result;
+}
+
 function editUser($conn, $intUserId) {
     header('Content-Type: application/json');
 
-    if (!filter_var($intUserId, FILTER_VALIDATE_INT)) {
-        http_response_code(400);
-        echo json_encode(array("data" => array("message" => "Invalid request")));
-        exit();
-    } else {
-        $sql = "SELECT U.intUserId
-                , U.strUsername
-                , U.strFullName
-                , U.strContact
-                , U.strEmail
-                , U.ysnActive
-                , U.ysnAdmin
-                , U.ysnDonor
-                , U.ysnStaff
-                , U.ysnPartner
-                , U.ysnBeneficiary
-                , B.intBeneficiaryId
-                , B.strAddress
-                , B.dblSalary
-                , B.strDocument
-                FROM tbluser U
-                LEFT JOIN tblbeneficiary B
-                    ON U.intUserId = B.intUserId
-                WHERE U.intUserId = ?";
+    try {
+        if (!filter_var($intUserId, FILTER_VALIDATE_INT)) {
+            throw new Exception("Invalid request", 400);
+        } 
+        else {
+            $result = getUserAccessLevel($conn, $intUserId);
 
-        $query = $conn->prepare($sql);
+            // Regular User
+            if (!$result->ysnBeneficiary) {
+                $sql = "SELECT U.intUserId
+                        , U.strUsername
+                        , U.strFullName
+                        , U.strContact
+                        , U.strEmail
+                        , U.ysnActive
+                        , U.ysnAdmin
+                        , U.ysnDonor
+                        , U.ysnStaff
+                        , U.ysnPartner
+                        , U.ysnBeneficiary
+                        , U.strDocument
+                        , B.intBeneficiaryId
+                        , B.strAddress
+                        , B.dblSalary
+                        FROM tbluser U
+                        LEFT JOIN tblbeneficiary B
+                            ON U.intUserId = B.intUserId
+                        WHERE U.intUserId = ?";
+            }
+            // Beneficiary
+            else {
+                $sql = "SELECT U.intUserId
+                        , U.strUsername
+                        , U.strFullName
+                        , U.strContact
+                        , U.strEmail
+                        , U.ysnActive
+                        , U.ysnAdmin
+                        , U.ysnDonor
+                        , U.ysnStaff
+                        , U.ysnPartner
+                        , U.ysnBeneficiary
+                        , B.intBeneficiaryId
+                        , B.strAddress
+                        , B.dblSalary
+                        , B.strDocument
+                        FROM tbluser U
+                        LEFT JOIN tblbeneficiary B
+                            ON U.intUserId = B.intUserId
+                        WHERE U.intUserId = ?";
+            }
 
-        if (!$query) {
-            http_response_code(500);
-            echo json_encode(array("data" => array("message" => "Database operation failed")));
-            exit();
-        }
+            $query = $conn->prepare($sql);
 
-        $query->bind_param('i', $intUserId);
-        $query->execute();
-        $result = $query->get_result();
+            if (!$query) throw new Exception("Database operation failed", 404);
 
-        if ($result->num_rows == 0) {
-            http_response_code(404);
-            echo json_encode(array("data" => array("message" => "User does not exist")));
+            $query->bind_param('i', $intUserId);
+            $query->execute();
+            $result = $query->get_result();
+
+            if ($result->num_rows == 0) {
+                throw new Exception("User does not exist", 404);
+                $query->close();
+                exit();
+            }
+
+            $user = $result->fetch_object();
+            $filename = basename($user->strDocument);
+            // Detect localhost or live
+            $isLocal = $_SERVER['HTTP_HOST'] === 'localhost' || str_contains($_SERVER['HTTP_HOST'], '127.0.0.1');
+            // Adjust the base path
+            $basePath = $isLocal ? '/SagipPagkain' : '';
+            $fileUrl = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $basePath . "/app/storage/documents/" . $filename;
+            $user->strDocument = $fileUrl;
+
+            http_response_code(200);
+            echo json_encode(["data" => $user]);
             $query->close();
-            exit();
         }
-
-        $user = $result->fetch_object();
-
-        http_response_code(200);
-        echo json_encode(array("data" => $user));
-        $query->close();
-        exit();
+    } catch (Exception $ex) {
+        $code = $ex->getCose();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => $ex->getMessage()]]);
     }
+
+    exit();
+}
+
+function uploadDocument($intUserId) {
+    header('Content-Type: application/json');
+ 
+    if (isset($_FILES['uploadDocInput']) && $_FILES['uploadDocInput']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['uploadDocInput']['tmp_name'];
+        $fileSize = $_FILES['uploadDocInput']['size'];
+        $fileType = $_FILES['uploadDocInput']['type'];
+        $fileName = $_FILES['uploadDocInput']['name'];
+        $fileInfo = pathinfo($fileName);
+        $fileBaseName = $fileInfo["filename"];
+        $fileExtension = $fileInfo["extension"];
+        $targetDir = $_SERVER["DOCUMENT_ROOT"] 
+        . DIRECTORY_SEPARATOR . "SagipPagkain" 
+        . DIRECTORY_SEPARATOR . "app" 
+        . DIRECTORY_SEPARATOR . "storage" 
+        . DIRECTORY_SEPARATOR . "documents" . DIRECTORY_SEPARATOR;
+        $uploadFilePath = $targetDir . $intUserId . "_" . $fileBaseName . "_" . date("Ymd") . "." . $fileExtension;
+ 
+        $ctr = 1;
+        while (file_exists($uploadFilePath)) {
+            $uploadFilePath = $targetDir . $intUserId . "_" . $fileBaseName . "_" . date("Ymd") . "_" . $ctr . "." . $fileExtension;
+            $ctr++;
+        }
+ 
+        $allowedTypes = [
+            'application/pdf'
+        ];
+ 
+        if (!in_array($fileType, $allowedTypes)) {
+            throw new Exception("Invalid file type", 400);
+        } else if ($fileSize > 5000000) {
+            throw new Exception("Image is too large", 400);
+        } else if (file_exists($uploadFilePath)) {
+            throw new Exception("File already exist", 400);
+        } else {
+            if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
+                return $uploadFilePath;
+            } else {
+                throw new Exception("Server encountered an error, upload failed.", 500);
+            }
+        }
+    }
+ 
+    return "";
 }
 
 function updateUser($conn, $userData) {
@@ -186,33 +276,59 @@ function updateUser($conn, $userData) {
     $ysnStaff = $userData["ysnStaff"];
     $ysnPartner = $userData["ysnPartner"];
 
-    try
-    {
-        $sql = "UPDATE tbluser U 
-                LEFT JOIN tblbeneficiary B
-                    ON U.intUserId = B.intUserId
-                SET U.strEmail = ?
-                    , U.strFullName = ?
-                    , U.strContact = ?
-                    , B.strName = ?
-                    , B.strEmail = ?
-                    , B.strContact = ?
-                    , B.strAddress = ?
-                    , B.dblSalary = ?
-                    , U.ysnActive = ?
-                    , U.ysnAdmin = ?
-                    , U.ysnDonor = ?
-                    , U.ysnStaff = ?
-                    , U.ysnPartner = ? 
-                WHERE U.intUserId = ?";
+    try {
+        $result = getUserAccessLevel($conn, $intUserId);
+        $uploadDocInput = uploadDocument($intUserId);
+        $sql = "";
+
+        // Regular User
+        if (!$result->ysnBeneficiary) {
+            $sql = "UPDATE tbluser U 
+                    LEFT JOIN tblbeneficiary B
+                        ON U.intUserId = B.intUserId
+                    SET U.strEmail = ?
+                        , U.strFullName = ?
+                        , U.strContact = ?
+                        , B.strName = ?
+                        , B.strEmail = ?
+                        , B.strContact = ?
+                        , B.strAddress = ?
+                        , B.dblSalary = ?
+                        , U.strDocument = ?
+                        , U.ysnActive = ?
+                        , U.ysnAdmin = ?
+                        , U.ysnDonor = ?
+                        , U.ysnStaff = ?
+                        , U.ysnPartner = ? 
+                    WHERE U.intUserId = ?";
+        } 
+        // Beneficiary
+        else {
+            $sql = "UPDATE tbluser U 
+                    LEFT JOIN tblbeneficiary B
+                        ON U.intUserId = B.intUserId
+                    SET U.strEmail = ?
+                        , U.strFullName = ?
+                        , U.strContact = ?
+                        , B.strName = ?
+                        , B.strEmail = ?
+                        , B.strContact = ?
+                        , B.strAddress = ?
+                        , B.dblSalary = ?
+                        , B.strDocument = ?
+                        , U.ysnActive = ?
+                        , U.ysnAdmin = ?
+                        , U.ysnDonor = ?
+                        , U.ysnStaff = ?
+                        , U.ysnPartner = ? 
+                    WHERE U.intUserId = ?";
+        }
 
         $query = $conn->prepare($sql);
 
-        if (!$query) {
-            throw new Exception("Database operation failed", 500);
-        }
+        if (!$query) throw new Exception("Database operation failed", 500);
 
-        $query->bind_param("sssssssdiiiiii", 
+        $query->bind_param("sssssssdsiiiiii", 
             $strEmail
             , $strFullName
             , $strContact
@@ -221,6 +337,7 @@ function updateUser($conn, $userData) {
             , $strContact
             , $strAddress
             , $dblSalary
+            , $uploadDocInput
             , $ysnActive
             , $ysnAdmin
             , $ysnDonor
