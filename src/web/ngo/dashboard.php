@@ -14,6 +14,72 @@ if (!isset($_SESSION["intUserId"])) {
 } else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
   header("Location: ../beneficiary/assistanceRequest.php");
 }
+
+$intUserId = $_SESSION['intUserId']; 
+
+$donor = "SELECT COUNT(tdonor.ysnStatus) AS totalDonation 
+          FROM tbluser user
+          JOIN tbltrackdonation tdonor ON user.intUserId = tdonor.intUserId
+          JOIN tbldonationmanagement donation ON USER.intUserId = donation.intUserId
+          WHERE user.intUserId = $intUserId
+          AND user.ysnPartner = 1
+          AND tdonor.ysnStatus = 1";
+
+$resultDonor = $conn->query($donor);
+
+$totalDonation = 0;
+
+if ($resultDonor && $rowDonor = $resultDonor->fetch_assoc()) {
+    $totalDonation = $rowDonor['totalDonation'];
+}
+
+$totalRecipient = "SELECT COUNT(tdonor.ysnStatus) AS totalRecipient 
+          FROM tbluser user
+          JOIN tbltrackdonation tdonor ON user.intUserId = tdonor.intUserId
+          JOIN tbldonationmanagement donation ON USER.intUserId = donation.intUserId
+          WHERE user.intUserId = $intUserId
+          AND user.ysnPartner = 1";
+
+$resultotalRecipient = $conn->query($totalRecipient);
+
+$totalRecipient = 0;
+
+if ($resultotalRecipient && $Recipient = $resultotalRecipient->fetch_assoc()) {
+    $totaltotalRecipient = $Recipient['totalRecipient'];
+}
+
+$totalUsers = "SELECT COUNT(*) AS totalUser 
+          FROM tbluser user
+          JOIN tbltrackdonation tdonor ON user.intUserId = tdonor.intUserId
+          WHERE user.intUserId = $intUserId
+          AND user.ysnPartner = 1";
+
+$resultotalUsers = $conn->query($totalUsers);
+
+$totalUsers = 0;
+
+if ($resulTotalUsers && $user = $resultotalUsers->fetch_assoc()) {
+    $totalUsers = $user['totalUser'];
+}
+
+$sql = "SELECT DATE_FORMAT(donor.dtmDate, '%b %Y') AS month, COUNT(*) AS total
+        FROM tbluser user
+        INNER JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
+        WHERE user.intUserId = $intUserId
+        AND user.ysnPartner = 1
+        GROUP BY month
+        ORDER BY donor.dtmDate ASC";
+
+$result = $conn->query($sql);
+
+$monthlyLabels = [];
+$monthlyData = [];
+
+while ($row = $result->fetch_assoc()) {
+    $monthlyLabels[] = $row['month'];
+    $monthlyData[] = $row['total'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,7 +157,7 @@ if (!isset($_SESSION["intUserId"])) {
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Number of Donors</h6>
-                        <h2 class="text-primary">300</h2>
+                        <h2 class="text-primary"><?= htmlspecialchars($totalDonation) ?></h2>
                     </div>
                 </div>
             </div>
@@ -99,7 +165,7 @@ if (!isset($_SESSION["intUserId"])) {
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Number of Recipients</h6>
-                        <h2 class="text-success">400</h2>
+                        <h2 class="text-success"><?= htmlspecialchars($totalRecipient) ?></h2>
                     </div>
                 </div>
             </div>
@@ -107,7 +173,7 @@ if (!isset($_SESSION["intUserId"])) {
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Number of Users</h6>
-                        <h2 class="text-warning">56</h2>
+                        <h2 class="text-warning"><?= htmlspecialchars($totalUsers) ?></h2>
                     </div>
                 </div>
             </div>
@@ -162,41 +228,71 @@ if (!isset($_SESSION["intUserId"])) {
   <!-- Main JS File -->
   <script src="../../../app/js/app.js"></script>
   <script>
-        // Chart.js setup
-        const ctx = document.getElementById('donationChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                datasets: [
-                    {
-                        label: "Current Week",
-                        data: [10, 20, 5, 15, 8, 2, 10],
-                        backgroundColor: "rgba(54, 162, 235, 0.5)",
-                        borderColor: "rgba(54, 162, 235, 1)",
-                        fill: true,
-                        tension: 0.3
-                    },
-                    {
-                        label: "Previous Week",
-                        data: [5, 28, 2, 10, 3, 1, 8],
-                        backgroundColor: "rgba(255, 99, 132, 0.5)",
-                        borderColor: "rgba(255, 99, 132, 1)",
-                        fill: true,
-                        tension: 0.3
-                    }
-                ]
+       const ctx = document.getElementById('donationChart').getContext('2d');
+
+const donationChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($monthlyLabels) ?>, // Dynamic months
+        datasets: [
+            {
+                label: "Current Week",
+                data: [10, 20, 5, 15, 8, 2, 10],
+                backgroundColor: "rgba(54, 162, 235, 0.5)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                fill: true,
+                tension: 0.3
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true, // Prevents infinite expansion
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+            {
+                label: "Previous Week",
+                data: [5, 28, 2, 10, 3, 1, 8],
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+                borderColor: "rgba(255, 99, 132, 1)",
+                fill: true,
+                tension: 0.3
+            },
+            {
+                label: "Monthly Trend",
+                data: <?= json_encode($monthlyData) ?>, // Dynamic totals
+                backgroundColor: "rgba(75, 192, 192, 0.3)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                fill: false,
+                tension: 0.4,
+                yAxisID: 'y2'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Weekly Donations"
+                }
+            },
+            y2: {
+                beginAtZero: true,
+                position: 'right',
+                grid: {
+                    drawOnChartArea: false
+                },
+                title: {
+                    display: true,
+                    text: "Monthly Trend"
                 }
             }
-        });
+        },
+        plugins: {
+            tooltip: {
+                mode: 'index',
+                intersect: false
+            }
+        }
+    }
+});
     </script>
 </body>
 

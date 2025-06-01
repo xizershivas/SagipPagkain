@@ -20,7 +20,9 @@ $intUserId = $_SESSION['intUserId'];
 $donor = "SELECT COUNT(donor.ysnStatus) AS totalDonation 
           FROM tbluser user
           JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
-          WHERE user.intUserId = $intUserId";
+          WHERE user.intUserId = $intUserId
+          AND user.ysnDonor = 1
+          AND donor.ysnStatus = 1";
 
 $resultDonor = $conn->query($donor);
 
@@ -30,10 +32,12 @@ if ($resultDonor && $rowDonor = $resultDonor->fetch_assoc()) {
     $totalDonation = $rowDonor['totalDonation'];
 }
 
+
 $upcomingDonation = "SELECT COUNT(donor.ysnStatus) AS totalDonation 
           FROM tbluser user
           JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
           WHERE user.intUserId = $intUserId
+          AND user.ysnDonor = 1
           AND donor.ysnStatus = 0";
 
 $resultUpcomingDonation = $conn->query($upcomingDonation);
@@ -44,10 +48,13 @@ if ($resultUpcomingDonation && $rowDonor = $resultUpcomingDonation->fetch_assoc(
     $totalUpcomingDonation = $rowDonor['totalDonation'];
 }
 
-$sql = "SELECT DATE_FORMAT(dtmDate, '%b %Y') AS month, COUNT(*) AS total
-        FROM tbldonationmanagement
+$sql = "SELECT DATE_FORMAT(donor.dtmDate, '%b %Y') AS month, COUNT(*) AS total
+        FROM tbluser user
+        INNER JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
+        WHERE user.intUserId = $intUserId
+        AND user.ysnDonor = 1
         GROUP BY month
-        ORDER BY dtmDate ASC";
+        ORDER BY donor.dtmDate ASC";
 
 $result = $conn->query($sql);
 
@@ -133,7 +140,7 @@ while ($row = $result->fetch_assoc()) {
           <div class="container mt-5">
         <div class="row g-3">
             <!-- Statistics Cards -->
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Total Donations</h6>
@@ -141,7 +148,7 @@ while ($row = $result->fetch_assoc()) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Upcoming Donations</h6>
@@ -149,14 +156,14 @@ while ($row = $result->fetch_assoc()) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+       <!-- <div class="col-md-4">
                 <div class="card card-custom shadow-sm">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Points Earn</h6>
                         <h2 class="text-warning">56</h2>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- Donation Chart -->
@@ -208,71 +215,72 @@ while ($row = $result->fetch_assoc()) {
   <!-- Main JS File -->
   <script src="../../../app/js/app.js"></script>
   <script>
-    const ctx = document.getElementById('donationChart').getContext('2d');
+   const ctx = document.getElementById('donationChart').getContext('2d');
 
-    const donationChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            datasets: [
-                {
-                    label: "Current Week",
-                    data: [10, 20, 5, 15, 8, 2, 10],
-                    backgroundColor: "rgba(54, 162, 235, 0.5)",
-                    borderColor: "rgba(54, 162, 235, 1)",
-                    fill: true,
-                    tension: 0.3
-                },
-                {
-                    label: "Previous Week",
-                    data: [5, 28, 2, 10, 3, 1, 8],
-                    backgroundColor: "rgba(255, 99, 132, 0.5)",
-                    borderColor: "rgba(255, 99, 132, 1)",
-                    fill: true,
-                    tension: 0.3
-                },
-                {
-                    label: "Monthly Trend",
-                    data: <?= json_encode($monthlyData) ?>,
-                    backgroundColor: "rgba(75, 192, 192, 0.3)",
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    fill: false,
-                    tension: 0.4,
-                    yAxisID: 'y2'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: "Weekly Donations"
-                    }
-                },
-                y2: {
-                    beginAtZero: true,
-                    position: 'right',
-                    grid: {
-                        drawOnChartArea: false
-                    },
-                    title: {
-                        display: true,
-                        text: "Monthly Trend"
-                    }
+const donationChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($monthlyLabels) ?>, // Dynamic months
+        datasets: [
+            {
+                label: "Current Week",
+                data: [10, 20, 5, 15, 8, 2, 10],
+                backgroundColor: "rgba(54, 162, 235, 0.5)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                fill: true,
+                tension: 0.3
+            },
+            {
+                label: "Previous Week",
+                data: [5, 28, 2, 10, 3, 1, 8],
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+                borderColor: "rgba(255, 99, 132, 1)",
+                fill: true,
+                tension: 0.3
+            },
+            {
+                label: "Monthly Trend",
+                data: <?= json_encode($monthlyData) ?>, // Dynamic totals
+                backgroundColor: "rgba(75, 192, 192, 0.3)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                fill: false,
+                tension: 0.4,
+                yAxisID: 'y2'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Weekly Donations"
                 }
             },
-            plugins: {
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
+            y2: {
+                beginAtZero: true,
+                position: 'right',
+                grid: {
+                    drawOnChartArea: false
+                },
+                title: {
+                    display: true,
+                    text: "Monthly Trend"
                 }
             }
+        },
+        plugins: {
+            tooltip: {
+                mode: 'index',
+                intersect: false
+            }
         }
-    });
+    }
+});
+
 </script>
 
 </body>
