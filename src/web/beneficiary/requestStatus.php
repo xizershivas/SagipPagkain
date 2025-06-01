@@ -123,8 +123,9 @@ if (isset($_SESSION["intUserId"])) {
               <div class="services-list">
               <a href="assistanceRequest.php"><i class="bi bi-pencil-square"></i><span>Request for Assistance</span></a>
                 <a href="requestStatus.php" class="active"><i class="bi bi-clock-history"></i><span>Request History</span></a>
+                <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
+                <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a>
                 <a href="availableFoodItem.php"><i class="bi bi-box"></i><span> View Available Food Items</span></a>
-                <!-- <a href="RequestHistory.php"><i class="bi bi-clock-history"></i><span> Request History</span></a> -->
               </div>
             </div><!-- End Services List -->
 
