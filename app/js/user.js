@@ -10,6 +10,8 @@ const password = document.querySelector('#password');
 const confirmPassword = document.querySelector('#confirmPassword');
 const uploadDocInput = document.querySelector('#uploadDocInput');
 const uploadDocPreview = document.querySelector('#uploadDocPreview');
+const btnViewDoc = document.querySelector('#btnViewDoc');
+const btnDownloadDoc = document.querySelector('#btnDownloadDoc');
 let intUserId = 0;
 
 
@@ -30,6 +32,8 @@ function setFormData({ data }) {
     // PDF Preview
     uploadDocPreview.src = "";
     if (data.strDocument) {
+        btnViewDoc.setAttribute("href", data.strDocument);
+        btnDownloadDoc.setAttribute("href", data.strDocument);
         uploadDocPreview.src = data.strDocument;
     }
 
