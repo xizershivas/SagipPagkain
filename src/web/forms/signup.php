@@ -212,6 +212,9 @@
 <script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../../../app/js/formValidation.js"></script>
 <script src="../../../app/js/signup.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs&libraries=places"></script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const accountTypeSelect = document.getElementById("accountType");
@@ -235,5 +238,16 @@
     });
   });
 </script> 
+
+<script>
+    function initAutocomplete() {
+      const input = document.getElementById('address');
+      const autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode'],
+        componentRestrictions: { country: "ph" } 
+      });
+    }
+    google.maps.event.addDomListener(window, 'load', initAutocomplete);
+  </script>
 </body>
 </html>

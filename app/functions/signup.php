@@ -1,5 +1,5 @@
 <?php
-function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress, $dblSalary, $uploadFilePath) {
+function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress,$latitude,$longitude, $dblSalary, $uploadFilePath) {
     // Check if User already exists
     $sql = $conn->prepare("SELECT strUsername FROM tbluser WHERE strUsername = ?");
     $sql->bind_param("s", $strUsername);
@@ -66,10 +66,10 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
         if ($stmt->execute()) {
             $intUserId = $conn->insert_id;
 
-            $query2 = "INSERT INTO tblbeneficiary (intUserId, strName, strEmail, strContact, strAddress, dblSalary, strDocument) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query2 = "INSERT INTO tblbeneficiary (intUserId, strName, strEmail, strContact, strAddress, dblLatitude, dblLongitude, dblSalary, strDocument) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt2 = $conn->prepare($query2);
-            $stmt2->bind_param("issssds", $intUserId, $strFullName, $strEmail, $strContact, $strAddress, $dblSalary, $uploadFilePath);
+            $stmt2->bind_param("issssddds", $intUserId, $strFullName, $strEmail, $strContact, $strAddress,$latitude,$longitude, $dblSalary, $uploadFilePath);
 
             if ($stmt2->execute()) {
                 http_response_code(201);

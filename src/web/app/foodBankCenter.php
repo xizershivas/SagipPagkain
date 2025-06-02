@@ -214,7 +214,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                 </button>
             </div>
             <!-- DATA GRAPH -->
-            <div class="card p-3 shadow-sm">
+            <div class="card shadow-sm" style="margin-bottom: 4%;">
                 <div class="d-flex"> 
                     <div class="col-lg-9"> 
                        <div id="map"></div>
@@ -241,122 +241,8 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     </section><!-- /Service Details Section -->
 
   </main>
-
-  <!-- Include global footer  -->
-  <?php include '../global/footer.php'; ?>
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
   <!-- Preloader -->
   <div id="preloader"></div>
-
-  <!-- Include global JS -->
-  <?php include '../global/script.php'; ?>
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    // Initialize the map and set to Laguna
-    var map = L.map('map').setView([14.2044, 121.3473], 10);
-
-    // Light-themed map
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Stock level colors
-    function getStockColor(stock) {
-        if (stock >= 80) return "red";    
-        if (stock >= 30) return "yellow"; 
-        return "green";                   
-    }
-
-    // Use PHP data directly
-    var locations = <?php echo json_encode($foodBanks); ?>;
-    var locationList = document.getElementById("locationList");
-    var currentFoodBankId = null;
-   
-    locations.forEach(location => {
-
-    var marker = L.marker([location.lat, location.lng]).addTo(map);
-    
-    marker.bindPopup(`
-        <div class="text-left">
-            <h6 class="mb-1"><b>${location.name}</b></h6>
-            <p class="mb-1">Total Items: ${location.itemCount}</p>
-            <p class="mb-1">Total Quantity: ${location.stock}</p>
-            <div class="d-flex gap-2 mt-2">
-                <button class="btn btn-sm btn-danger" onclick="deleteFoodBank('${location.id}')">Delete</button>
-                <a href="#" 
-                   class="btn btn-sm btn-primary stock-link" 
-                   data-bs-toggle="modal" 
-                   data-bs-target="#stockModal"
-                   data-id="${location.id}"
-                   data-items='${JSON.stringify(location.items)}' 
-                   data-location="${location.name}" style="color: #fff;">
-                   View Stock
-                </a>
-            </div>
-        </div>
-    `);
-
-
-        // Add to list
-        var listItem = document.createElement("li");
-        listItem.className = "list-group-item";
-        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
-        listItem.onclick = function () {
-            map.setView([location.lat, location.lng], 13);
-        };
-        locationList.appendChild(listItem);
-
-        // Add circle
-        L.circle([location.lat, location.lng], {
-            color: getStockColor(location.stock),
-            fillColor: getStockColor(location.stock),
-            fillOpacity: 0.5,
-            radius: 300
-        }).addTo(map);
-    });
-
-    // Handle modal display
-    document.addEventListener('click', function (e) {
-        if (e.target.closest('.stock-link')) {
-            const link = e.target.closest('.stock-link');
-            const items = JSON.parse(link.dataset.items);
-            const locationName = link.dataset.location;
-            currentFoodBankId = link.dataset.id;
-
-            document.getElementById('modalLocationName').textContent = locationName;
-
-            const tbody = document.getElementById('modalStockTableBody');
-            tbody.innerHTML = '';
-
-            items.forEach(item => {
-                const row = `<tr>
-                    <td>${item.name}</td>
-                    <td>${item.quantity}</td>
-                    <td>${item.unit}</td>
-                </tr>`;
-                tbody.insertAdjacentHTML('beforeend', row);
-            });
-        }
-    });
-
-    // Search functionality
-    function filterLocations() {
-        var input = document.getElementById("searchBox").value.toLowerCase(); 
-        var listItems = document.querySelectorAll(".list-group-item");
-
-        listItems.forEach(item => {
-            if (item.textContent.toLowerCase().includes(input)) {
-                item.style.display = "";
-            } else {
-                item.style.display = "none";
-            }
-        });
-    }
-  </script>
-
 
  <!-- Add Food Bank Modal -->
 <div class="modal fade" id="addFoodBankModal" tabindex="-1">
@@ -543,6 +429,118 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       }
     }
   </script>
+
+    <!-- Include global footer  -->
+    <?php include '../global/footer.php'; ?>
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Include global JS -->
+<?php include '../global/script.php'; ?>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // Initialize the map and set to Laguna
+  var map = L.map('map').setView([14.2044, 121.3473], 10);
+
+  // Light-themed map
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Stock level colors
+  function getStockColor(stock) {
+      if (stock >= 80) return "red";    
+      if (stock >= 30) return "yellow"; 
+      return "green";                   
+  }
+
+  // Use PHP data directly
+  var locations = <?php echo json_encode($foodBanks); ?>;
+  var locationList = document.getElementById("locationList");
+  var currentFoodBankId = null;
+ 
+  locations.forEach(location => {
+
+  var marker = L.marker([location.lat, location.lng]).addTo(map);
+  
+  marker.bindPopup(`
+      <div class="text-left">
+          <h6 class="mb-1"><b>${location.name}</b></h6>
+          <p class="mb-1">Total Items: ${location.itemCount}</p>
+          <p class="mb-1">Total Quantity: ${location.stock}</p>
+          <div class="d-flex gap-2 mt-2">
+              <button class="btn btn-sm btn-danger" onclick="deleteFoodBank('${location.id}')">Delete</button>
+              <a href="#" 
+                 class="btn btn-sm btn-primary stock-link" 
+                 data-bs-toggle="modal" 
+                 data-bs-target="#stockModal"
+                 data-id="${location.id}"
+                 data-items='${JSON.stringify(location.items)}' 
+                 data-location="${location.name}" style="color: #fff;">
+                 View Stock
+              </a>
+          </div>
+      </div>
+  `);
+
+
+      // Add to list
+      var listItem = document.createElement("li");
+      listItem.className = "list-group-item";
+      listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
+      listItem.onclick = function () {
+          map.setView([location.lat, location.lng], 13);
+      };
+      locationList.appendChild(listItem);
+
+      // Add circle
+      L.circle([location.lat, location.lng], {
+          color: getStockColor(location.stock),
+          fillColor: getStockColor(location.stock),
+          fillOpacity: 0.5,
+          radius: 300
+      }).addTo(map);
+  });
+
+  // Handle modal display
+  document.addEventListener('click', function (e) {
+      if (e.target.closest('.stock-link')) {
+          const link = e.target.closest('.stock-link');
+          const items = JSON.parse(link.dataset.items);
+          const locationName = link.dataset.location;
+          currentFoodBankId = link.dataset.id;
+
+          document.getElementById('modalLocationName').textContent = locationName;
+
+          const tbody = document.getElementById('modalStockTableBody');
+          tbody.innerHTML = '';
+
+          items.forEach(item => {
+              const row = `<tr>
+                  <td>${item.name}</td>
+                  <td>${item.quantity}</td>
+                  <td>${item.unit}</td>
+              </tr>`;
+              tbody.insertAdjacentHTML('beforeend', row);
+          });
+      }
+  });
+
+  // Search functionality
+  function filterLocations() {
+      var input = document.getElementById("searchBox").value.toLowerCase(); 
+      var listItems = document.querySelectorAll(".list-group-item");
+
+      listItems.forEach(item => {
+          if (item.textContent.toLowerCase().includes(input)) {
+              item.style.display = "";
+          } else {
+              item.style.display = "none";
+          }
+      });
+  }
+</script>
   
 </body>
 
