@@ -258,16 +258,25 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         <?php endif; ?>
 
         <form action="" method="POST" enctype="multipart/form-data" id="foodBankForm">
-          <div class="mb-3">
-            <label for="foodBankName" class="form-label">Food Bank Name:</label>
-            <input type="text" class="form-control" id="foodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
-          </div>
-          <div class="mb-3">
-            <label for="address" class="form-label">Address:</label>
-            <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address of the Foodbank" required />
-          </div>
-
-          <!-- Move buttons inside the form -->
+            <div id="foodBankFormScrollArea" style="max-height: 280px; overflow-y: auto;">
+              <div class="mb-3">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label for="foodBankName" class="form-label"><b>Municipality:</b></label>
+                    <span id="addMore" style="color: #3f3737; cursor: pointer; font-size: 35px;font-weight: 900; padding-right: 5px;">+</span>
+                  </div>
+                  <input type="text" class="form-control" name="municipality[]" placeholder="Enter Municipality" required />
+                </div>
+              <div id="foodBankFormContainer">
+                <div class="mb-3">
+                  <label for="foodBankName" class="form-label">Food Bank Name:</label>
+                  <input type="text" class="form-control" id="foodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
+                </div>
+                <div class="mb-3">
+                  <label for="address" class="form-label">Address:</label>
+                  <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address of the Foodbank" required />
+                </div>
+              </div>
+            </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Add Food Bank</button>
@@ -304,43 +313,51 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       </div>
   </div>
 
-  <!-- Update Food Bank Modal -->
-  <div class="modal fade" id="updateFoodBankModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Update Food Bank</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <?php if (!empty($message)): ?>
-            <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
-          <?php endif; ?>
-
-          <form action="" method="POST" enctype="multipart/form-data" id="updateFoodBankForm">
-            <input type="hidden" id="updateFoodBankId" name="foodBankId">
-            <div class="mb-3">
-              <label for="updateFoodBankName" class="form-label">Food Bank Name:</label>
-              <input type="text" class="form-control" id="updateFoodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
-            </div>
-            <div class="mb-3">
-              <label for="updateAddress" class="form-label">Address:</label>
-              <input type="text" class="form-control" id="updateAddress" name="address" placeholder="Enter Address of the Foodbank" required />
-            </div>
-
-            <!-- Move buttons inside the form -->
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Update Food Bank</button>
-            </div>
-          </form>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs&libraries=places"></script>
+
+<script>
+  let fieldCount = 1;
+
+  function initAutocompleteForInput(input) {
+    if (google.maps.places) {
+      new google.maps.places.Autocomplete(input);
+    }
+  }
+
+  // Initialize for first address field on page load
+  window.addEventListener('load', function () {
+    const firstAddressInput = document.querySelector('input[name="address[]"]');
+    if (firstAddressInput) {
+      initAutocompleteForInput(firstAddressInput);
+    }
+  });
+
+  document.getElementById('addMore').addEventListener('click', function () {
+    const container = document.getElementById('foodBankFormContainer');
+
+    const newFields = document.createElement('div');
+    newFields.innerHTML = `
+      <hr />
+      <div class="mb-3">
+        <label for="foodBankName_${fieldCount}" class="form-label">Food Bank Name:</label>
+        <input type="text" class="form-control" name="foodBankName[]" id="foodBankName_${fieldCount}" placeholder="Enter Food Bank Name" required />
+      </div>
+      <div class="mb-3">
+        <label for="address_${fieldCount}" class="form-label">Address:</label>
+        <input type="text" class="form-control" name="address[]" id="address_${fieldCount}" placeholder="Enter Address of the Foodbank" required />
+      </div>
+    `;
+
+    container.appendChild(newFields);
+
+    // Get the new address input and apply Google Places Autocomplete
+    const newAddressInput = newFields.querySelector(`#address_${fieldCount}`);
+    initAutocompleteForInput(newAddressInput);
+
+    fieldCount++;
+  });
+</script>
+
   <script>
     // Initialize Google Maps Places Autocomplete
     function initAutocomplete() {
@@ -359,49 +376,6 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
 
     // Initialize autocomplete when the page loads
     google.maps.event.addDomListener(window, 'load', initAutocomplete);
-
-    // Update Food Bank Function
-    async function updateFoodBank(foodBankId) {
-      try {
-        // Find the food bank data from the locations array
-        const foodBank = locations.find(loc => loc.id === parseInt(foodBankId));
-        if (!foodBank) return;
-        
-        // Populate the update modal
-        document.getElementById('updateFoodBankId').value = foodBank.id;
-        document.getElementById('updateFoodBankName').value = foodBank.name;
-        document.getElementById('updateAddress').value = foodBank.address;
-        
-        // Show the modal
-        const updateModal = new bootstrap.Modal(document.getElementById('updateFoodBankModal'));
-        updateModal.show();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    // Update Food Bank Form Handler
-    document.getElementById('updateFoodBankForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      try {
-        const response = await fetch(window.location.href, {
-          method: 'POST',
-          body: new FormData(this)
-        });
-        
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-          alert('Food Bank updated successfully!');
-          window.location.reload();
-        } else {
-          throw new Error(data.message || 'Failed to update food bank');
-        }
-      } catch (error) {
-        alert(error.message);
-      }
-    });
 
     // Delete Food Bank Function
     async function deleteFoodBank(foodBankId) {
@@ -428,6 +402,17 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         alert(error.message);
       }
     }
+  </script>
+
+<script>
+    function initAutocomplete() {
+      const input = document.getElementById('address');
+      const autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode'],
+        componentRestrictions: { country: "ph" } 
+      });
+    }
+    google.maps.event.addDomListener(window, 'load', initAutocomplete);
   </script>
 
     <!-- Include global footer  -->
@@ -541,7 +526,5 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       });
   }
 </script>
-  
 </body>
-
 </html>

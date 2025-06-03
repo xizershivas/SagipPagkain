@@ -38,8 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($strAccountType == "beneficiary") {
         $strAddress = sanitize($_POST["address"]);
-        $latitude = $coords($_POST['latitude']);
-        $longitude = $coords($_POST['longitude']);
+        $latitude = $coords['latitude'];
+        $longitude = $coords['longitude'];
         $dblSalary = floatval($_POST["monthlyincome"]);   
     }
 
