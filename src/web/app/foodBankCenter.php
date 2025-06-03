@@ -258,7 +258,6 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
         <?php endif; ?>
 
         <form action="" method="POST" enctype="multipart/form-data" id="foodBankForm">
-            <div id="foodBankFormScrollArea" style="max-height: 280px; overflow-y: auto;">
               <div class="mb-3">
                   <div style="display: flex; justify-content: space-between; align-items: center;">
                     <label for="foodBankName" class="form-label"><b>Municipality:</b></label>
@@ -275,8 +274,8 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                   <label for="address" class="form-label">Address:</label>
                   <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address of the Foodbank" required />
                 </div>
-              </div>
-            </div>
+              </div> 
+              
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Add Food Bank</button>
