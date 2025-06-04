@@ -189,7 +189,7 @@ if (isset($_SESSION["intUserId"])) {
                         ?>
                         <tr>
                           <td><?php echo $data->strFullName; ?></td>
-                          <td><?php echo $data->strFoodBank; ?></td>
+                          <td><?php echo $data->strMunicipality; ?></td>
                           <td><?php echo $data->strItem; ?></td>
                           <td><?php echo $data->intQuantity; ?></td>
                           <td><?php echo $data->strUnit; ?></td>

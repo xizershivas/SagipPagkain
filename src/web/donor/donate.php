@@ -103,7 +103,7 @@ if (isset($_SESSION["intUserId"])) {
                   if ($foodBanks->num_rows > 0) {
                     while($foodBank = $foodBanks->fetch_object()) {
                     ?>
-                      <option value="<?php echo $foodBank->intFoodBankId; ?>"><?php echo $foodBank->strFoodBank; ?></option>
+                      <option value="<?php echo $foodBank->intFoodBankId; ?>"><?php echo $foodBank->strMunicipality; ?></option>
                     <?php
                     }
                   }

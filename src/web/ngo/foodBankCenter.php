@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['foodBankId']) && isse
   $id = intval($_POST['foodBankId']);
   $name = $conn->real_escape_string($_POST['foodBankName']);
 
-  $sql = "UPDATE tblfoodbank SET strFoodBank = '$name' WHERE intFoodBankId = $id";
+  $sql = "UPDATE tblfoodbank SET strMunicipality = '$name' WHERE intFoodBankId = $id";
 
   if ($conn->query($sql)) {
     echo json_encode(['status' => 'success']);
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $latitude = $coords['latitude'];
         $longitude = $coords['longitude'];
 
-        $sql = "INSERT INTO tblfoodbank (strFoodBank, strAddress, dblLatitude, dblLongitude) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO tblfoodbank (strMunicipality, strAddress, dblLatitude, dblLongitude) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssdd", $foodBankName, $address, $latitude, $longitude);
         
@@ -77,12 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
   
 // Get food bank data with item counts
-$foodBankQuery = "SELECT fb.intFoodBankId, fb.strFoodBank, fb.dblLatitude, fb.dblLongitude,fb.strAddress,
+$foodBankQuery = "SELECT fb.intFoodBankId,
                   COUNT(DISTINCT i.intItemId) as itemCount,
                   SUM(i.intQuantity) as totalStock
                   FROM tblfoodbank fb
                   LEFT JOIN tblinventory i ON fb.intFoodBankId = i.intFoodBankId
-                  GROUP BY fb.intFoodBankId, fb.strFoodBank, fb.dblLatitude, fb.dblLongitude";
+                  GROUP BY fb.intFoodBankId";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 
 $foodBanks = array();
@@ -111,7 +111,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     
     $foodBanks[] = array(
         'id' => $row['intFoodBankId'],
-        'name' => $row['strFoodBank'],
+        'name' => $row['strMunicipality'],
         'lat' => $row['dblLatitude'],
         'lng' => $row['dblLongitude'],
         'address' => $row['strAddress'],
@@ -164,7 +164,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Admin'; ?></li>
+            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Food Bank'; ?></li>
             <li><a href="foodBankCenter.php">Food Bank Center</a></li>
           </ol>
         </div>

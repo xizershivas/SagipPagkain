@@ -1,5 +1,5 @@
 <?php
-function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress,$latitude,$longitude, $dblSalary, $uploadFilePath) {
+function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strConfirmPassword, $strAccountType, $strAddress, $latitude, $longitude, $dblSalary, $uploadFilePath) {
     // Check if User already exists
     $sql = $conn->prepare("SELECT strUsername FROM tbluser WHERE strUsername = ?");
     $sql->bind_param("s", $strUsername);

@@ -11,7 +11,7 @@ function getDataListOptions($conn, $filter = "strCategory", $search = "", $page 
         switch($filter) {
             case "strItem": $dbTable = "tblitem"; break;
             case "strUnit": $dbTable = "tblunit"; break;
-            case "strFoodBank": $dbTable = "tblfoodbank"; break;
+            case "strMunicipality": $dbTable = "tblfoodbank"; break;
             default: $dbTable = "tblcategory"; break;
         }
 
@@ -49,7 +49,7 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             ,IV.intQuantity
             ,D.intDonationId
             ,FB.intFoodBankId
-            ,FB.strFoodBank
+            ,FB.strMunicipality
             ,I.intItemId
             ,I.strItem
             ,C.intCategoryId
@@ -99,7 +99,7 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             switch($filter) {
                 case "strItem": $dbTable = "I"; break;
                 case "strUnit": $dbTable = "U"; break;
-                case "strFoodBank": $dbTable = "FB"; break;
+                case "strMunicipality": $dbTable = "FB"; break;
                 default: $dbTable = "C"; break;
             }
     
@@ -107,7 +107,7 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             ,IV.intQuantity
             ,D.intDonationId
             ,FB.intFoodBankId
-            ,FB.strFoodBank AS strFoodBank
+            ,FB.strMunicipality AS strMunicipality
             ,I.intItemId
             ,I.strItem AS strItem
             ,C.intCategoryId

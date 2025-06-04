@@ -43,7 +43,7 @@ $whereSql = $where ? 'WHERE ' . implode(' OR ', $where) : '';
 
 $sql = "SELECT DISTINCT
     dm.dtmDate AS Date,
-    fb.strFoodBank AS Location,
+    fb.strMunicipality AS Location,
     it.strItem AS Item,
     c.strCategory AS FoodType,
     CONCAT(i.intQuantity, ' ', u.strUnit) AS Quantity,

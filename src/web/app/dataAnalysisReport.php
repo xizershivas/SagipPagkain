@@ -6,7 +6,7 @@ include "../../../app/functions/user.php";
 $sql = "SELECT 
     DATE_FORMAT(t.dtmCreatedDate, '%Y-%m') AS month,
     t.intFoodBankId,
-    f.strFoodBank,
+    f.strMunicipality,
     t.intItemId,
     i.strItem,
     SUM(t.intQuantity) AS total_quantity
@@ -234,9 +234,9 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
               <select name="foodbank" id="foodbank" class="form-select">
                 <option value="">All Locations</option>
                 <?php
-                $result = $conn->query("SELECT intFoodBankId, strFoodBank FROM tblfoodbank");
+                $result = $conn->query("SELECT intFoodBankId, strMunicipality FROM tblfoodbank");
                 while ($row = $result->fetch_assoc()) {
-                  echo '<option value="' . $row['intFoodBankId'] . '">' . htmlspecialchars($row['strFoodBank']) . '</option>';
+                  echo '<option value="' . $row['intFoodBankId'] . '">' . htmlspecialchars($row['strMunicipality']) . '</option>';
                 }
                 ?>
               </select>
@@ -294,7 +294,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
         const key = `${row.intItemId}-${row.intFoodBankId}`;
         if (!grouped[key]) grouped[key] = {
           description: row.strItem,
-          foodbank: row.strFoodBank,
+          foodbank: row.strMunicipality,
           series: []
         };
         grouped[key].series.push({

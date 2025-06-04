@@ -75,7 +75,7 @@ function setTableData({ inventoryData }) {
             tdUnit.textContent = d.strUnit;
             tdCategory.textContent = d.strCategory;
             tdExpiDate.textContent = d.dtmExpirationDate;
-            tdFoodBank.textContent = d.strFoodBank;
+            tdFoodBank.textContent = d.strMunicipality;
             tdTransfer.innerHTML = `<a href='javascript:void(0)' class="btn-transfer" title='Transfer Item' 
                 data-intInventoryId=${d.intInventoryId} 
                 data-intDonationId=${d.intDonationId} 
@@ -141,7 +141,7 @@ function setDataListOptions({ dataListOptions }, filter) {
         switch(filter) {
             case 'strItem': option.value = r.strItem; break;
             case 'strUnit': option.value = r.strUnit; break;
-            case 'strFoodBank': option.value = r.strFoodBank; break;
+            case 'strMunicipality': option.value = r.strMunicipality; break;
             default: option.value = r.strCategory; break;
         }
         filterOptions.append(option);

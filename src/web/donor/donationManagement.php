@@ -160,7 +160,7 @@ if (isset($_SESSION["intUserId"])) {
                           if ($foodBanks->num_rows > 0) {
                             while($foodBank = $foodBanks->fetch_object()) {
                             ?>
-                              <option value="<?php echo $foodBank->intFoodBankId; ?>"><?php echo $foodBank->strFoodBank; ?></option>
+                              <option value="<?php echo $foodBank->intFoodBankId; ?>"><?php echo $foodBank->strMunicipality; ?></option>
                             <?php
                             }
                           }
@@ -319,7 +319,7 @@ if (isset($_SESSION["intUserId"])) {
                         <tr>
                             <td><?php echo $data->strDonorName; ?></td>
                             <td class="text-nowrap"><?php echo $data->dtmDate; ?></td>
-                            <td><?php echo $data->strFoodBank; ?></td>
+                            <td><?php echo $data->strMunicipality; ?></td>
                             <td><?php echo $data->strTitle; ?></td>
                             <td><?php echo $data->strDescription; ?></td>
                             <td><?php echo $data->strItem; ?></td>

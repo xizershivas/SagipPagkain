@@ -44,7 +44,7 @@ if (isset($_SESSION["intUserId"])) {
             FROM tbltrackdonation TTD
             JOIN tbluser TU ON TTD.intUserId = TU.intUserId
           )
-          SELECT TI.strItem, TFB.strFoodBank, RU.strFullName 
+          SELECT TI.strItem, RU.strFullName 
           FROM tblnotification TN
           INNER JOIN tblinventory TINV ON TN.intSourceId = TINV.intDonationId
           INNER JOIN tblitem TI ON TINV.intItemId = TI.intItemId
@@ -86,10 +86,10 @@ if (isset($_SESSION["intUserId"])) {
             <?php foreach ($notifications as $notif): ?>
               <li>
                 <a href="#" class="dropdown-item text-wrap show-notif-modal"
-                   data-foodbank="<?= htmlspecialchars($notif['strFoodBank']) ?>"
+                   data-foodbank="<?= htmlspecialchars($notif['strMunicipality']) ?>"
                    data-donor="<?= htmlspecialchars($notif['strFullName']) ?>"
                    data-item="<?= htmlspecialchars($notif['strItem']) ?>">
-                  On <b><?= htmlspecialchars($notif['strFoodBank']) ?></b>, <b><?= htmlspecialchars($notif['strFullName']) ?></b> donated <b><?= htmlspecialchars($notif['strItem']) ?></b>.
+                  On <b><?= htmlspecialchars($notif['strMunicipality']) ?></b>, <b><?= htmlspecialchars($notif['strFullName']) ?></b> donated <b><?= htmlspecialchars($notif['strItem']) ?></b>.
                 </a>
               </li>
             <?php endforeach; ?>

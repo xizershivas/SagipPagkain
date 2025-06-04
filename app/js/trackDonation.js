@@ -128,7 +128,7 @@ function setFoodBank({ foodBanks }) {
     // Food Bank Options
     foodBanks.forEach(fb => {
         const foodBankOption = document.createElement('option');
-        foodBankOption.value = fb.strFoodBank;
+        foodBankOption.value = fb.strMunicipality;
         foodBankOption.setAttribute('data-id', fb.intFoodBankId);
         foodBankOptions.append(foodBankOption);
     });
@@ -189,7 +189,7 @@ function loadData(e) {
             if (this.status == 200) {
                 setData(data);
             } else {
-                alert(data.message);
+                // alert(data.message);
             }
         }
     };

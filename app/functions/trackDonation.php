@@ -5,7 +5,6 @@ function getAllTrackDonationData($conn) {
         ,U.intUserId
         ,U.strFullName
         ,FB.intFoodBankId
-        ,FB.strFoodBank
         ,I.intItemId
         ,I.strItem
         ,TD.intQuantity
@@ -97,7 +96,7 @@ function getFoodBank($conn, $intUserId) {
     header("Content-Type: application/json");
 
     try {
-        $sql = "SELECT DISTINCT FB.intFoodBankId, FB.strFoodBank FROM tbldonationmanagement DM
+        $sql = "SELECT DISTINCT FB.intFoodBankId, FB.strMunicipality FROM tbldonationmanagement DM
             INNER JOIN tblinventory IV ON DM.intDonationId = IV.intDonationId
             INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
             WHERE DM.intUserId = ?";
@@ -324,7 +323,7 @@ function generateQRCode($conn, $intBeneficiaryId, $intFoodBankId, $intItemId, $i
     $itemResult = $itemQuery->get_result()->fetch_assoc();
 
     // Food Bank
-    $foodBankQuery = $conn->prepare("SELECT FB.strFoodBank FROM tblfoodbank FB WHERE FB.intFoodBankId = ?");
+    $foodBankQuery = $conn->prepare("SELECT FB.strMunicipality FROM tblfoodbank FB WHERE FB.intFoodBankId = ?");
     $foodBankQuery->bind_param("i", $intFoodBankId);
     $foodBankQuery->execute();
     $foodBankResult = $foodBankQuery->get_result()->fetch_assoc();
@@ -336,7 +335,7 @@ function generateQRCode($conn, $intBeneficiaryId, $intFoodBankId, $intItemId, $i
     $donationResult = $donationQuery->get_result()->fetch_assoc();
 
     $data = "Name: " . $beneficiaryResult["strName"]
-        . "\nFood Bank: " . $foodBankResult["strFoodBank"]
+        . "\nFood Bank: " . $foodBankResult["strMunicipality"]
         . "\nItem: " . $itemResult["strItem"]
         . "\nQty Received: " . $intSendQuantity . " " . $donationResult["strUnit"]
         . "\nDate Received: " . $donationResult["dtmDateReceived"];

@@ -9,7 +9,6 @@ function getAllInventoryItems($conn) {
             ,IV.intQuantity
             ,D.intDonationId
             ,FB.intFoodBankId
-            ,FB.strFoodBank
             ,I.intItemId
             ,I.strItem
             ,C.intCategoryId

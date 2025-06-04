@@ -117,22 +117,22 @@ function addDonation($conn, $donationData) {
         }
  
         // Get Food Bank Name
-        $strFoodBankResult = $conn->query("SELECT strFoodBank FROM tblfoodbank WHERE intFoodBankId = '$intFoodBankId'");
-        $strFoodBank = $strFoodBankResult->fetch_object()->strFoodBank;
+        $strFoodBankResult = $conn->query("SELECT strMunicipality FROM tblfoodbank WHERE intFoodBankId = '$intFoodBankId'");
+        $strMunicipality = $strFoodBankResult->fetch_object()->strMunicipality;
  
         $conn->begin_transaction();
  
         try {
             // Insert donation
             $query1 = $conn->prepare("INSERT INTO tbldonationmanagement 
-                (intUserId, strDonorName, dtmDate, strTitle, strDescription, strFoodBank, strDocFilePath, strRemarks, dtmExpirationDate) VALUES (?,?,?,?,?,?,?,?,?)");
+                (intUserId, strDonorName, dtmDate, strTitle, strDescription, strMunicipality, strDocFilePath, strRemarks, dtmExpirationDate) VALUES (?,?,?,?,?,?,?,?,?)");
             $query1->bind_param("issssssss"
                 ,$intUserId
                 ,$strDonorName
                 ,$dtmDate
                 ,$strTitle
                 ,$strDescription
-                ,$strFoodBank
+                ,$strMunicipality
                 ,$strDocFilePath
                 ,$strRemarks
                 ,$dtmExpirationDate

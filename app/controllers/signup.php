@@ -7,17 +7,20 @@ function getCoordinates($address)
 {
     $apiKey = 'AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs';
     $address = urlencode($address);
-    $url = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key={$apiKey}";
 
-    $response = file_get_contents($url);
-    $data = json_decode($response, true);
+    if (!empty($address)) {
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key={$apiKey}";
 
-    if ($data['status'] == 'OK') {
-        $latitude = $data['results'][0]['geometry']['location']['lat'];
-        $longitude = $data['results'][0]['geometry']['location']['lng'];
-        return array('latitude' => $latitude, 'longitude' => $longitude);
-    } else {
-        return false;
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+
+        if ($data['status'] == 'OK') {
+            $latitude = $data['results'][0]['geometry']['location']['lat'];
+            $longitude = $data['results'][0]['geometry']['location']['lng'];
+            return array('latitude' => $latitude, 'longitude' => $longitude);
+        } else {
+            return false;
+        }
     }
 }
 
@@ -35,6 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $strAccountType = sanitize($_POST["accountType"]);
     $strAddress = "";
     $dblSalary = 0;
+    $latitude = "";
+    $longitude = "";
 
     if ($strAccountType == "beneficiary") {
         $strAddress = sanitize($_POST["address"]);

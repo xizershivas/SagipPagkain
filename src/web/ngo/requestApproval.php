@@ -45,7 +45,7 @@ include "../../../app/functions/requestApproval.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current">Donor</li>
+            <li class="current">Food Bank</li>
             <li><a href="availableFoodItem.php">Requests for Approval</a></li>
           </ol>
         </div>

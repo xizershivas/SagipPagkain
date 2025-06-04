@@ -208,7 +208,7 @@ function updateDonation($conn, $donationData) {
     $conn->begin_transaction();
 
     try {
-        $strFoodBank;
+        $strMunicipality;
         $intItemId;
         $intCategoryId;
         $intUnitId;
@@ -217,7 +217,7 @@ function updateDonation($conn, $donationData) {
         header("Content-Type: application/json");
 
         // Food Bank check
-        $foodBankResult = $conn->query("SELECT strFoodBank FROM tblfoodbank WHERE intFoodBankId = $intFoodBankId");        
+        $foodBankResult = $conn->query("SELECT strMunicipality FROM tblfoodbank WHERE intFoodBankId = $intFoodBankId");        
         // Item check
         $itemResult = $conn->query("SELECT intItemId FROM tblitem WHERE strItem = '$strItem'");
         // Category check
@@ -248,7 +248,7 @@ function updateDonation($conn, $donationData) {
             echo json_encode(["data" => ["message" => "Update failed, cannot find donation detail"]]);
             exit();
         } else {
-            $strFoodBank = $foodBankResult->fetch_object()->strFoodBank;
+            $strMunicipality = $foodBankResult->fetch_object()->strMunicipality;
             $intItemId = $itemResult->fetch_object()->intItemId;
             $intCategoryId = $categoryResult->fetch_object()->intCategoryId;
             $intUnitId = $unitResult->fetch_object()->intUnitId;
@@ -258,7 +258,7 @@ function updateDonation($conn, $donationData) {
         $query1 = $conn->prepare("UPDATE tbldonationmanagement SET 
             strDonorName = ?
             ,dtmDate = ?
-            ,strFoodBank = ?
+            ,strMunicipality = ?
             ,strTitle = ?
             ,strDescription = ?
             ,strRemarks = ?
@@ -270,7 +270,7 @@ function updateDonation($conn, $donationData) {
         $query1->bind_param("ssssssisi"
             ,$donationData["strDonorName"]
             ,$donationData["dtmDate"]
-            ,$strFoodBank
+            ,$strMunicipality
             ,$donationData["strTitle"]
             ,$donationData["strDescription"]
             ,$donationData["strRemarks"]

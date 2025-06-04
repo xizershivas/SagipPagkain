@@ -1,6 +1,6 @@
 <?php
 function getSourceFoodBanks($conn) {
-    $sourceFoodBankData = $conn->query("SELECT DISTINCT IV.intFoodBankId, FB.strFoodBank FROM tblinventory IV
+    $sourceFoodBankData = $conn->query("SELECT DISTINCT IV.intFoodBankId, FB.strMunicipality FROM tblinventory IV
         INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
     ");
     return $sourceFoodBankData;

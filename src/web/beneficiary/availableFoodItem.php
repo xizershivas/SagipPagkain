@@ -125,7 +125,7 @@ function getRecommendedItems($conn) {
                                           <td>{$row->intQuantity}</td>
                                           <td>{$row->strUnit}</td>
                                           <td>{$row->strCategory}</td>
-                                          <td>{$row->strFoodBank}</td>
+                                          <td>{$row->strMunicipality}</td>
                                         </tr>";
                                   $ctr++;
                                 }

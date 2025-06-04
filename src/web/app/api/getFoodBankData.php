@@ -3,7 +3,7 @@ session_start();
 include "../../../app/config/db_connection.php";
 
 // Get food bank data
-$foodBankQuery = "SELECT intFoodBankId, strFoodBank, dblLatitude, dblLongitude FROM tblfoodbank";
+$foodBankQuery = "SELECT intFoodBankId, strMunicipality, dblLatitude, dblLongitude FROM tblfoodbank";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 
 $foodBanks = array();
@@ -24,7 +24,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     
     $foodBanks[] = array(
         'id' => $row['intFoodBankId'],
-        'name' => $row['strFoodBank'],
+        'name' => $row['strMunicipality'],
         'lat' => $row['dblLatitude'],
         'lng' => $row['dblLongitude'],
         'stock' => $totalStock

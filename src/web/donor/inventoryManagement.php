@@ -92,7 +92,7 @@ include "../../../app/functions/inventoryTransfer.php";
                           <option value="strCategory" selected>Category</option>
                           <option value="strItem">Item</option>
                           <option value="strUnit">Unit</option>
-                          <option value="strFoodBank">Food Bank</option>
+                          <option value="strMunicipality">Food Bank</option>
                         </select>
                       </div>
 
@@ -180,7 +180,7 @@ include "../../../app/functions/inventoryTransfer.php";
 
                   while($row = $sourceFoodBankData->fetch_object()) {
                     ?>
-                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strFoodBank; ?></option>
+                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strMunicipality; ?></option>
                     <?php
                   }
                 ?>
@@ -195,7 +195,7 @@ include "../../../app/functions/inventoryTransfer.php";
 
                   while($row = $allFoodBanks->fetch_object()) {
                     ?>
-                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strFoodBank; ?></option>
+                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strMunicipality; ?></option>
                     <?php
                   }
                 ?>

@@ -32,14 +32,14 @@ try {
     switch ($action) {
         case 'add':
             // Validate input
-            if (!isset($_POST['strFoodBank']) || empty(trim($_POST['strFoodBank']))) {
+            if (!isset($_POST['strMunicipality']) || empty(trim($_POST['strMunicipality']))) {
                 sendError('Food bank location is required');
             }
             
-            $strFoodBank = trim($_POST['strFoodBank']);
+            $strMunicipality = trim($_POST['strMunicipality']);
             
             // Get coordinates using Nominatim
-            $address = urlencode($strFoodBank . ", Laguna, Philippines");
+            $address = urlencode($strMunicipality . ", Laguna, Philippines");
             $url = "https://nominatim.openstreetmap.org/search?format=json&q=" . $address;
             
             $ch = curl_init();
@@ -62,7 +62,7 @@ try {
             }
             
             // Insert into database
-            $stmt = $conn->prepare("INSERT INTO tblfoodbank (strFoodBank, dblLatitude, dblLongitude) VALUES (?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO tblfoodbank (strMunicipality, dblLatitude, dblLongitude) VALUES (?, ?, ?)");
             if (!$stmt) {
                 sendError('Database error: ' . $conn->error);
             }
@@ -70,7 +70,7 @@ try {
             $lat = $data[0]['lat'];
             $lng = $data[0]['lon'];
             
-            $stmt->bind_param("sdd", $strFoodBank, $lat, $lng);
+            $stmt->bind_param("sdd", $strMunicipality, $lat, $lng);
             
             if (!$stmt->execute()) {
                 sendError('Error adding food bank: ' . $stmt->error);
@@ -88,15 +88,15 @@ try {
             if (!isset($_POST['intFoodBankId']) || !is_numeric($_POST['intFoodBankId'])) {
                 sendError('Valid food bank ID is required');
             }
-            if (!isset($_POST['strFoodBank']) || empty(trim($_POST['strFoodBank']))) {
+            if (!isset($_POST['strMunicipality']) || empty(trim($_POST['strMunicipality']))) {
                 sendError('Food bank location is required');
             }
             
             $intFoodBankId = (int)$_POST['intFoodBankId'];
-            $strFoodBank = trim($_POST['strFoodBank']);
+            $strMunicipality = trim($_POST['strMunicipality']);
             
             // Get new coordinates
-            $address = urlencode($strFoodBank . ", Laguna, Philippines");
+            $address = urlencode($strMunicipality . ", Laguna, Philippines");
             $url = "https://nominatim.openstreetmap.org/search?format=json&q=" . $address;
             
             $ch = curl_init();
@@ -119,7 +119,7 @@ try {
             }
             
             // Update database
-            $stmt = $conn->prepare("UPDATE tblfoodbank SET strFoodBank = ?, dblLatitude = ?, dblLongitude = ? WHERE intFoodBankId = ?");
+            $stmt = $conn->prepare("UPDATE tblfoodbank SET strMunicipality = ?, dblLatitude = ?, dblLongitude = ? WHERE intFoodBankId = ?");
             if (!$stmt) {
                 sendError('Database error: ' . $conn->error);
             }
@@ -127,7 +127,7 @@ try {
             $lat = $data[0]['lat'];
             $lng = $data[0]['lon'];
             
-            $stmt->bind_param("sddi", $strFoodBank, $lat, $lng, $intFoodBankId);
+            $stmt->bind_param("sddi", $strMunicipality, $lat, $lng, $intFoodBankId);
             
             if (!$stmt->execute()) {
                 sendError('Error updating food bank: ' . $stmt->error);

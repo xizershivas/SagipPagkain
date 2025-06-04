@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $latitude = $coords['latitude'];
         $longitude = $coords['longitude'];
 
-        $sql = "INSERT INTO tblfoodbank (strFoodBank, strAddress, dblLatitude, dblLongitude) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO tblfoodbank (strMunicipality, strAddress, dblLatitude, dblLongitude) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssdd", $foodBankName, $address, $latitude, $longitude);
 
