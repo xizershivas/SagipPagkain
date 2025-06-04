@@ -12,6 +12,15 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../beneficiary/assistanceRequest.php");
 }
 
+$request = "SELECT COUNT(*) AS total FROM tblDonationManagement 
+                                     WHERE ysnStatus = 0";
+$resultRequest = $conn->query($request);
+
+
+if ($resultRequest && $rowRequest = $resultRequest->fetch_assoc()) {
+    $totalRequest = $rowRequest['total'];
+}
+
 $user = "SELECT COUNT(*) AS total FROM tbluser";
 $resultUser = $conn->query($user);
 
@@ -58,6 +67,34 @@ if ($resultForecastedAvailability) {
 
 $jsonLabels = json_encode($labels);
 $jsonData = json_encode($data);
+
+$sqlSurplus = "
+    SELECT 
+        strRemarks,
+        COUNT(ysnStatus) AS count,
+        ROUND(COUNT(ysnStatus) * 100.0 / (
+            SELECT COUNT(ysnStatus) 
+            FROM tblDonationManagement 
+            WHERE ysnStatus = 1
+        ), 2) AS percentage
+    FROM 
+        tblDonationManagement
+    WHERE 
+        ysnStatus = 1
+    GROUP BY 
+        strRemarks
+";
+
+$resultSurplus = $conn->query($sqlSurplus);
+
+// Prepare arrays for Chart.js
+$labelSurplus = [];
+$dataSurplus = [];
+
+while ($rowSurplus = $resultSurplus->fetch_assoc()) {
+  $labelSurplus[] = $rowSurplus['strRemarks'] . ' %' . $rowSurplus['percentage'];
+    $dataSurplus[] = $rowSurplus['percentage'];
+}
 
 ?>
 <!DOCTYPE html>
@@ -143,7 +180,7 @@ $jsonData = json_encode($data);
                 <div class="col-md-3 mb-3">
                     <div class="card p-3 shadow-sm">
                         <h6>Request</h6>
-                        <h4>45</h4>
+                        <h4><?= htmlspecialchars($totalRequest) ?></h4>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
@@ -175,24 +212,13 @@ $jsonData = json_encode($data);
                                 <canvas id="surplusDistributionChart"></canvas>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Avg, Redistribution</h6>
-                            <h4>5,125 min(s)</h4>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-6" style="margin-top: 10px;">
-                        <div class="card p-3 shadow-sm">
-                            <h6>Avg, Surplus value</h6>
-                            <h4>20k</h4>
-                        </div>
-                    </div>
+                        
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card p-3 shadow-sm">
                         <h5 class="text-center">Forecasted Surplus Availability</h5>
-                        <div class="chart-container" style="height: 400px;">
+                        <div class="chart-container" style="height: 305px;">
                             <canvas id="forecastedSurplusChart"></canvas>
                         </div>
                     </div>
@@ -237,15 +263,20 @@ $jsonData = json_encode($data);
         new Chart(surplusCtx, {
             type: 'pie',
             data: {
-                labels: ['46.47%', '23.06%', '20.77%', '9.7%'],
+                labels: <?php echo json_encode($labelSurplus); ?>,
                 datasets: [{
-                    data: [46.47, 23.06, 20.77, 9.7],
-                    backgroundColor: ['purple', 'orange', 'red', 'green']
+                    data: <?php echo json_encode($dataSurplus); ?>,
+                    backgroundColor: ['purple', 'orange', 'red', 'green', 'blue'] // Add more if needed
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
             }
         });
 
