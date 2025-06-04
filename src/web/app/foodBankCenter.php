@@ -2,6 +2,7 @@
 session_start();
 include "../../../app/config/db_connection.php"; 
 include "../../../app/functions/user.php";
+include "../../../app/utils/sanitize.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteFoodBankId'])) {
   header('Content-Type: application/json');
@@ -52,37 +53,77 @@ function getCoordinates($address)
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $foodBankName = $conn->real_escape_string($_POST['foodBankName']);
-    $address = $conn->real_escape_string($_POST['address']);
+    header('Content-Type: application/json');
 
-    $coords = getCoordinates($address);
+    $conn->begin_transaction();
 
-    if ($coords !== false) {
-        $latitude = $coords['latitude'];
-        $longitude = $coords['longitude'];
+    try {
+      $municipality = sanitize($_POST['municipality']);
 
-        $sql = "INSERT INTO tblfoodbank (strMunicipality, strAddress, dblLatitude, dblLongitude) VALUES (?, ?, ?, ?)";
+      $checkStmt = $conn->prepare("SELECT * FROM tblfoodbank WHERE strMunicipality = ? LIMIT 1");
+      $checkStmt->bind_param("s", $municipality);
+      $checkStmt->execute();
+      $result = $checkStmt->get_result();
+      $intFoodBankId = 0;
+      $lastInsertId = 0;
+
+      if ($result->num_rows > 0) {
+        $intFoodBankId = $result->fetch_object()->intFoodBankId;
+      } else {
+        // Insert into tblfoodbank
+        $sql = "INSERT INTO tblfoodbank (strMunicipality) VALUES (?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssdd", $foodBankName, $address, $latitude, $longitude);
-        
-        if ($stmt->execute()) {
-            $message = "Food Bank added successfully!";
-        } else {
-            $message = "Error inserting data: " . $stmt->error;
-        }
+        if (!$stmt) throw new Exception("Database operation failed", 500);
+        $stmt->bind_param("s", $municipality);
+        $stmt->execute();
+        $intFoodBankId = $conn->insert_id;
         $stmt->close();
-    } else {
-        $message = "Could not get coordinates for the address.";
-    }
+      }
+
+      if (isset($_POST['foodBankName'], $_POST['address']) && 
+          is_array($_POST['foodBankName']) && 
+          is_array($_POST['address']) && 
+          count($_POST['foodBankName']) === count($_POST['address'])) {
+
+          $sql2 = "INSERT INTO tblfoodbankdetail (intFoodBankId, strFoodBankName, strAddress, dblLatitude, dblLongitude) 
+                  VALUES (?, ?, ?, ?, ?)";
+          $stmt2 = $conn->prepare($sql2);
+
+          for ($i = 0; $i < count($_POST['foodBankName']); $i++) {
+              $foodBankName = sanitize($_POST['foodBankName'][$i]);
+              $address = sanitize($_POST['address'][$i]);
+
+              // Get coordinates per address
+              $coords = getCoordinates($address);
+              if ($coords !== false) {
+                  $latitude = $coords['latitude'];
+                  $longitude = $coords['longitude'];
+
+                  $stmt2->bind_param("issdd", $intFoodBankId, $foodBankName, $address, $latitude, $longitude);
+                  $stmt2->execute();
+              }
+          }
+
+          $stmt2->close();
+      }
+
+      $conn->commit();
+  } catch (Exception $ex) {
+    $conn->rollback();
+    $code = $ex->getCode();
+    http_response_code($code);
+    echo json_encode(["data" => ["message" => $ex->getMessage()]]);
+  }
 }
   
 // Get food bank data with item counts
-$foodBankQuery = "SELECT fb.intFoodBankId, fb.strMunicipality, fb.dblLatitude, fb.dblLongitude,fb.strAddress,
+$foodBankQuery = "SELECT fb.intFoodBankId, fb.strMunicipality, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
                   COUNT(DISTINCT i.intItemId) as itemCount,
                   SUM(i.intQuantity) as totalStock
                   FROM tblfoodbank fb
+				          LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodbankDetailId
                   LEFT JOIN tblinventory i ON fb.intFoodBankId = i.intFoodBankId
-                  GROUP BY fb.intFoodBankId, fb.strMunicipality, fb.dblLatitude, fb.dblLongitude";
+                  GROUP BY fb.intFoodBankId, fb.strMunicipality, fbd.dblLatitude, fbd.dblLongitude";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 
 $foodBanks = array();
@@ -257,28 +298,28 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
           <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
         <?php endif; ?>
 
-        <form action="" method="POST" enctype="multipart/form-data" id="foodBankForm">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" enctype="multipart/form-data" id="foodBankForm">
               <div class="mb-3">
                   <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <label for="foodBankName" class="form-label"><b>Municipality:</b></label>
+                    <label for="municipality" class="form-label"><b>Municipality:</b></label>
                     <span id="addMore" style="color: #3f3737; cursor: pointer; font-size: 35px;font-weight: 900; padding-right: 5px;">+</span>
                   </div>
-                  <input type="text" class="form-control" name="municipality[]" placeholder="Enter Municipality" required />
+                  <input type="text" class="form-control" name="municipality" placeholder="Enter Municipality" required />
                 </div>
               <div id="foodBankFormContainer">
                 <div class="mb-3">
                   <label for="foodBankName" class="form-label">Food Bank Name:</label>
-                  <input type="text" class="form-control" id="foodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
+                  <input type="text" class="form-control" name="foodBankName[]" placeholder="Enter Food Bank Name" required />
                 </div>
                 <div class="mb-3">
                   <label for="address" class="form-label">Address:</label>
-                  <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address of the Foodbank" required />
+                  <input type="text" class="form-control" name="address[]" placeholder="Enter Address of the Foodbank" required />
                 </div>
               </div> 
               
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add Food Bank</button>
+            <button type="submit" class="btn btn-primary" id="btnSaveFoodBank">Save Food Bank</button>
           </div>
         </form>
 

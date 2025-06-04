@@ -2,6 +2,7 @@
 session_start();
 include "../../../app/config/db_connection.php"; 
 include "../../../app/functions/user.php";
+include "../../../app/utils/sanitize.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteFoodBankId'])) {
   header('Content-Type: application/json');
