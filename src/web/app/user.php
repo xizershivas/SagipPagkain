@@ -259,13 +259,13 @@ include "../../../app/functions/user.php";
 
                             <div class="mt-2 position-relative" id="docContainer">
                               <iframe class="w-100" id="uploadDocPreview" src="" frameborder="0"></iframe>
-                              <a class="btn btn-sm btn-success position-absolute" 
+                              <a class="btn btn-sm btn-success position-absolute d-none" 
                                 id="btnViewDoc" 
                                 href="" 
                                 target="_blank"
                                 style="top: 10px; left: 10px; z-index: 10;">View
                               </a>
-                              <a class="btn btn-sm btn-primary position-absolute" 
+                              <a class="btn btn-sm btn-primary position-absolute d-none" 
                                 id="btnDownloadDoc" 
                                 href="" 
                                 target="_blank"

@@ -32,7 +32,9 @@ function setFormData({ data }) {
     // PDF Preview
     uploadDocPreview.src = "";
     if (data.strDocument) {
+        btnViewDoc.classList.remove('d-none');
         btnViewDoc.setAttribute("href", data.strDocument);
+        btnDownloadDoc.classList.remove('d-none');
         btnDownloadDoc.setAttribute("href", data.strDocument);
         uploadDocPreview.src = data.strDocument;
     }
