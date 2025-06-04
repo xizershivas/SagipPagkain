@@ -8,7 +8,7 @@ function getAllInventoryItems($conn) {
     $sql = "SELECT IV.intInventoryId 
             ,IV.intQuantity
             ,D.intDonationId
-            ,FB.intFoodBankId
+            ,FBD.intFoodBankDetailId
             ,I.intItemId
             ,I.strItem
             ,C.intCategoryId
@@ -17,7 +17,7 @@ function getAllInventoryItems($conn) {
             ,U.strUnit
             FROM tblinventory IV
             INNER JOIN tbldonationmanagement D ON IV.intDonationId = D.intDonationId
-            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId";

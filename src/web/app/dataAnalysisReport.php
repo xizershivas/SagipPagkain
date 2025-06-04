@@ -5,16 +5,16 @@ include "../../../app/functions/user.php";
 
 $sql = "SELECT 
     DATE_FORMAT(t.dtmCreatedDate, '%Y-%m') AS month,
-    t.intFoodBankId,
-    f.strMunicipality,
+    t.intFoodBankDetailId,
+    f.strFoodBankName,
     t.intItemId,
     i.strItem,
     SUM(t.intQuantity) AS total_quantity
 FROM tbltrackdonation t
 JOIN tblitem i ON t.intItemId = i.intItemId
-JOIN tblfoodbank f ON t.intFoodBankId = f.intFoodBankId
-GROUP BY month, t.intFoodBankId, t.intItemId
-ORDER BY t.intItemId, t.intFoodBankId, month";
+JOIN tblfoodbankdetail f ON t.intFoodBankDetailId = f.intFoodBankDetailId
+GROUP BY month, t.intFoodBankDetailId, t.intItemId
+ORDER BY t.intItemId, t.intFoodBankDetailId, month";
 
 $result = $conn->query($sql);
 $data = [];
@@ -246,9 +246,11 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
               <select name="donor" id="donor" class="form-select">
                 <option value="">All Donors</option>
                 <?php
-                $result = $conn->query("SELECT DISTINCT intUserId, strDonorName FROM tbldonationmanagement");
+                $result = $conn->query("SELECT DISTINCT DM.intUserId, U.strFullName 
+                  FROM tbldonationmanagement DM
+                  JOIN tbluser U ON DM.intUserId = U.intUserId");
                 while ($row = $result->fetch_assoc()) {
-                  echo '<option value="' . $row['intUserId'] . '">' . htmlspecialchars($row['strDonorName']) . '</option>';
+                  echo '<option value="' . $row['intUserId'] . '">' . htmlspecialchars($row['strFullName']) . '</option>';
                 }
                 ?>
               </select>

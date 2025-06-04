@@ -8,25 +8,28 @@ function getDonationData($conn, $user) {
     $allDonationData;
 
     if ($ysnAdmin == 1) {
-        $allDonationData = $conn->query("SELECT D.*
-            , FB.intFoodBankId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory
+        $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
+            , FBD.intFoodBankDetailId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory, P.strPurpose
             FROM tbldonationmanagement D
             INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
-            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId"
+            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
+            INNER JOIN tbluser US ON D.intUserId = US.intUserId
+            INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId"
         );
     } else {
-        $allDonationData = $conn->query("SELECT D.*
-            , FB.intFoodBankId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory
+        $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
+            , FBD.intFoodBankDetailId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory, P.strPurpose
             FROM tbldonationmanagement D
             INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
-            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId"
-            // WHERE D.intUserId = $intUserId
+            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
+            INNER JOIN tbluser US ON D.intUserId = US.intUserId
+            INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId"
         );
     }
 
@@ -59,8 +62,13 @@ function getCategories($conn) {
 }
 
 function getFoodBanks($conn) {
-    $foodbanks = $conn->query("SELECT * FROM tblfoodbank");
+    $foodbanks = $conn->query("SELECT * FROM tblfoodbankdetail");
     return $foodbanks;
+}
+
+function getPurpose($conn) {
+    $allPurpose = $conn->query("SELECT * FROM tblpurpose");
+    return $allPurpose;
 }
 
 function editDonation($conn, $intDonationId) {
@@ -70,13 +78,16 @@ function editDonation($conn, $intDonationId) {
         exit();
     } else {
         $sql = 
-            "SELECT D.*, FB.intFoodBankId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory
+            "SELECT D.*, US.strFullName, FBD.intFoodBankDetailId, I.intItemId, I.strItem, IV.intQuantity
+            , U.intUnitId, U.strUnit, C.intCategoryId, C.strCategory, P.intPurposeId, P.strPurpose, IV.dtmExpirationDate
             FROM tbldonationmanagement D
             INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
-            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
+            INNER JOIN tbluser US ON D.intUserId = US.intUserId
+            INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId
             WHERE D.intDonationId = ?";
 
         $query = $conn->prepare($sql);
@@ -119,8 +130,7 @@ function processDocFileUpload($conn, $intDonationId) {
             . DIRECTORY_SEPARATOR . "donor/";
             
         $allowedTypes = [
-            'image/jpeg', // JPEG/JPG
-            'image/png' // PNG
+            'application/pdf'
         ];
 
         $uploadedFiles = [];
@@ -196,130 +206,75 @@ function processDocFileUpload($conn, $intDonationId) {
 }
 
 function updateDonation($conn, $donationData) {
+    header("Content-Type: application/json");
+
     $intDonationId = $donationData["intDonationId"];
-    $intFoodBankId = $donationData["intFoodBankId"];
-    $strItem = $donationData["strItem"];
-    $strCategory = $donationData["strCategory"];
-    $strUnit = $donationData["strUnit"];
-    $intQuantity = $donationData["intQuantity"];
+    $strFullName = $donationData["strFullName"];
+    $dtmDate = $donationData["dtmDate"];
+    $dtmExpirationDate = $donationData["dtmExpirationDate"];
+    $intFoodBankDetailId = $donationData["intFoodBankDetailId"];
     $strDescription = $donationData["strDescription"];
-    $ysnStatus = intval($donationData["ysnStatus"]);
+    $intPurposeId = $donationData["intPurposeId"];
+    $intItemId = $donationData["intItemId"];
+    $intQuantity = $donationData["intQuantity"];
+    $intUnitId = $donationData["intUnitId"];
+    $intCategoryId = $donationData["intCategoryId"];
+    $ysnStatus = $donationData["ysnStatus"];
+    $strDocFilePath = $donationData["strDocFilePath"];
 
     $conn->begin_transaction();
 
     try {
-        $strMunicipality;
-        $intItemId;
-        $intCategoryId;
-        $intUnitId;
-        $intInventoryId;
-        
-        header("Content-Type: application/json");
+        $sql = "UPDATE tbldonationmanagement DM
+            JOIN tblinventory IV ON DM.intDonationId = IV.intDonationId
+            SET DM.dtmDate = ?,
+                DM.strDescription = ?,
+                DM.intFoodBankDetailId = ?,
+                DM.strDocFilePath = ?,
+                DM.intPurposeId = ?,
+                DM.dtmExpirationDate = ?,
+                DM.ysnStatus = ?,
+                IV.intFoodBankDetailId = ?,
+                IV.intItemId = ?,
+                IV.intCategoryId = ?,
+                IV.intUnitId = ?,
+                IV.intQuantity = ?,
+                IV.dtmExpirationDate = ?
+            WHERE IV.intDonationId = ?";
 
-        // Food Bank check
-        $foodBankResult = $conn->query("SELECT strMunicipality FROM tblfoodbank WHERE intFoodBankId = $intFoodBankId");        
-        // Item check
-        $itemResult = $conn->query("SELECT intItemId FROM tblitem WHERE strItem = '$strItem'");
-        // Category check
-        $categoryResult = $conn->query("SELECT intCategoryId FROM tblcategory WHERE strCategory = '$strCategory'");
-        // Unit check
-        $unitResult = $conn->query("SELECT intUnitId FROM tblunit WHERE strUnit = '$strUnit'");
-        // Inventory check
-        $inventoryResult = $conn->query("SELECT intInventoryId FROM tblinventory WHERE intDonationId = $intDonationId");
+        $stmt = $conn->prepare($sql);
 
-        if ($foodBankResult->num_rows == 0) {
-            http_response_code(400);
-            echo json_encode(["data" => ["message" => "Invalid Food Bank"]]);
-            exit();
-        } else if ($itemResult->num_rows == 0) {
-            http_response_code(400);
-            echo json_encode(["data" => ["message" => "Invalid Item"]]);
-            exit();
-        } else if ($categoryResult->num_rows == 0) {
-            http_response_code(400);
-            echo json_encode(["data" => ["message" => "Invalid Category"]]);
-            exit();
-        } else if ($unitResult->num_rows == 0) {
-            http_response_code(400);
-            echo json_encode(["data" => ["message" => "Invalid Unit"]]);
-            exit();
-        } else if ($inventoryResult->num_rows == 0) {
-            http_response_code(400);
-            echo json_encode(["data" => ["message" => "Update failed, cannot find donation detail"]]);
-            exit();
-        } else {
-            $strMunicipality = $foodBankResult->fetch_object()->strMunicipality;
-            $intItemId = $itemResult->fetch_object()->intItemId;
-            $intCategoryId = $categoryResult->fetch_object()->intCategoryId;
-            $intUnitId = $unitResult->fetch_object()->intUnitId;
-            $intInventoryId = $inventoryResult->fetch_object()->intInventoryId;
-        }
-
-        $query1 = $conn->prepare("UPDATE tbldonationmanagement SET 
-            strDonorName = ?
-            ,dtmDate = ?
-            ,strMunicipality = ?
-            ,strTitle = ?
-            ,strDescription = ?
-            ,strRemarks = ?
-            ,ysnStatus = ?
-            ,strDocFilePath = ?
-            WHERE intDonationId = ?"
+        $stmt->bind_param(
+            "ssisisiiiiiisi",
+            $dtmDate,
+            $strDescription,
+            $intFoodBankDetailId,
+            $strDocFilePath,
+            $intPurposeId,
+            $dtmExpirationDate,
+            $ysnStatus,
+            $intFoodBankDetailId,
+            $intItemId,
+            $intCategoryId,
+            $intUnitId,
+            $intQuantity,
+            $dtmExpirationDate,
+            $intDonationId
         );
 
-        $query1->bind_param("ssssssisi"
-            ,$donationData["strDonorName"]
-            ,$donationData["dtmDate"]
-            ,$strMunicipality
-            ,$donationData["strTitle"]
-            ,$donationData["strDescription"]
-            ,$donationData["strRemarks"]
-            ,$ysnStatus
-            ,$donationData["strDocFilePath"]
-            ,$intDonationId
-        );
-
-        if (!$query1->execute()) {
-            http_response_code(500);
-            echo json_encode(["data" => ["message" => "Donation update failed, ".$query1->error]]);
-            exit();
-        }
-
-        $query2 = $conn->prepare("UPDATE tblinventory SET 
-            intFoodBankId = ?
-            ,intItemId = ?
-            ,intCategoryId = ?
-            ,intUnitId = ?
-            ,intQuantity = ?
-            WHERE intInventoryId = ?"
-        );
-
-        $query2->bind_param("iiiiii"
-            ,$intFoodBankId
-            ,$intItemId
-            ,$intCategoryId
-            ,$intUnitId
-            ,$intQuantity
-            ,$intInventoryId
-        );
-
-        if (!$query2->execute()) {
-            http_response_code(500);
-            echo json_encode(["data" => ["message" => "Inventory update failed, ".$query2->error]]);
-            exit();
+        if (!$stmt->execute()) {
+            throw new Exception ("Database updated operation failed", 500);
         }
 
         $conn->commit();
-
-        $query1->close();
-        $query2->close();
 
         http_response_code(200);
         echo json_encode(["data" => ["message" => "Donation updated successfully"]]);
     } catch (Exception $ex) {
         $conn->rollback();
-        http_response_code(500);
-        echo json_encode(["data" => ["message" => "Update failed, please check user input"]]);
+        $code = $ex->getCode();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => $ex->getMessage()]]);
     }
 
     exit();

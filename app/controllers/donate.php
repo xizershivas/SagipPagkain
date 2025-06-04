@@ -7,14 +7,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $intUserId = intval($_POST["userId"]);
     $strDonorName = sanitize($_POST["fullname"]);
     $dtmDate = sanitize($_POST["date"]);
-    $strTitle = sanitize($_POST["title"]);
+    $intFoodBankDetailId = intval($_POST["foodBank"]);
     $strDescription = sanitize($_POST["description"]);
-    $intFoodBankId = intval($_POST["foodBank"]);
-    $strItem = sanitize($_POST["item"]);
+    $intPurposeId = intval($_POST["purpose"]);
+    $intItemId = intval($_POST["item"]);
     $intQuantity = intval($_POST["quantity"]);
-    $strCategory = sanitize($_POST["category"]);
-    $strUnit = sanitize($_POST["unit"]);
-    $strRemarks = sanitize($_POST["remarks"]);
+    $intCategoryId = intval($_POST["category"]);
+    $intUnitId = intval($_POST["unit"]);
     $dtmExpirationDate = sanitize($_POST["date2"]);
 
     // File upload JPG/PNG
@@ -24,15 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "intUserId" => $intUserId,
         "strDonorName" => $strDonorName,
         "dtmDate" => $dtmDate,
-        "strTitle" => $strTitle,
+        "intFoodBankDetailId" => $intFoodBankDetailId,
         "strDescription" => $strDescription,
-        "intFoodBankId" => $intFoodBankId,
-        "strItem" => $strItem,
+        "intPurposeId" => $intPurposeId,
+        "intItemId" => $intItemId,
         "intQuantity" => $intQuantity,
-        "strCategory" => $strCategory,
-        "strUnit" => $strUnit,
+        "intCategoryId" => $intCategoryId,
+        "intUnitId" => $intUnitId,
         "strDocFilePath" => $strDocFilePath ? implode(",", $strDocFilePath) : "",
-        "strRemarks" => $strRemarks,
         "dtmExpirationDate" => $dtmExpirationDate
     ];
 

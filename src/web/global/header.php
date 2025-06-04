@@ -38,9 +38,9 @@ if (isset($_SESSION["intUserId"])) {
         $stmt = $conn->prepare("
           WITH RankedUsers AS (
             SELECT 
-              TTD.intFoodBankId,
+              TTD.intFoodBankDetailId,
               TU.strFullName,
-              ROW_NUMBER() OVER (PARTITION BY TTD.intFoodBankId ORDER BY TTD.intTrackDonationId) AS rn
+              ROW_NUMBER() OVER (PARTITION BY TTD.intFoodBankDetailId ORDER BY TTD.intTrackDonationId) AS rn
             FROM tbltrackdonation TTD
             JOIN tbluser TU ON TTD.intUserId = TU.intUserId
           )
@@ -48,8 +48,8 @@ if (isset($_SESSION["intUserId"])) {
           FROM tblnotification TN
           INNER JOIN tblinventory TINV ON TN.intSourceId = TINV.intDonationId
           INNER JOIN tblitem TI ON TINV.intItemId = TI.intItemId
-          INNER JOIN tblfoodbank TFB ON TINV.intFoodbankId = TFB.intFoodBankId
-          LEFT JOIN RankedUsers RU ON TFB.intFoodBankId = RU.intFoodBankId AND RU.rn = 1
+          INNER JOIN tblfoodbankdetail TFBD ON TINV.intFoodBankDetailId = TFBD.intFoodBankDetailId
+          LEFT JOIN RankedUsers RU ON TFBD.intFoodBankDetailId = RU.intFoodBankDetailId AND RU.rn = 1
           WHERE TN.ysnSeen = 0 AND TN.strSourceTable = 'tblinventory'
           ORDER BY TN.dtmCreatedDate DESC LIMIT 5
         ");

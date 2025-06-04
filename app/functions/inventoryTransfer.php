@@ -1,7 +1,7 @@
 <?php
 function getSourceFoodBanks($conn) {
-    $sourceFoodBankData = $conn->query("SELECT DISTINCT IV.intFoodBankId, FB.strMunicipality FROM tblinventory IV
-        INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+    $sourceFoodBankData = $conn->query("SELECT DISTINCT IV.intFoodBankDetailId, FBD.strFoodBankName FROM tblinventory IV
+        INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
     ");
     return $sourceFoodBankData;
 }
@@ -37,7 +37,7 @@ function getAvailableItems($conn, $intFoodBankId) {
         FROM tblinventory IV
         INNER JOIN tblitem I ON IV.intItemId = I.intItemId
         INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-        WHERE IV.intFoodBankId = ?
+        WHERE IV.intFoodBankDetailId = ?
         GROUP BY IV.intItemId, I.strItem, IV.intUnitId, U.strUnit
     ";
 

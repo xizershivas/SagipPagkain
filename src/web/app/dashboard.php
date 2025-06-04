@@ -70,7 +70,7 @@ $jsonData = json_encode($data);
 
 $sqlSurplus = "
     SELECT 
-        strRemarks,
+        intPurposeId,
         COUNT(ysnStatus) AS count,
         ROUND(COUNT(ysnStatus) * 100.0 / (
             SELECT COUNT(ysnStatus) 
@@ -82,7 +82,7 @@ $sqlSurplus = "
     WHERE 
         ysnStatus = 1
     GROUP BY 
-        strRemarks
+        intPurposeId
 ";
 
 $resultSurplus = $conn->query($sqlSurplus);
@@ -92,7 +92,7 @@ $labelSurplus = [];
 $dataSurplus = [];
 
 while ($rowSurplus = $resultSurplus->fetch_assoc()) {
-  $labelSurplus[] = $rowSurplus['strRemarks'] . ' %' . $rowSurplus['percentage'];
+  $labelSurplus[] = $rowSurplus['intPurposeId'] . ' %' . $rowSurplus['percentage'];
     $dataSurplus[] = $rowSurplus['percentage'];
 }
 

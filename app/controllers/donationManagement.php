@@ -25,16 +25,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         $intDonationId = intval($_POST["donationId"]);
-        $strDonorName = sanitize($_POST["donor"]);
+        $strFullName = sanitize($_POST["donor"]);
         $dtmDate = sanitize($_POST["date"]);
-        $intFoodBankId = sanitize($_POST["foodBank"]);
-        $strTitle = sanitize($_POST["title"]);
+        $dtmExpirationDate = sanitize($_POST["expirationDate"]);
+        $intFoodBankDetailId = intval($_POST["foodBank"]);
         $strDescription = sanitize($_POST["description"]);
-        $strRemarks = sanitize($_POST["remarks"]);
-        $strItem = sanitize($_POST["itemFood"]);
+        $intPurposeId = intval($_POST["purpose"]);
+        $intItemId = intval($_POST["itemFood"]);
         $intQuantity = intval($_POST["quantity"]);
-        $strUnit = sanitize($_POST["unit"]);
-        $strCategory = sanitize($_POST["category"]);
+        $intUnitId = intval($_POST["unit"]);
+        $intCategoryId = intval($_POST["category"]);
         $ysnStatus = isset($_POST["transportStatus"]) ? 1 : 0;
         $strDocsUploadedPaths = isset($_POST["docsUploadedPaths"]) ? $_POST["docsUploadedPaths"] : "";
 
@@ -42,17 +42,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $donationData = [
             "intDonationId" => $intDonationId,
-            "strDonorName" => $strDonorName,
+            "strFullName" => $strFullName,
             "dtmDate" => $dtmDate,
-            "intFoodBankId" => $intFoodBankId,
-            "strTitle" => $strTitle,
+            "intFoodBankDetailId" => $intFoodBankDetailId,
             "strDescription" => $strDescription,
-            "strRemarks" => $strRemarks,
-            "strItem" => $strItem,
+            "intPurposeId" => $intPurposeId,
+            "intItemId" => $intItemId,
             "intQuantity" => $intQuantity,
-            "strUnit" => $strUnit,
-            "strCategory" => $strCategory,
+            "intUnitId" => $intUnitId,
+            "intCategoryId" => $intCategoryId,
             "ysnStatus" => $ysnStatus,
+            "dtmExpirationDate" => $dtmExpirationDate,
             "strDocFilePath" => $strDocFilePath ? implode(",", $strDocFilePath) : $strDocsUploadedPaths
         ];
 

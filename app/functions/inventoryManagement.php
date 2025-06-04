@@ -48,8 +48,8 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             $sql = "SELECT IV.intInventoryId 
             ,IV.intQuantity
             ,D.intDonationId
-            ,FB.intFoodBankId
-            ,FB.strMunicipality
+            ,FBD.intFoodBankDetailId
+            ,FBD.strFoodBankName
             ,I.intItemId
             ,I.strItem
             ,C.intCategoryId
@@ -59,7 +59,7 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             ,DATE_FORMAT(IV.dtmExpirationDate, '%M %d, %Y') AS dtmExpirationDate
             FROM tblinventory IV
             INNER JOIN tbldonationmanagement D ON IV.intDonationId = D.intDonationId
-            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
@@ -106,8 +106,8 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             $sql = "SELECT IV.intInventoryId 
             ,IV.intQuantity
             ,D.intDonationId
-            ,FB.intFoodBankId
-            ,FB.strMunicipality AS strMunicipality
+            ,FBD.intFoodBankDetailId
+            ,FBD.strFoodBankName
             ,I.intItemId
             ,I.strItem AS strItem
             ,C.intCategoryId
@@ -117,7 +117,7 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             ,DATE_FORMAT(IV.dtmExpirationDate, '%M %d, %Y') AS dtmExpirationDate
             FROM tblinventory IV
             INNER JOIN tbldonationmanagement D ON IV.intDonationId = D.intDonationId
-            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblfoodbank FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId

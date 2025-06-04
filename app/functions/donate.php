@@ -20,8 +20,12 @@ function getCategories($conn) {
 }
  
 function getFoodBanks($conn) {
-    $foodbanks = $conn->query("SELECT * FROM tblfoodbank");
+    $foodbanks = $conn->query("SELECT * FROM tblfoodbankdetail");
     return $foodbanks;
+}
+function getAllPurpose($conn) {
+    $allPurpose = $conn->query("SELECT * FROM tblpurpose");
+    return $allPurpose;
 }
  
 function processDocFileUpload($intUserId) {
@@ -30,15 +34,19 @@ function processDocFileUpload($intUserId) {
     if (empty($_FILES['verification']['name'][0])) {
         return;
     } else {
+        $isLocal = $_SERVER['HTTP_HOST'] === 'localhost' || str_contains($_SERVER['HTTP_HOST'], '127.0.0.1');
+        $basePath = $isLocal ? 'SagipPagkain' : '';
+        // $fileUrl = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $basePath . "/app/storage/documents/" . $uploadFileName;
+
         $targetDir = $_SERVER["DOCUMENT_ROOT"] 
-            . DIRECTORY_SEPARATOR . "SagipPagkain" 
+            . DIRECTORY_SEPARATOR . $basePath
             . DIRECTORY_SEPARATOR . "app" 
             . DIRECTORY_SEPARATOR . "storage" 
             . DIRECTORY_SEPARATOR . "media"
             . DIRECTORY_SEPARATOR . "donor/";
+
         $allowedTypes = [
-            'image/jpeg', // JPEG/JPG
-            'image/png' // PNG
+            'application/pdf'
         ];
  
         $uploadedFiles = [];
@@ -93,15 +101,14 @@ function addDonation($conn, $donationData) {
         $intUserId = $donationData["intUserId"];
         $strDonorName = $donationData["strDonorName"];
         $dtmDate = $donationData["dtmDate"];
-        $strTitle = $donationData["strTitle"];
         $strDescription = $donationData["strDescription"];
-        $intFoodBankId = $donationData["intFoodBankId"];
-        $strItem = $donationData["strItem"];
+        $intFoodBankDetailId = $donationData["intFoodBankDetailId"];
+        $intItemId = $donationData["intItemId"];
         $intQuantity = $donationData["intQuantity"];
-        $strCategory = $donationData["strCategory"];
-        $strUnit = $donationData["strUnit"];
+        $intCategoryId = $donationData["intCategoryId"];
+        $intUnitId = $donationData["intUnitId"];
         $strDocFilePath = $donationData["strDocFilePath"];
-        $strRemarks = $donationData["strRemarks"];
+        $intPurposeId = $donationData["intPurposeId"];
         $dtmExpirationDate = $donationData["dtmExpirationDate"];
  
         if (empty($dtmDate)) {
@@ -116,68 +123,35 @@ function addDonation($conn, $donationData) {
             exit();
         }
  
-        // Get Food Bank Name
-        $strFoodBankResult = $conn->query("SELECT strMunicipality FROM tblfoodbank WHERE intFoodBankId = '$intFoodBankId'");
-        $strMunicipality = $strFoodBankResult->fetch_object()->strMunicipality;
- 
         $conn->begin_transaction();
  
         try {
             // Insert donation
             $query1 = $conn->prepare("INSERT INTO tbldonationmanagement 
-                (intUserId, strDonorName, dtmDate, strTitle, strDescription, strMunicipality, strDocFilePath, strRemarks, dtmExpirationDate) VALUES (?,?,?,?,?,?,?,?,?)");
-            $query1->bind_param("issssssss"
+                (intUserId, dtmDate, strDescription, intFoodBankDetailId, strDocFilePath, intPurposeId, dtmExpirationDate) VALUES (?,?,?,?,?,?,?)");
+            $query1->bind_param("issisis"
                 ,$intUserId
-                ,$strDonorName
                 ,$dtmDate
-                ,$strTitle
                 ,$strDescription
-                ,$strMunicipality
+                ,$intFoodBankDetailId
                 ,$strDocFilePath
-                ,$strRemarks
+                ,$intPurposeId
                 ,$dtmExpirationDate
             );
  
             if (!$query1->execute()) {
-                http_response_code(500);
-                echo json_encode(["data" => ["message" => "Failed to add Donation".$query1->error]]);
-                exit();
+                throw new Exception("Failed to add Donation " . $query1->error, 500);
             }
  
             // Get the last inserted ID
             $intDonationId = $conn->insert_id;
  
-            // Get intItemId
-            $itemResult = $conn->query("SELECT intItemId FROM tblitem WHERE strItem = '$strItem'");
-            if ($itemResult->num_rows == 0) {
-                http_response_code(401);
-                echo json_encode(["data" => ["message" => "Invalid item selected"]]);
-                exit();
-            }
-            $intItemId = $itemResult->fetch_object()->intItemId;
-            // Get intCategoryId
-            $categoryResult = $conn->query("SELECT intCategoryId FROM tblcategory WHERE strCategory = '$strCategory'");
-            if ($categoryResult->num_rows == 0) {
-                http_response_code(401);
-                echo json_encode(["data" => ["message" => "Invalid category selected"]]);
-                exit();
-            }
-            $intCategoryId = $categoryResult->fetch_object()->intCategoryId;
-            // Get intUnitId
-            $unitResult = $conn->query("SELECT intUnitId FROM tblunit WHERE strUnit = '$strUnit'");
-            if ($unitResult->num_rows == 0) {
-                http_response_code(401);
-                echo json_encode(["data" => ["message" => "Invalid unit selected"]]);
-                exit();
-            }
-            $intUnitId = $unitResult->fetch_object()->intUnitId;
- 
             // Insert inventory
             $query2 = $conn->prepare("INSERT INTO tblinventory 
-                (intDonationId, intFoodBankId, intItemId, intCategoryId, intUnitId, intQuantity, dtmExpirationDate) VALUES (?,?,?,?,?,?,?)");
+                (intDonationId, intFoodBankDetailId, intItemId, intCategoryId, intUnitId, intQuantity, dtmExpirationDate) VALUES (?,?,?,?,?,?,?)");
             $query2->bind_param("iiiiiis"
                 ,$intDonationId
-                ,$intFoodBankId
+                ,$intFoodBankDetailId
                 ,$intItemId
                 ,$intCategoryId
                 ,$intUnitId
@@ -187,32 +161,34 @@ function addDonation($conn, $donationData) {
             $tbldonationmanagement = 'tblinventory';
             $query3 = $conn->prepare("INSERT INTO `tblnotification`(`intSourceId`, `strSourceTable`, `ysnSeen`) VALUES (?, ?, 0)");
             $query3->bind_param("is", $intDonationId, $tbldonationmanagement);
+            
             if (!$query3) {
-                die("Prepare failed: " . $conn->error);
+                throw new Exception("Database insert operation failed: " . $conn->error, 500);
             }
  
             $query3->bind_param("is", $intDonationId, $tbldonationmanagement);
  
             if (!$query3->execute()) {
-                die("Notification insert failed: " . $query3->error);
+                throw new Exception("Notification insert failed: " . $query3->error, 500);
             }
+
             if (!$query2->execute() && !$query3 -> execute()) {
-                http_response_code(500);
-                echo json_encode(["data" => ["message" => "Failed to add Inventory".$query2->error]]);
-                exit();
+                throw new Exception("Failed to add Inventory " . $query2->error, 500);
             }
  
             $conn->commit();
  
-            http_response_code(200);
-            echo json_encode(["data" => ["message" => "Donation sent successfully"]]);
+            http_response_code(201);
+            echo json_encode(["data" => ["message" => "Donation submitted successfully"]]);
  
             $query1->close();
             $query2->close();
-        } catch (Exception $e) {
+            $query3->close();
+        } catch (Exception $ex) {
             $conn->rollback();
-            http_response_code(500);
-            echo json_encode(["data" => ["message" => $e->getMessage()]]);
+            $code = $ex->getCode();
+            http_response_code($code);
+            echo json_encode(["data" => ["message" => $ex->getMessage()]]);
         }
     }
  

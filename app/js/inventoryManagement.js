@@ -75,7 +75,7 @@ function setTableData({ inventoryData }) {
             tdUnit.textContent = d.strUnit;
             tdCategory.textContent = d.strCategory;
             tdExpiDate.textContent = d.dtmExpirationDate;
-            tdFoodBank.textContent = d.strMunicipality;
+            tdFoodBank.textContent = d.strFoodBankName;
             tdTransfer.innerHTML = `<a href='javascript:void(0)' class="btn-transfer" title='Transfer Item' 
                 data-intInventoryId=${d.intInventoryId} 
                 data-intDonationId=${d.intDonationId} 

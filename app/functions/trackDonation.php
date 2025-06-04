@@ -4,7 +4,7 @@ function getAllTrackDonationData($conn) {
         SELECT TD.intTrackDonationId
         ,U.intUserId
         ,U.strFullName
-        ,FB.intFoodBankId
+        ,FBD.intFoodBankDetailId
         ,I.intItemId
         ,I.strItem
         ,TD.intQuantity
@@ -15,7 +15,7 @@ function getAllTrackDonationData($conn) {
         ,TD.strQRCode
         FROM tbltrackdonation TD
         INNER JOIN tbluser U ON TD.intUserId = U.intUserId
-        INNER JOIN tblfoodbank FB ON TD.intFoodBankId = FB.intFoodBankId
+        INNER JOIN tblfoodbankdetail FBD ON TD.intFoodBankDetailId = FBD.intFoodBankDetailId
         INNER JOIN tblitem I ON TD.intItemId = I.intItemId
         INNER JOIN tblunit UT ON TD.intUnitId = UT.intUnitId
         INNER JOIN tblbeneficiary B ON TD.intBeneficiaryId = B.intBeneficiaryId"
@@ -96,9 +96,9 @@ function getFoodBank($conn, $intUserId) {
     header("Content-Type: application/json");
 
     try {
-        $sql = "SELECT DISTINCT FB.intFoodBankId, FB.strMunicipality FROM tbldonationmanagement DM
+        $sql = "SELECT DISTINCT FBD.intFoodBankDetailId, FBD.strFoodBankName FROM tbldonationmanagement DM
             INNER JOIN tblinventory IV ON DM.intDonationId = IV.intDonationId
-            INNER JOIN tblfoodbank FB ON IV.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tblfoodbank FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             WHERE DM.intUserId = ?";
 
         $query = $conn->prepare($sql);
@@ -145,7 +145,7 @@ function getItem($conn, $intUserId, $intFoodBankId) {
         $sql = "SELECT DISTINCT IV.intItemId, I.strItem FROM tbldonationmanagement DM
             INNER JOIN tblinventory IV ON DM.intDonationId = IV.intDonationId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
-            WHERE DM.intUserId = ? AND IV.intFoodBankId = ?;";
+            WHERE DM.intUserId = ? AND IV.intFoodBankDetailId = ?;";
 
         $query = $conn->prepare($sql);
 
@@ -191,7 +191,7 @@ function getItemQuantity($conn, $intUserId, $intFoodBankId, $intItemId) {
         $sql = "SELECT SUM(IV.intQuantity) AS intQuantity, U.strUnit FROM tbldonationmanagement DM
             INNER JOIN tblinventory IV ON DM.intDonationId = IV.intDonationId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            WHERE DM.intUserId = ? AND IV.intFoodBankId = ? AND IV.intItemId = ?
+            WHERE DM.intUserId = ? AND IV.intFoodBankDetailId = ? AND IV.intItemId = ?
             GROUP BY IV.intItemId";
 
         $query = $conn->prepare($sql);
@@ -273,7 +273,7 @@ function saveTrackDonation($conn, $trackDonationData) {
                                     ELSE 0
                                 END
             WHERE DM.intUserId = ? 
-            AND IV.intFoodBankId = ? 
+            AND IV.intFoodBankDetailId = ? 
             AND IV.intItemId = ?
             AND IV.intQuantity > 0;
         ";

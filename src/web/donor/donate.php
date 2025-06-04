@@ -103,7 +103,7 @@ if (isset($_SESSION["intUserId"])) {
                   if ($foodBanks->num_rows > 0) {
                     while($foodBank = $foodBanks->fetch_object()) {
                     ?>
-                      <option value="<?php echo $foodBank->intFoodBankId; ?>"><?php echo $foodBank->strMunicipality; ?></option>
+                      <option value="<?php echo $foodBank->intFoodBankDetailId; ?>"><?php echo $foodBank->strFoodBankName; ?></option>
                     <?php
                     }
                   }
@@ -113,13 +113,13 @@ if (isset($_SESSION["intUserId"])) {
                   Food Bank is required
                 </div>
               </div>
-              <div class="col-md-4">
+              <!-- <div class="col-md-4">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" name="title" id="title" value="" required>
                 <div class="invalid-feedback">
                   Title is required
                 </div>
-              </div>
+              </div> -->
               <div class="col-md-4">
                 <label for="description" class="form-label">Description</label>
                 <input type="text" class="form-control" name="description" id="description" value="" required>
@@ -128,24 +128,34 @@ if (isset($_SESSION["intUserId"])) {
                 </div>
               </div>
               <div class="col-md-4">
-                <label for="remarks" class="form-label">Remarks</label>
-                <input type="text" class="form-control" name="remarks" id="remarks" value="">
-              </div>
-              <div class="col-md-3">
-                <label for="item" class="form-label">Item</label>
-                <input class="form-control" list="itemOptions" name="item" id="item" placeholder="Select Item" required>
-                <datalist id="itemOptions">
+                <label for="remarks" class="form-label">Purpose</label>
+                <select class="form-select" name="purpose" id="purpose">
                   <?php
-                    $items = getItems($conn);
-                    if ($items->num_rows > 0) {
-                      while($item = $items->fetch_object()) {
+                    $allPurpose = getAllPurpose($conn);
+                    if ($allPurpose->num_rows > 0) {
+                      while($purpose = $allPurpose->fetch_object()) {
                       ?>
-                        <option value="<?php echo $item->strItem; ?>">
+                        <option value="<?php echo $purpose->intPurposeId; ?>"><?php echo $purpose->strPurpose; ?></option>
                       <?php
                       }
                     }
                   ?>
-                </datalist>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="item" class="form-label">Item</label>
+                <select class="form-select" name="item" id="item">
+                  <?php
+                    $allItems = getItems($conn);
+                    if ($allItems->num_rows > 0) {
+                      while($item = $allItems->fetch_object()) {
+                      ?>
+                        <option value="<?php echo $item->intItemId; ?>"><?php echo $item->strItem; ?></option>
+                      <?php
+                      }
+                    }
+                  ?>
+                </select>
                 <div class="invalid-feedback">
                   Item is required
                 </div>
@@ -159,38 +169,36 @@ if (isset($_SESSION["intUserId"])) {
               </div>
               <div class="col-md-3">
                 <label for="unit" class="form-label">Unit</label>
-                <input class="form-control" list="unitOptions" name="unit" id="unit" placeholder="Select Unit" required>
-                <datalist id="unitOptions">
+                <select class="form-select" name="unit" id="unit">
                   <?php
                     $units = getUnits($conn);
                     if ($units->num_rows > 0) {
                       while($unit = $units->fetch_object()) {
                       ?>
-                        <option value="<?php echo $unit->strUnit; ?>">
+                        <option value="<?php echo $unit->intUnitId; ?>"><?php echo $unit->strUnit; ?></option>
                       <?php
                       }
                     }
-                  ?>
-                </datalist>
+                    ?>
+                </select>
                 <div class="invalid-feedback">
                   Unit is required
                 </div>
               </div>
               <div class="col-md-3">
                 <label for="category" class="form-label">Category</label>
-                <input class="form-control" list="categoryOptions" name="category" id="category" placeholder="Select Item Category" required>
-                <datalist id="categoryOptions">
+                <select class="form-select" name="category" id="category">
                   <?php
                     $categories = getCategories($conn);
                     if ($categories->num_rows > 0) {
                       while($category = $categories->fetch_object()) {
-                      ?>
-                        <option value="<?php echo $category->strCategory; ?>">
-                      <?php
+                        ?>
+                          <option value="<?php echo $category->intCategoryId; ?>"><?php echo $category->strCategory; ?></option>
+                        <?php
                       }
                     }
                   ?>
-                </datalist>
+                  </select>
                 <div class="invalid-feedback">
                   Category is required
                 </div>
@@ -204,8 +212,8 @@ if (isset($_SESSION["intUserId"])) {
               </div>
              
               <div class="col-md-4">
-                <label for="" class="form-label">Upload Document (JPG/PNG Max: 5MB)</label>
-                <input type="file" class="form-control" name="verification[]" id="verification" accept="image/*" multiple>
+                <label for="" class="form-label">Upload Document (PDF)</label>
+                <input type="file" class="form-control" name="verification[]" id="verification" accept="application/pdf" multiple>
                 <!-- <div class="invalid-feedback">
                   Document is required
                 </div> -->

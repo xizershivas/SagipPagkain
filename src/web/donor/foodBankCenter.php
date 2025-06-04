@@ -82,7 +82,7 @@ $foodBankQuery = "SELECT fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude,
                   SUM(i.intQuantity) as totalStock
                   FROM tblfoodbank fb
                   LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodBankId
-                  LEFT JOIN tblinventory i ON fb.intFoodBankId = i.intFoodBankId
+                  LEFT JOIN tblinventory i ON fbd.intFoodBankDetailId = i.intFoodBankDetailId
                   GROUP BY fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 
@@ -94,7 +94,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     FROM tblinventory i 
     JOIN tblitem it ON i.intItemId = it.intItemId 
     JOIN tblunit u ON i.intUnitId = u.intUnitId 
-    WHERE i.intFoodBankId = " . $row['intFoodBankId'] . "
+    WHERE i.intFoodBankDetailId = " . $row['intFoodBankId'] . "
     GROUP BY  it.strItem, u.strUnit";
 
 

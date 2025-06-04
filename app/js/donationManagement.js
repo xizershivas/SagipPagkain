@@ -95,16 +95,16 @@ function statusChange() {
 
 function setFormData({ data }) {
     docsUploaded = data;
-    frmDonation.elements.donor.value = data.strDonorName;
+    frmDonation.elements.donor.value = data.strFullName;
     frmDonation.elements.date.value = data.dtmDate;
-    frmDonation.elements.title.value = data.strTitle;
+    frmDonation.elements.expirationDate.value = data.dtmExpirationDate;
     frmDonation.elements.description.value = data.strDescription;
-    frmDonation.elements.foodBank.value = data.intFoodBankId;
-    frmDonation.elements.itemFood.value = data.strItem;
+    frmDonation.elements.foodBank.value = data.intFoodBankDetailId;
+    frmDonation.elements.itemFood.value = data.intItemId;
     frmDonation.elements.quantity.value = data.intQuantity;
-    frmDonation.elements.unit.value = data.strUnit;
-    frmDonation.elements.category.value = data.strCategory;
-    frmDonation.elements.remarks.value = data.strRemarks;
+    frmDonation.elements.unit.value = data.intUnitId;
+    frmDonation.elements.category.value = data.intCategoryId;
+    frmDonation.elements.purpose.value = data.intPurposeId;
     frmDonation.elements.transportStatus.checked = data.ysnStatus ? true : false;
     labelTransportStatus.innerHTML = (data.ysnStatus == 0) ? 'Status <span class="ysn-in-transit">In Transit</span>' 
         : (data.ysnStatus == 1 ? 'Status <span class="ysn-received">Received</span>' : 'Status <span class="ysn-delivered">Delivered</span>');
@@ -149,7 +149,7 @@ function updateDonation(e) {
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4) {
                 const response = JSON.parse(this.responseText);
-                if (this.status == 200) {
+                if (this.status == 200 || this.status == 201 || this.status == 202) {
                     alert(response.data.message);
                     window.location.reload();
                 } else {

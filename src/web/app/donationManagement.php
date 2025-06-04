@@ -163,7 +163,7 @@ if (isset($_SESSION["intUserId"])) {
                           if ($foodBanks->num_rows > 0) {
                             while($foodBank = $foodBanks->fetch_object()) {
                             ?>
-                              <option value="<?php echo $foodBank->intFoodBankId; ?>"><?php echo $foodBank->strMunicipality; ?></option>
+                              <option value="<?php echo $foodBank->intFoodBankDetailId; ?>"><?php echo $foodBank->strFoodBankName; ?></option>
                             <?php
                             }
                           }
@@ -175,13 +175,13 @@ if (isset($_SESSION["intUserId"])) {
                       </div>
                     </div>
                     <div class="row g-3">
-                      <div class="mb-3 col col-md-4">
+                      <!-- <div class="mb-3 col col-md-4">
                         <label for="title" class="form-label fw-bold">Title</label>
                         <input type="text" class="form-control" name="title" id="title" required>
                         <div class="invalid-feedback">
                           Title is required
                         </div>
-                      </div>
+                      </div> -->
                       <div class="mb-3 col col-md-4">
                         <label for="description" class="form-label fw-bold">Description</label>
                         <input type="text" class="form-control" name="description" id="description" required>
@@ -190,30 +190,36 @@ if (isset($_SESSION["intUserId"])) {
                         </div>
                       </div>
                       <div class="mb-3 col col-md-4">
-                        <label for="remarks" class="form-label fw-bold">Notes</label>
-                        <input type="text" class="form-control" name="remarks" id="remarks">
-                      </div>
-                    </div>
-                    <div class="row g-3">
-                      <div class="mb-3 col col-md-4">
-                        <label for="itemFood" class="form-label fw-bold">Item</label>
-                        <input class="form-control" list="itemOptions" name="itemFood" id="itemFood" placeholder="Select Item" required>
-                        <datalist id="itemOptions">
+                        <label for="purpose" class="form-label fw-bold">Purpose</label>
+                        <select class="form-select" name="purpose" id="purpose">
                           <?php
-                            $items = getItems($conn);
-                            if ($items->num_rows > 0) {
-                              while($item = $items->fetch_object()) {
+                            $allPurpose = getPurpose($conn);
+                            while($purpose = $allPurpose->fetch_object()) {
                               ?>
-                                <option value="<?php echo $item->strItem; ?>">
+                                <option value="<?= $purpose->intPurposeId ?>"><?= $purpose->strPurpose ?></option>
                               <?php
-                              }
                             }
                           ?>
-                        </datalist>
+                        </select>
+                      </div>
+                      <div class="mb-3 col col-md-4">
+                        <label for="itemFood" class="form-label fw-bold">Item</label>
+                        <select class="form-select" name="itemFood" id="itemFood">
+                          <?php
+                            $allItems = getItems($conn);
+                            while($item = $allItems->fetch_object()) {
+                              ?>
+                                <option value="<?= $item->intItemId ?>"><?= $item->strItem ?></option>
+                              <?php
+                            }
+                          ?>
+                        </select>
                         <div class="invalid-feedback">
                           Item is required
                         </div>
                       </div>
+                    </div>
+                    <div class="row g-3">
                       <div class="mb-3 col col-md-4">
                         <label class="form-label fw-bold" for="quantity">Quantity</label>
                         <input class="form-control" type="number" name="quantity" id="quantity" min="1" required>
@@ -223,47 +229,48 @@ if (isset($_SESSION["intUserId"])) {
                       </div>
                       <div class="mb-3 col col-md-4">
                         <label for="unit" class="form-label fw-bold">Unit</label>
-                        <input class="form-control" list="unitOptions" name="unit" id="unit" placeholder="Select Unit" required>
-                        <datalist id="unitOptions">
+                        <select class="form-select" name="unit" id="unit">
                           <?php
-                            $units = getUnits($conn);
-                            if ($units->num_rows > 0) {
-                              while($unit = $units->fetch_object()) {
+                            $allUnits = getUnits($conn);
+                            while($unit = $allUnits->fetch_object()) {
                               ?>
-                                <option value="<?php echo $unit->strUnit; ?>">
+                                <option value="<?= $unit->intUnitId ?>"><?= $unit->strUnit ?></option>
                               <?php
-                              }
                             }
                           ?>
-                        </datalist>
+                        </select>
                         <div class="invalid-feedback">
                           Unit is required
+                        </div>
+                      </div>
+                      <div class="mb-2 col col-md-4">
+                        <label for="category" class="form-label fw-bold">Category</label>
+                        <select class="form-select" name="category" id="category">
+                          <?php
+                            $allCategories = getCategories($conn);
+                            while($category = $allCategories->fetch_object()) {
+                              ?>
+                                <option value="<?= $category->intCategoryId ?>"><?= $category->strCategory ?></option>
+                              <?php
+                            }
+                          ?>
+                        </select>
+                        <div class="invalid-feedback">
+                          Category is required
                         </div>
                       </div>
                     </div>
                     <div class="row g-3">
                       <div class="mb-2 col col-md-4">
-                        <label for="category" class="form-label fw-bold">Category</label>
-                        <input class="form-control" list="categoryOptions" name="category" id="category" placeholder="Select Item Category" required>
-                        <datalist id="categoryOptions">
-                          <?php
-                            $categories = getCategories($conn);
-                            if ($categories->num_rows > 0) {
-                              while($category = $categories->fetch_object()) {
-                              ?>
-                                <option value="<?php echo $category->strCategory; ?>">
-                              <?php
-                              }
-                            }
-                          ?>
-                        </datalist>
-                        <div class="invalid-feedback">
-                          Category is required
-                        </div>
+                        <label for="" class="form-label fw-bold">Verification</label> <span>(PDF)</span><br>
+                        <input type="file" class="form-control" name="verification[]" id="verification" accept="application/pdf" multiple>
                       </div>
-                      <div class="mb-2 col col-md-4">
-                        <label for="" class="form-label fw-bold">Verification</label> <span>(JPG/PNG)</span><br>
-                        <input type="file" class="form-control" name="verification[]" id="verification" accept="image/*" multiple>
+                      <div class="mb-3 col col-md-4">
+                        <label for="expirationDate" class="form-label fw-bold">Expiration Date</label>
+                        <input type="date" class="form-control" name="expirationDate" id="expirationDate" required>
+                        <div class="invalid-feedback">
+                          Date is required
+                        </div>
                       </div>
                       <div class="mb-2">
                       <div class="form-check form-switch col col-md-4 mb-2">
@@ -300,7 +307,6 @@ if (isset($_SESSION["intUserId"])) {
                   <th scope="col">Donor</th>
                   <th scope="col">Date</th>
                   <th class="text-nowrap" scope="col">Food Bank</th>
-                  <th scope="col">Title</th>
                   <th scope="col">Description</th>
                   <th scope="col">Item</th>
                   <th scope="col">Quantity</th>
@@ -308,7 +314,7 @@ if (isset($_SESSION["intUserId"])) {
                   <th scope="col">Category</th>
                   <th scope="col">Verification</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Remarks</th>
+                  <th scope="col">Purpose</th>
                   <th scope="col" colspan="2">Action</th>
                 </tr>
               </thead>
@@ -320,10 +326,9 @@ if (isset($_SESSION["intUserId"])) {
                     while ($data = $allDonationData->fetch_object()) { 
                       ?>
                         <tr>
-                            <td><?php echo $data->strDonorName; ?></td>
+                            <td><?php echo $data->strFullName; ?></td>
                             <td class="text-nowrap"><?php echo $data->dtmDate; ?></td>
-                            <td><?php echo $data->strMunicipality; ?></td>
-                            <td><?php echo $data->strTitle; ?></td>
+                            <td><?php echo $data->strFoodBankName; ?></td>
                             <td><?php echo $data->strDescription; ?></td>
                             <td><?php echo $data->strItem; ?></td>
                             <td><?php echo $data->intQuantity; ?></td>
@@ -346,7 +351,7 @@ if (isset($_SESSION["intUserId"])) {
                                 : "<span class='ysn-delivered'>Delivered</span>");
                               ?>
                             </td>
-                            <td><?php echo $data->strRemarks; ?></td>
+                            <td><?php echo $data->strPurpose; ?></td>
                             <td>
                                 <a class="btn-edit-donation" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
                                   href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
