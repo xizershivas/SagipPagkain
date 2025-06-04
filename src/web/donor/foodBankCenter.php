@@ -77,13 +77,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
   
 // Get food bank data with item counts
-$foodBankQuery = "SELECT fb.intFoodBankId, fb.strMunicipality, fbd.strFoodBankName, fbd.strAddress,
+$foodBankQuery = "SELECT fb.intFoodBankId, fb.strMunicipality, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
                   COUNT(DISTINCT i.intItemId) as itemCount,
                   SUM(i.intQuantity) as totalStock
                   FROM tblfoodbank fb
-                  INNER JOIN tblfoodbankdetail fbd ON fb.intFoodBankId = fbd.intFoodBankId
+				          LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodbankDetailId
                   LEFT JOIN tblinventory i ON fb.intFoodBankId = i.intFoodBankId
-                  GROUP BY fb.intFoodBankId, fb.strMunicipality";
+                  GROUP BY fb.intFoodBankId, fb.strMunicipality, fbd.dblLatitude, fbd.dblLongitude";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 
 $foodBanks = array();
