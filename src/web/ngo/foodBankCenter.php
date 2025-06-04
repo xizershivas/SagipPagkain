@@ -76,15 +76,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = "Could not get coordinates for the address.";
     }
 }
-  
-// Get food bank data with item counts
-$foodBankQuery = "SELECT fb.intFoodBankId, fb.strMunicipality, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
-                  COUNT(DISTINCT i.intItemId) as itemCount,
-                  SUM(i.intQuantity) as totalStock
-                  FROM tblfoodbank fb
-				          LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodbankDetailId
-                  LEFT JOIN tblinventory i ON fb.intFoodBankId = i.intFoodBankId
-                  GROUP BY fb.intFoodBankId, fb.strMunicipality, fbd.dblLatitude, fbd.dblLongitude";
+$userId = $_SESSION["intUserId"];
+$foodBankQuery = "
+    SELECT fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
+           COUNT(DISTINCT i.intItemId) AS itemCount,
+           SUM(i.intQuantity) AS totalStock
+    FROM tblfoodbank fb
+    LEFT JOIN tblfoodbankdetail fbd ON fb.intFoodBankId = fbd.intFoodBankId
+    LEFT JOIN tblinventory i ON fb.intFoodBankId = i.intFoodBankId
+    LEFT JOIN tbluser tu ON fb.intFoodBankId = tu.intFoodbankId
+    WHERE tu.intUserId = '$userId'
+    GROUP BY fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 
 $foodBanks = array();
@@ -113,7 +115,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     
     $foodBanks[] = array(
         'id' => $row['intFoodBankId'],
-        'name' => $row['strMunicipality'],
+        'name' => $row['strFoodBankName'],
         'lat' => $row['dblLatitude'],
         'lng' => $row['dblLongitude'],
         'address' => $row['strAddress'],
@@ -168,6 +170,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
           <ol>
             <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Food Bank'; ?></li>
             <li><a href="foodBankCenter.php">Food Bank Center</a></li>
+             
           </ol>
         </div>
       </nav>
