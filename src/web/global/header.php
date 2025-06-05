@@ -38,13 +38,26 @@ ob_end_flush();
       $unreadCount = 0;
       if (isset($_SESSION["intUserId"])) {
         $stmt = $conn->prepare("
-          SELECT TN.intNotificationId, TI.strItem, TFBD.strFoodBankName 
-        FROM tblnotification TN
-        INNER JOIN tblinventory TINV ON TN.intSourceId = TINV.intDonationId
-        INNER JOIN tblitem TI ON TINV.intItemId = TI.intItemId
-        INNER JOIN tblfoodbankdetail TFBD ON TINV.intFoodBankDetailId = TFBD.intFoodBankDetailId
-        WHERE TN.ysnSeen = 0 AND TN.strSourceTable = 'tblinventory'
-        ORDER BY TN.dtmCreatedDate DESC LIMIT 5;");
+         SELECT TN.intNotificationId, TI.strItem, TFBD.strFoodBankName, TU.strFullName
+         FROM tblnotification TN
+         INNER JOIN tblinventory TINV ON TN.intSourceId = TINV.intDonationId
+         INNER JOIN tblitem TI ON TINV.intItemId = TI.intItemId
+         INNER JOIN tblfoodbankdetail TFBD ON TINV.intFoodBankDetailId = TFBD.intFoodBankDetailId
+         INNER JOIN tbldonationmanagement TDM ON TINV.intDonationId = TDM.intDonationId 
+         INNER JOIN tbluser TU ON TDM.intUserId = TU.intUserId
+         WHERE TN.ysnSeen = 0 AND TN.strSourceTable = 'tblinventory'
+
+        UNION
+
+        SELECT TN.intNotificationId, NULL AS strItem, TFBD.strFoodBankName, TU.strFullName 
+         FROM tblnotification TN
+         INNER JOIN tblbeneficiaryrequest TBR ON TN.intSourceId = TBR.intBeneficiaryRequestId
+         INNER JOIN tblfoodbankdetail TFBD ON TBR.intFoodBankDetailId = TFBD.intFoodBankDetailId
+         INNER JOIN tbluser TU ON TBR.intBeneficiaryId = TU.intUserId
+         INNER JOIN tblbeneficiaryrequestdetail TBRD ON TBR.intBeneficiaryRequestId = TBRD.intBeneficiaryRequestId
+         INNER JOIN tblitem TI ON TBRD.intItemId = TI.intItemId
+         WHERE TN.ysnSeen = 0 AND TN.strSourceTable = 'tblbeneficiaryrequest'
+         ORDER BY intNotificationId DESC LIMIT 5;");
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -80,8 +93,13 @@ ob_end_flush();
                 <a href="#" class="dropdown-item text-wrap show-notif-modal"
                    data-foodbank="<?= htmlspecialchars($notif['strFoodBankName']) ?>"
                    data-id="<?= htmlspecialchars($notif['intNotificationId']) ?>"
+                   data-fullname="<?= htmlspecialchars($notif['strFullName'] ?? '') ?>"
                    data-item="<?= htmlspecialchars($notif['strItem']) ?>">
-                  On <b><?= htmlspecialchars($notif['strFoodBankName']) ?></b> </b> someone donated <b><?= htmlspecialchars($notif['strItem']) ?></b>.
+                  <?php if (!is_null($notif['strItem'])): ?>
+                    On <b><?= htmlspecialchars($notif['strFoodBankName']) ?></b>, <b><?= htmlspecialchars($notif['strFullName']) ?></b> donated <b><?= htmlspecialchars($notif['strItem']) ?></b>.
+                  <?php else: ?>
+                    A new beneficiary request was made by  <b><?= htmlspecialchars($notif['strFullName']) ?></b> on <b><?= htmlspecialchars($notif['strFoodBankName']) ?></b>.
+                  <?php endif; ?>
                 </a>
               </li>
             <?php endforeach; ?>
@@ -112,7 +130,7 @@ ob_end_flush();
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-black">
       <div class="modal-header">
-        <h5 class="modal-title text-black" id="notificationModalLabel">Donation Details</h5>
+        <h5 class="modal-title text-black" id="notificationModalLabel">Notification Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="notificationModalBody">
@@ -123,7 +141,7 @@ ob_end_flush();
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
   const notifLinks = document.querySelectorAll('.show-notif-modal');
   const modalBody = document.getElementById('notificationModalBody');
 
@@ -134,6 +152,7 @@ ob_end_flush();
       const foodbank = this.dataset.foodbank;
       const item = this.dataset.item;
       const notifId = this.dataset.id;
+      const fullName = this.dataset.fullname;
 
       // Update notification as seen via AJAX
       fetch('../../../app/functions/update_notification.php', {
@@ -149,15 +168,22 @@ ob_end_flush();
           }
         });
 
-      modalBody.innerHTML = `
-        <p><strong>Food Bank:</strong> ${foodbank}</p>
-        <p><strong>Item Donated:</strong> ${item}</p>
-      `;
+      if (item && item !== "null") {
+        modalBody.innerHTML = `
+          <p><strong>Food Bank:</strong> ${foodbank}</p>
+          <p><strong>Item Donated:</strong> ${item}</p>
+        `;
+      } else {
+        modalBody.innerHTML = `
+          <p><strong>Food Bank:</strong> ${foodbank}</p>
+          <p><strong>Beneficiary Name:</strong> ${fullName}</p>
+          <p><strong>New Beneficiary Request</strong> was received.</p>
+        `;
+      }
 
       const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
       modal.show();
     });
   });
 });
-
 </script>
