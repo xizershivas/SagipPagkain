@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pickupDate = $_POST['pickupDate'];
     $description = sanitize($_POST['description']);
     $purpose = sanitize($_POST['purpose']);
-
+    $foodbankId = intval($_POST['foodbankId']);
     $uploadFilePath = uploadRequestDocument($beneficiaryId);
 
     $requestData = [
@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'pickupDate' => $pickupDate,
         'document' => $uploadFilePath,
         'description' => $description,
-        'purpose' => $purpose
+        'purpose' => $purpose,
+        'foodbankId'=> $foodbankId
     ];
 
     submitBeneficiaryRequest($conn, $requestData);

@@ -94,14 +94,14 @@ function submitBeneficiaryRequest($conn, $requestData) {
     $strDocument = $requestData['document'];
     $strDescription = $requestData['description'];
     $intPurposeId = $requestData['purpose'];
- 
+    $foodbankId = $requestData['foodbankId'];
     $conn->begin_transaction();
  
     try {
-        $sql1 = "INSERT INTO tblbeneficiaryrequest (intBeneficiaryId, strRequestType, strUrgencyLevel, dtmPickupDate, strDocument, strDescription, intPurposeId) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        $sql1 = "INSERT INTO tblbeneficiaryrequest (intBeneficiaryId, strRequestType, strUrgencyLevel, dtmPickupDate, strDocument, strDescription, intPurposeId, intFoodBankDetailId) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt1 = $conn->prepare($sql1);
         if (!$stmt1) throw new Exception("Database operation failed", 500);
-        $stmt1->bind_param("isssssi", $intBeneficiaryId, $strRequestType, $strUrgencyLevel, $dtmPickupDate, $strDocument, $strDescription, $intPurposeId);
+        $stmt1->bind_param("isssssii", $intBeneficiaryId, $strRequestType, $strUrgencyLevel, $dtmPickupDate, $strDocument, $strDescription, $intPurposeId, $foodbankId);
  
         if ($stmt1->execute()) {
             $lastInsertId = $conn->insert_id;

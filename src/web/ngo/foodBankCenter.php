@@ -123,6 +123,8 @@ $foodBankQuery = "SELECT fb.intFoodBankId, fbd.intFoodBankDetailId, fbd.strFoodB
                   FROM tblfoodbank fb
                   LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodBankId
                   LEFT JOIN tblinventory i ON fbd.intFoodBankDetailId = i.intFoodBankDetailId
+                  LEFT JOIN tbluser U ON fb.intFoodBankId = U.intFoodbankId
+				  WHERE fb.intFoodBankId = U.intFoodbankId
                   GROUP BY fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 

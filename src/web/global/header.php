@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include "../../../app/functions/profile.php";
 $userInfo = null;
 
@@ -6,6 +7,7 @@ if (isset($_SESSION["intUserId"])) {
   $userData = getUser($conn, $_SESSION["intUserId"]);
   $userInfo = $userData->fetch_object();
 }
+ob_end_flush();
 ?>
 
 <header id="header" class="header d-flex fixed-top">

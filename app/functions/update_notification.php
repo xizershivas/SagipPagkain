@@ -1,6 +1,6 @@
 <?php
 include "../config/db_connection.php"; 
-
+ob_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $notificationId = $_POST['notification_id'] ?? null;
 
@@ -15,4 +15,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 echo json_encode(["success" => false]);
+ob_end_flush();
 ?>
