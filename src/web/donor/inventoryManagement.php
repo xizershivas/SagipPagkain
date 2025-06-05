@@ -92,7 +92,7 @@ include "../../../app/functions/inventoryTransfer.php";
                           <option value="strCategory" selected>Category</option>
                           <option value="strItem">Item</option>
                           <option value="strUnit">Unit</option>
-                          <option value="strMunicipality">Food Bank</option>
+                          <option value="strFoodBankName">Food Bank</option>
                         </select>
                       </div>
 
@@ -120,7 +120,7 @@ include "../../../app/functions/inventoryTransfer.php";
                   <th scope="col">Quantity</th>
                   <th scope="col">Unit</th>
                   <th scope="col">Category</th>
-		          <th scope="col">Expiration Date</th>
+		              <th scope="col">Expiration Date</th>
                   <th scope="col">Food Bank</th>
                   <th scope="col">Action</th>
                 </tr>
@@ -180,7 +180,7 @@ include "../../../app/functions/inventoryTransfer.php";
 
                   while($row = $sourceFoodBankData->fetch_object()) {
                     ?>
-                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strMunicipality; ?></option>
+                    <option value="<?= $row->intFoodBankDetailId; ?>"><?= $row->strFoodBankName; ?></option>
                     <?php
                   }
                 ?>
@@ -195,7 +195,7 @@ include "../../../app/functions/inventoryTransfer.php";
 
                   while($row = $allFoodBanks->fetch_object()) {
                     ?>
-                    <option value="<?= $row->intFoodBankId; ?>"><?= $row->strMunicipality; ?></option>
+                    <option value="<?= $row->intFoodBankDetailId; ?>"><?= $row->strFoodBankName; ?></option>
                     <?php
                   }
                 ?>
@@ -318,7 +318,7 @@ include "../../../app/functions/inventoryTransfer.php";
 
             // Add new column header with remove button
             let th = document.createElement("th");
-            th.innerHTML = `${columnName} <button class="remove-btn" onclick="removeColumn(${colCount})">�</button>`;
+            th.innerHTML = `${columnName} <button class="remove-btn" onclick="removeColumn(${colCount})">×</button>`;
             tableHead.appendChild(th);
 
             // Add new column cells to each row

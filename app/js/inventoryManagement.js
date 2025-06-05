@@ -79,7 +79,7 @@ function setTableData({ inventoryData }) {
             tdTransfer.innerHTML = `<a href='javascript:void(0)' class="btn-transfer" title='Transfer Item' 
                 data-intInventoryId=${d.intInventoryId} 
                 data-intDonationId=${d.intDonationId} 
-                data-intFoodBankId=${d.intFoodBankId} 
+                data-intFoodBankDetailId=${d.intFoodBankDetailId} 
                 data-intItemId=${d.intItemId} 
                 data-intQuantity=${d.intQuantity} 
                 data-intUnitId=${d.intUnitId} 
@@ -178,7 +178,7 @@ function setInventoryTransferData(e) {
     const {
         intinventoryid,
         intdonationid,
-        intfoodbankid,
+        intfoodbankdetailid,
         intitemid,
         intquantity,
         intunitid,
@@ -193,7 +193,7 @@ function setInventoryTransferData(e) {
 
     donationId.value = intdonationid;
     inventoryId.value = intinventoryid;
-    sourceFoodBankSelect.value = intfoodbankid;
+    sourceFoodBankSelect.value = intfoodbankdetailid;
     itemSelect.value = intitemid;
     availableQty.value = intquantity;
     unitSelect.value = intunitid;

@@ -9,7 +9,7 @@ function getAllBeneficiaryRequests($conn) {
                 ON BR.intBeneficiaryId = B.intBeneficiaryId
             INNER JOIN tblpurpose P
                 ON BR.intPurposeId = P.intPurposeId
-            WHERE BR.intApproved = 0 AND BR.ysnSubmitted = 1
+            WHERE (BR.intApproved = 0 OR BR.intApproved = 1) AND BR.ysnSubmitted = 1
         ";
 
     $allBeneficiaryRequests = $conn->query($sql);

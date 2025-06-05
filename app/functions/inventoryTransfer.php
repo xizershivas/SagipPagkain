@@ -1,13 +1,13 @@
 <?php
 function getSourceFoodBanks($conn) {
     $sourceFoodBankData = $conn->query("SELECT DISTINCT IV.intFoodBankDetailId, FBD.strFoodBankName FROM tblinventory IV
-        INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
-    ");
+        INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId");
     return $sourceFoodBankData;
 }
 
 function getAllFoodBanks($conn) {
-    $allFoodBanks = $conn->query("SELECT * FROM tblfoodbank");
+    $allFoodBanks = $conn->query("SELECT DISTINCT IV.intFoodBankDetailId, FBD.strFoodBankName FROM tblinventory IV
+        INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId");
     return $allFoodBanks;
 }
 
@@ -144,9 +144,9 @@ function processInventoryTransfer($conn, $data) {
 
         // Add to target inventory
         // First, check if an entry exists for the target food bank
-        $checkSql = "SELECT intFoodBankId, intItemId, dtmExpirationDate, COUNT(*) AS intRecordCount FROM tblinventory 
-                     WHERE intFoodBankId = ? AND intItemId = ? AND dtmExpirationDate = ?
-                     GROUP BY intFoodBankId, intItemId, dtmExpirationDate";
+        $checkSql = "SELECT intFoodBankDetailId, intItemId, dtmExpirationDate, COUNT(*) AS intRecordCount FROM tblinventory 
+                     WHERE intFoodBankDetailId = ? AND intItemId = ? AND dtmExpirationDate = ?
+                     GROUP BY intFoodBankDetailId, intItemId, dtmExpirationDate";
         $checkStmt = $conn->prepare($checkSql);
 
         if (!$checkStmt) {
@@ -161,7 +161,7 @@ function processInventoryTransfer($conn, $data) {
             // Entry exists, update it
             $updateSql = "UPDATE tblinventory 
                           SET intQuantity = intQuantity + ? 
-                          WHERE intFoodBankId = ? AND intItemId = ? AND dtmExpirationDate = ?";
+                          WHERE intFoodBankDetailId = ? AND intItemId = ? AND dtmExpirationDate = ?";
             $updateStmt = $conn->prepare($updateSql);
 
             if (!$updateStmt) {
@@ -175,7 +175,7 @@ function processInventoryTransfer($conn, $data) {
             }
         } else {
             // Entry does not exist, insert it
-            $insertSql = "INSERT INTO tblinventory (intDonationId, intFoodBankId, intItemId, intCategoryId, intUnitId, intQuantity, dtmExpirationDate) 
+            $insertSql = "INSERT INTO tblinventory (intDonationId, intFoodBankDetailId, intItemId, intCategoryId, intUnitId, intQuantity, dtmExpirationDate) 
                           VALUES (?, ?, ?, ?, ?, ?, ?)";
             $insertStmt = $conn->prepare($insertSql);
             
