@@ -8,9 +8,9 @@ if (isset($_SESSION["intUserId"])) {
 }
 ?>
 
-<header id="header" class="header d-flex align-items-center fixed-top">
-  <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
-    <a href="../../../index.php" class="logo d-flex align-items-center me-auto me-xl-0">
+<header id="header" class="header d-flex fixed-top">
+  <div class="container-fluid position-relative d-flex justify-content-between">
+    <a href="../../../index.php" class="logo d-flex me-auto me-xl-0">
       <img src="../../../assets/img/sagiplogo.png" alt="Sagip Logo" oncontextmenu="return false;" draggable="false">
       <div>
         <h2 class="sitename" style="padding-left: 10px;"><b>SAGIP</b><span>.</span></h2>

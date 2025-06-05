@@ -59,7 +59,7 @@ if (isset($_SESSION["intUserId"])) {
         <div class="container-fluid">
           <ol>
             <li class="current">Beneficiary</li>
-            <li><a href="assistanceRequest.php">Submit Assistance Request</a></li>
+            <li><a href="assistanceRequest.php">Request for Assistance</a></li>
           </ol>
         </div>
       </nav>

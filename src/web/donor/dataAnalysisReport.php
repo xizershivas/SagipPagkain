@@ -59,28 +59,19 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
   <?php include '../global/header.php'; ?>
 
 <main class="main">
-  <div class="page-title" data-aos="fade">
-    <nav class="breadcrumbs">
-      <div class="container-fluid">
-        <ol>
-          <li class="current">Admin</li>
-          <li><a href="dataAnalysisReport.php">Data Analysis And Reporting</a></li>
-        </ol>
-      </div>
-    </nav>
-  </div>
-     <div class="page-title" data-aos="fade">
-      <div class="heading">
+    <!-- Page Title -->
+    <div class="page-title" data-aos="fade">
+        <div class="heading">
 
-      </div>
-      <nav class="breadcrumbs">
-        <div class="container-fluid">
-          <ol>
-            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Donor'; ?></li>
-            <li><a href="trackDonation.php">Track Donation</a></li>
-          </ol>
         </div>
-      </nav>
+        <nav class="breadcrumbs">
+          <div class="container-fluid">
+            <ol>
+              <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Donor'; ?></li>
+              <li><a href="trackDonation.php">Data Analysis And Reporting</a></li>
+            </ol>
+          </div>
+        </nav>
     </div><!-- End Page Title -->
   <section id="service-details" class="service-details section">
     <div class="container-fluid">

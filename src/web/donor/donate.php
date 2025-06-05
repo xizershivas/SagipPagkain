@@ -53,7 +53,7 @@ if (isset($_SESSION["intUserId"])) {
 
         <div class="row gy-5" style=" margin-bottom: 63px;">
 
-          <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-3 mt-0" data-aos="fade-up" data-aos-delay="100">
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
@@ -77,7 +77,7 @@ if (isset($_SESSION["intUserId"])) {
             </div>
           </div>
 
-          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 ps-lg-5 tbl table-donor mt-0" data-aos="fade-up" data-aos-delay="200">
             <!-- DONATION FORM -->
             <form class="row g-3 needs-validation text-black" id="frmDonate" enctype="multipart/form-data" novalidate>
               <div class="col-md-4">

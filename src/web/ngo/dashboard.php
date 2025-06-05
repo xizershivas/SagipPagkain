@@ -103,7 +103,7 @@ while ($row = $result->fetch_assoc()) {
         <div class="container-fluid">
           <ol>
           <li class="current">Food Bank</li>
-            <li><a href="dashboard.php">dashboard</a></li>
+            <li><a href="dashboard.php">Dashboard</a></li>
           </ol>
         </div>
       </nav>
@@ -116,7 +116,7 @@ while ($row = $result->fetch_assoc()) {
 
         <div class="row gy-5" style=" margin-bottom: 63px;">
 
-          <div class="col-lg-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="col-lg-3 mt-0" data-aos="fade-up" data-aos-delay="100">
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
@@ -139,7 +139,7 @@ while ($row = $result->fetch_assoc()) {
             </div>
           </div>
 
-          <div class="col-lg-9 ps-lg-5 tbl table-donor" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-9 ps-lg-5 tbl table-donor mt-0" data-aos="fade-up" data-aos-delay="200">
           <div class="container mt-5">
         <div class="row g-3">
             <!-- Statistics Cards -->
