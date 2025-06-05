@@ -36,7 +36,6 @@ function donate(e) {
 
 async function getItemDetails(e) {
     const itemId = e.target.value
-    debugger;
 
     try {
         const res = await fetch(`../../../app/controllers/donate.php?itemId=${itemId}`, {

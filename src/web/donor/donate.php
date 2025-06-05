@@ -22,6 +22,12 @@ if (isset($_SESSION["intUserId"])) {
 
   <!-- Include global stylesheet -->
   <?php include '../global/stylesheet.php'; ?>
+  <style>
+    #unitSelect
+    , #categorySelect {
+      pointer-events: none;
+  }
+  </style>
 </head>
 
 <body class="services-details-page">
@@ -145,7 +151,7 @@ if (isset($_SESSION["intUserId"])) {
               <div class="col-md-4">
                 <label for="item" class="form-label">Item</label>
                 <select class="form-select" name="item" id="itemSelect">
-                  <option selected disabled value=""></option>
+                  <option selected disabled value="">-- Select Item --</option>
                   <?php
                     $allItems = getItems($conn);
                     if ($allItems->num_rows > 0) {
