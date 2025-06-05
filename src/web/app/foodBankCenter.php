@@ -53,68 +53,72 @@ function getCoordinates($address)
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    header('Content-Type: application/json');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
     $conn->begin_transaction();
 
     try {
-      $municipality = sanitize($_POST['municipality']);
+        $municipality = sanitize($_POST['municipality']);
 
-      $checkStmt = $conn->prepare("SELECT * FROM tblfoodbank WHERE strMunicipality = ? LIMIT 1");
-      $checkStmt->bind_param("s", $municipality);
-      $checkStmt->execute();
-      $result = $checkStmt->get_result();
-      $intFoodBankId = 0;
-      $lastInsertId = 0;
+        $checkStmt = $conn->prepare("SELECT * FROM tblfoodbank WHERE strMunicipality = ? LIMIT 1");
+        $checkStmt->bind_param("s", $municipality);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+        $intFoodBankId = 0;
 
-      if ($result->num_rows > 0) {
-        $intFoodBankId = $result->fetch_object()->intFoodBankId;
-      } else {
-        // Insert into tblfoodbank
-        $sql = "INSERT INTO tblfoodbank (strMunicipality) VALUES (?)";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) throw new Exception("Database operation failed", 500);
-        $stmt->bind_param("s", $municipality);
-        $stmt->execute();
-        $intFoodBankId = $conn->insert_id;
-        $stmt->close();
-      }
+        if ($result->num_rows > 0) {
+            $intFoodBankId = $result->fetch_object()->intFoodBankId;
+        } else {
+            $sql = "INSERT INTO tblfoodbank (strMunicipality) VALUES (?)";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) throw new Exception("Database operation failed", 500);
+            $stmt->bind_param("s", $municipality);
+            $stmt->execute();
+            $intFoodBankId = $conn->insert_id;
+            $stmt->close();
+        }
 
-      if (isset($_POST['foodBankName'], $_POST['address']) && 
-          is_array($_POST['foodBankName']) && 
-          is_array($_POST['address']) && 
-          count($_POST['foodBankName']) === count($_POST['address'])) {
+        if (
+            isset($_POST['foodBankName'], $_POST['address']) &&
+            is_array($_POST['foodBankName']) &&
+            is_array($_POST['address']) &&
+            count($_POST['foodBankName']) === count($_POST['address'])
+        ) {
+            $sql2 = "INSERT INTO tblfoodbankdetail (intFoodBankId, strFoodBankName, strAddress, dblLatitude, dblLongitude) 
+                     VALUES (?, ?, ?, ?, ?)";
+            $stmt2 = $conn->prepare($sql2);
 
-          $sql2 = "INSERT INTO tblfoodbankdetail (intFoodBankId, strFoodBankName, strAddress, dblLatitude, dblLongitude) 
-                  VALUES (?, ?, ?, ?, ?)";
-          $stmt2 = $conn->prepare($sql2);
+            for ($i = 0; $i < count($_POST['foodBankName']); $i++) {
+                $foodBankName = sanitize($_POST['foodBankName'][$i]);
+                $address = sanitize($_POST['address'][$i]);
 
-          for ($i = 0; $i < count($_POST['foodBankName']); $i++) {
-              $foodBankName = sanitize($_POST['foodBankName'][$i]);
-              $address = sanitize($_POST['address'][$i]);
+                $coords = getCoordinates($address);
+                if ($coords !== false) {
+                    $latitude = $coords['latitude'];
+                    $longitude = $coords['longitude'];
 
-              // Get coordinates per address
-              $coords = getCoordinates($address);
-              if ($coords !== false) {
-                  $latitude = $coords['latitude'];
-                  $longitude = $coords['longitude'];
+                    $stmt2->bind_param("issdd", $intFoodBankId, $foodBankName, $address, $latitude, $longitude);
+                    $stmt2->execute();
+                }
+            }
 
-                  $stmt2->bind_param("issdd", $intFoodBankId, $foodBankName, $address, $latitude, $longitude);
-                  $stmt2->execute();
-              }
-          }
+            $stmt2->close();
+        }
 
-          $stmt2->close();
-      }
+        $conn->commit();
+        header("Location: foodBankCenter.php");
+        exit;
 
-      $conn->commit();
-  } catch (Exception $ex) {
-    $conn->rollback();
-    $code = $ex->getCode();
-    http_response_code($code);
-    echo json_encode(["data" => ["message" => $ex->getMessage()]]);
-  }
+    } catch (Exception $ex) {
+        $conn->rollback();
+        http_response_code($ex->getCode() ?: 500);
+        echo json_encode(["success" => false, "message" => $ex->getMessage()]);
+        exit;
+    }
 }
+
   
 // Get food bank data with item counts
 $foodBankQuery = "SELECT fb.intFoodBankId, fbd.intFoodBankDetailId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
