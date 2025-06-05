@@ -53,43 +53,87 @@ function getCoordinates($address)
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $foodBankName = $conn->real_escape_string($_POST['foodBankName']);
-    $address = $conn->real_escape_string($_POST['address']);
+    header('Content-Type: application/json');
 
-    $coords = getCoordinates($address);
+    $conn->begin_transaction();
 
-    if ($coords !== false) {
-        $latitude = $coords['latitude'];
-        $longitude = $coords['longitude'];
+    try {
+      $municipality = sanitize($_POST['municipality']);
 
-        $sql = "INSERT INTO tblfoodbank (strMunicipality, strAddress, dblLatitude, dblLongitude) VALUES (?, ?, ?, ?)";
+      $checkStmt = $conn->prepare("SELECT * FROM tblfoodbank WHERE strMunicipality = ? LIMIT 1");
+      $checkStmt->bind_param("s", $municipality);
+      $checkStmt->execute();
+      $result = $checkStmt->get_result();
+      $intFoodBankId = 0;
+      $lastInsertId = 0;
+
+      if ($result->num_rows > 0) {
+        $intFoodBankId = $result->fetch_object()->intFoodBankId;
+      } else {
+        // Insert into tblfoodbank
+        $sql = "INSERT INTO tblfoodbank (strMunicipality) VALUES (?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssdd", $foodBankName, $address, $latitude, $longitude);
-        
-        if ($stmt->execute()) {
-            $message = "Food Bank added successfully!";
-        } else {
-            $message = "Error inserting data: " . $stmt->error;
-        }
+        if (!$stmt) throw new Exception("Database operation failed", 500);
+        $stmt->bind_param("s", $municipality);
+        $stmt->execute();
+        $intFoodBankId = $conn->insert_id;
         $stmt->close();
-    } else {
-        $message = "Could not get coordinates for the address.";
-    }
+      }
+
+      if (isset($_POST['foodBankName'], $_POST['address']) && 
+          is_array($_POST['foodBankName']) && 
+          is_array($_POST['address']) && 
+          count($_POST['foodBankName']) === count($_POST['address'])) {
+
+          $sql2 = "INSERT INTO tblfoodbankdetail (intFoodBankId, strFoodBankName, strAddress, dblLatitude, dblLongitude) 
+                  VALUES (?, ?, ?, ?, ?)";
+          $stmt2 = $conn->prepare($sql2);
+
+          for ($i = 0; $i < count($_POST['foodBankName']); $i++) {
+              $foodBankName = sanitize($_POST['foodBankName'][$i]);
+              $address = sanitize($_POST['address'][$i]);
+
+              // Get coordinates per address
+              $coords = getCoordinates($address);
+              if ($coords !== false) {
+                  $latitude = $coords['latitude'];
+                  $longitude = $coords['longitude'];
+
+                  $stmt2->bind_param("issdd", $intFoodBankId, $foodBankName, $address, $latitude, $longitude);
+                  $stmt2->execute();
+              }
+          }
+
+          $stmt2->close();
+      }
+
+      $conn->commit();
+  } catch (Exception $ex) {
+    $conn->rollback();
+    $code = $ex->getCode();
+    http_response_code($code);
+    echo json_encode(["data" => ["message" => $ex->getMessage()]]);
+  }
 }
-$userId = $_SESSION["intUserId"];
-$foodBankQuery = "
-    SELECT fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
-           COUNT(DISTINCT i.intItemId) AS itemCount,
-           SUM(i.intQuantity) AS totalStock
-    FROM tblfoodbank fb
-    LEFT JOIN tblfoodbankdetail fbd ON fb.intFoodBankId = fbd.intFoodBankId
-    LEFT JOIN tblinventory i ON fb.intFoodBankId = i.intFoodBankId
-    LEFT JOIN tbluser tu ON fb.intFoodBankId = tu.intFoodbankId
-    WHERE tu.intUserId = '$userId'
-    GROUP BY fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress";
+  
+// Get food bank data with item counts
+$foodBankQuery = "SELECT fb.intFoodBankId, fbd.intFoodBankDetailId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
+                  COUNT(DISTINCT i.intItemId) as itemCount,
+                  SUM(i.intQuantity) as totalStock
+                  FROM tblfoodbank fb
+                  LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodBankId
+                  LEFT JOIN tblinventory i ON fbd.intFoodBankDetailId = i.intFoodBankDetailId
+                  GROUP BY fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 
 $foodBanks = array();
+
+
+
+$foodBankDetailQuery = "SELECT * FROM tblfoodbankdetail tfbd LEFT JOIN tblfoodbank tfb ON tfbd.intFoodBankId = tfb.intFoodBankId";
+$foodBankDetialResult = mysqli_query($conn, $foodBankDetailQuery);
+
+$foodBanksDetail = array();
 
 while ($row = mysqli_fetch_assoc($foodBankResult)) {
     // Get detailed inventory
@@ -97,7 +141,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     FROM tblinventory i 
     JOIN tblitem it ON i.intItemId = it.intItemId 
     JOIN tblunit u ON i.intUnitId = u.intUnitId 
-    WHERE i.intFoodBankId = " . $row['intFoodBankId'] . "
+    WHERE i.intFoodBankDetailId = " . $row['intFoodBankDetailId'] . "
     GROUP BY  it.strItem, u.strUnit";
 
 
@@ -170,7 +214,6 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
           <ol>
             <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Food Bank'; ?></li>
             <li><a href="foodBankCenter.php">Food Bank Center</a></li>
-             
           </ol>
         </div>
       </nav>
@@ -188,14 +231,18 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+               <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
+                  <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
+                <?php } ?>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
-                <a href="foodBankCenter.php" class="active"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
+                <a href="foodBankCenter.php" class="active"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
                 <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
                 <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
-                <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
+                <a href="requestApproval.php" class=""><i class="bi bi-people"></i><span>Request for Approval</span></a>
+                <!--<a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>-->
               </div>
             </div><!-- End Services List -->
 
@@ -210,9 +257,12 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
           <div class="col-lg-9 ps-lg-5 tbl table-donor mt-0" data-aos="fade-up" data-aos-delay="200">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="text-center" style="color: #333;">Item Stock Map</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFoodBankModal">
+                    Add Food Bank
+                </button>
             </div>
             <!-- DATA GRAPH -->
-            <div class="card p-3 shadow-sm">
+            <div class="card shadow-sm" style="margin-bottom: 4%;">
                 <div class="d-flex"> 
                     <div class="col-lg-9"> 
                        <div id="map"></div>
@@ -239,122 +289,8 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
     </section><!-- /Service Details Section -->
 
   </main>
-
-  <!-- Include global footer  -->
-  <?php include '../global/footer.php'; ?>
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
   <!-- Preloader -->
   <div id="preloader"></div>
-
-  <!-- Include global JS -->
-  <?php include '../global/script.php'; ?>
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    // Initialize the map and set to Laguna
-    var map = L.map('map').setView([14.2044, 121.3473], 10);
-
-    // Light-themed map
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Stock level colors
-    function getStockColor(stock) {
-        if (stock >= 80) return "red";    
-        if (stock >= 30) return "yellow"; 
-        return "green";                   
-    }
-
-    // Use PHP data directly
-    var locations = <?php echo json_encode($foodBanks); ?>;
-    var locationList = document.getElementById("locationList");
-    var currentFoodBankId = null;
-   
-    locations.forEach(location => {
-
-    var marker = L.marker([location.lat, location.lng]).addTo(map);
-    
-    marker.bindPopup(`
-        <div class="text-left">
-            <h6 class="mb-1"><b>${location.address?.split(",")[0].trim()}</b></h6>
-            <p class="mb-1">Total Items: ${location.itemCount}</p>
-            <p class="mb-1">Total Quantity: ${location.stock}</p>
-            <div class="d-flex gap-2 mt-2">
-                <button class="btn btn-sm btn-danger" onclick="deleteFoodBank('${location.id}')">Delete</button>
-                <a href="#" 
-                   class="btn btn-sm btn-primary stock-link" 
-                   data-bs-toggle="modal" 
-                   data-bs-target="#stockModal"
-                   data-id="${location.id}"
-                   data-items='${JSON.stringify(location.items)}' 
-                   data-location="${(location.strAddress || '').split(',')[0].trim()}" style="color: #fff;">
-                   View Stock
-                </a>
-            </div>
-        </div>
-    `);
-
-
-        // Add to list
-        var listItem = document.createElement("li");
-        listItem.className = "list-group-item";
-        listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
-        listItem.onclick = function () {
-            map.setView([location.lat, location.lng], 13);
-        };
-        locationList.appendChild(listItem);
-
-        // Add circle
-        L.circle([location.lat, location.lng], {
-            color: getStockColor(location.stock),
-            fillColor: getStockColor(location.stock),
-            fillOpacity: 0.5,
-            radius: 300
-        }).addTo(map);
-    });
-
-    // Handle modal display
-    document.addEventListener('click', function (e) {
-        if (e.target.closest('.stock-link')) {
-            const link = e.target.closest('.stock-link');
-            const items = JSON.parse(link.dataset.items);
-            const locationName = link.dataset.location;
-            currentFoodBankId = link.dataset.id;
-
-            document.getElementById('modalLocationName').textContent = locationName;
-
-            const tbody = document.getElementById('modalStockTableBody');
-            tbody.innerHTML = '';
-
-            items.forEach(item => {
-                const row = `<tr>
-                    <td>${item.name}</td>
-                    <td>${item.quantity}</td>
-                    <td>${item.unit}</td>
-                </tr>`;
-                tbody.insertAdjacentHTML('beforeend', row);
-            });
-        }
-    });
-
-    // Search functionality
-    function filterLocations() {
-        var input = document.getElementById("searchBox").value.toLowerCase(); 
-        var listItems = document.querySelectorAll(".list-group-item");
-
-        listItems.forEach(item => {
-            if (item.textContent.toLowerCase().includes(input)) {
-                item.style.display = "";
-            } else {
-                item.style.display = "none";
-            }
-        });
-    }
-  </script>
-
 
  <!-- Add Food Bank Modal -->
 <div class="modal fade" id="addFoodBankModal" tabindex="-1">
@@ -369,20 +305,28 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
           <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
         <?php endif; ?>
 
-        <form action="" method="POST" enctype="multipart/form-data" id="foodBankForm">
-          <div class="mb-3">
-            <label for="foodBankName" class="form-label">Food Bank Name:</label>
-            <input type="text" class="form-control" id="foodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
-          </div>
-          <div class="mb-3">
-            <label for="address" class="form-label">Address:</label>
-            <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address of the Foodbank" required />
-          </div>
-
-          <!-- Move buttons inside the form -->
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" enctype="multipart/form-data" id="foodBankForm">
+              <div class="mb-3">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label for="municipality" class="form-label"><b>Municipality:</b></label>
+                    <span id="addMore" style="color: #3f3737; cursor: pointer; font-size: 35px;font-weight: 900; padding-right: 5px;">+</span>
+                  </div>
+                  <input type="text" class="form-control" name="municipality" placeholder="Enter Municipality" required />
+                </div>
+              <div id="foodBankFormContainer">
+                <div class="mb-3">
+                  <label for="foodBankName" class="form-label">Food Bank Name:</label>
+                  <input type="text" class="form-control" name="foodBankName[]" placeholder="Enter Food Bank Name" required />
+                </div>
+                <div class="mb-3">
+                  <label for="address" class="form-label">Address:</label>
+                  <input type="text" class="form-control" name="address[]" placeholder="Enter Address of the Foodbank" required />
+                </div>
+              </div> 
+              
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add Food Bank</button>
+            <button type="submit" class="btn btn-primary" id="btnSaveFoodBank">Save Food Bank</button>
           </div>
         </form>
 
@@ -416,43 +360,51 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       </div>
   </div>
 
-  <!-- Update Food Bank Modal -->
-  <div class="modal fade" id="updateFoodBankModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Update Food Bank</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <?php if (!empty($message)): ?>
-            <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
-          <?php endif; ?>
-
-          <form action="" method="POST" enctype="multipart/form-data" id="updateFoodBankForm">
-            <input type="hidden" id="updateFoodBankId" name="foodBankId">
-            <div class="mb-3">
-              <label for="updateFoodBankName" class="form-label">Food Bank Name:</label>
-              <input type="text" class="form-control" id="updateFoodBankName" name="foodBankName" placeholder="Enter Food Bank Name" required />
-            </div>
-            <div class="mb-3">
-              <label for="updateAddress" class="form-label">Address:</label>
-              <input type="text" class="form-control" id="updateAddress" name="address" placeholder="Enter Address of the Foodbank" required />
-            </div>
-
-            <!-- Move buttons inside the form -->
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Update Food Bank</button>
-            </div>
-          </form>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5gmcyR_6vQ7VtfIt1cKlfmKG2iHFDNBs&libraries=places"></script>
+
+<script>
+  let fieldCount = 1;
+
+  function initAutocompleteForInput(input) {
+    if (google.maps.places) {
+      new google.maps.places.Autocomplete(input);
+    }
+  }
+
+  // Initialize for first address field on page load
+  window.addEventListener('load', function () {
+    const firstAddressInput = document.querySelector('input[name="address[]"]');
+    if (firstAddressInput) {
+      initAutocompleteForInput(firstAddressInput);
+    }
+  });
+
+  document.getElementById('addMore').addEventListener('click', function () {
+    const container = document.getElementById('foodBankFormContainer');
+
+    const newFields = document.createElement('div');
+    newFields.innerHTML = `
+      <hr />
+      <div class="mb-3">
+        <label for="foodBankName_${fieldCount}" class="form-label">Food Bank Name:</label>
+        <input type="text" class="form-control" name="foodBankName[]" id="foodBankName_${fieldCount}" placeholder="Enter Food Bank Name" required />
+      </div>
+      <div class="mb-3">
+        <label for="address_${fieldCount}" class="form-label">Address:</label>
+        <input type="text" class="form-control" name="address[]" id="address_${fieldCount}" placeholder="Enter Address of the Foodbank" required />
+      </div>
+    `;
+
+    container.appendChild(newFields);
+
+    // Get the new address input and apply Google Places Autocomplete
+    const newAddressInput = newFields.querySelector(`#address_${fieldCount}`);
+    initAutocompleteForInput(newAddressInput);
+
+    fieldCount++;
+  });
+</script>
+
   <script>
     // Initialize Google Maps Places Autocomplete
     function initAutocomplete() {
@@ -471,49 +423,6 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
 
     // Initialize autocomplete when the page loads
     google.maps.event.addDomListener(window, 'load', initAutocomplete);
-
-    // Update Food Bank Function
-    async function updateFoodBank(foodBankId) {
-      try {
-        // Find the food bank data from the locations array
-        const foodBank = locations.find(loc => loc.id === parseInt(foodBankId));
-        if (!foodBank) return;
-        
-        // Populate the update modal
-        document.getElementById('updateFoodBankId').value = foodBank.id;
-        document.getElementById('updateFoodBankName').value = foodBank.name;
-        document.getElementById('updateAddress').value = foodBank.address;
-        
-        // Show the modal
-        const updateModal = new bootstrap.Modal(document.getElementById('updateFoodBankModal'));
-        updateModal.show();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    // Update Food Bank Form Handler
-    document.getElementById('updateFoodBankForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      try {
-        const response = await fetch(window.location.href, {
-          method: 'POST',
-          body: new FormData(this)
-        });
-        
-        const data = await response.json();
-        
-        if (data.status === 'success') {
-          alert('Food Bank updated successfully!');
-          window.location.reload();
-        } else {
-          throw new Error(data.message || 'Failed to update food bank');
-        }
-      } catch (error) {
-        alert(error.message);
-      }
-    });
 
     // Delete Food Bank Function
     async function deleteFoodBank(foodBankId) {
@@ -541,7 +450,128 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
       }
     }
   </script>
-  
-</body>
 
+<script>
+    function initAutocomplete() {
+      const input = document.getElementById('address');
+      const autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode'],
+        componentRestrictions: { country: "ph" } 
+      });
+    }
+    google.maps.event.addDomListener(window, 'load', initAutocomplete);
+  </script>
+
+    <!-- Include global footer  -->
+    <?php include '../global/footer.php'; ?>
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Include global JS -->
+<?php include '../global/script.php'; ?>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // Initialize the map and set to Laguna
+  var map = L.map('map').setView([14.2044, 121.3473], 10);
+
+  // Light-themed map
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Stock level colors
+  function getStockColor(stock) {
+      if (stock >= 80) return "red";    
+      if (stock >= 30) return "yellow"; 
+      return "green";                   
+  }
+
+  // Use PHP data directly
+  var locations = <?php echo json_encode($foodBanks) ?>;
+  var locationList = document.getElementById("locationList");
+  var currentFoodBankId = null;
+ 
+  locations.forEach(location => {
+
+  var marker = L.marker([location.lat, location.lng]).addTo(map);
+  
+  marker.bindPopup(`
+      <div class="text-left">
+          <h6 class="mb-1"><b>${location.name}</b></h6>
+          <p class="mb-1">Total Items: ${location.itemCount}</p>
+          <p class="mb-1">Total Quantity: ${location.stock}</p>
+          <div class="d-flex gap-2 mt-2">
+              <button class="btn btn-sm btn-danger" onclick="deleteFoodBank('${location.id}')">Delete</button>
+              <a href="#" 
+                 class="btn btn-sm btn-primary stock-link" 
+                 data-bs-toggle="modal" 
+                 data-bs-target="#stockModal"
+                 data-id="${location.id}"
+                 data-items='${JSON.stringify(location.items)}' 
+                 data-location="${location.name}" style="color: #fff;">
+                 View Stock
+              </a>
+          </div>
+      </div>
+  `);
+
+
+      // Add to list
+      var listItem = document.createElement("li");
+      listItem.className = "list-group-item";
+      listItem.innerHTML = `<span class="pin-icon">📍</span> ${location.name}`;
+      listItem.onclick = function () {
+          map.setView([location.lat, location.lng], 13);
+      };
+      locationList.appendChild(listItem);
+
+      // Add circle
+      L.circle([location.lat, location.lng], {
+          color: getStockColor(location.stock),
+          fillColor: getStockColor(location.stock),
+          fillOpacity: 0.5,
+          radius: 300
+      }).addTo(map);
+  });
+
+  // Handle modal display
+  document.addEventListener('click', function (e) {
+      if (e.target.closest('.stock-link')) {
+          const link = e.target.closest('.stock-link');
+          const items = JSON.parse(link.dataset.items);
+          const locationName = link.dataset.location;
+          currentFoodBankId = link.dataset.id;
+
+          document.getElementById('modalLocationName').textContent = locationName;
+
+          const tbody = document.getElementById('modalStockTableBody');
+          tbody.innerHTML = '';
+
+          items.forEach(item => {
+              const row = `<tr>
+                  <td>${item.name}</td>
+                  <td>${item.quantity}</td>
+                  <td>${item.unit}</td>
+              </tr>`;
+              tbody.insertAdjacentHTML('beforeend', row);
+          });
+      }
+  });
+
+  // Search functionality
+  function filterLocations() {
+      var input = document.getElementById("searchBox").value.toLowerCase(); 
+      var listItems = document.querySelectorAll(".list-group-item");
+
+      listItems.forEach(item => {
+          if (item.textContent.toLowerCase().includes(input)) {
+              item.style.display = "";
+          } else {
+              item.style.display = "none";
+          }
+      });
+  }
+</script>
+</body>
 </html>

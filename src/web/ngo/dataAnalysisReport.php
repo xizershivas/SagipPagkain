@@ -5,16 +5,16 @@ include "../../../app/functions/user.php";
 
 $sql = "SELECT 
     DATE_FORMAT(t.dtmCreatedDate, '%Y-%m') AS month,
-    t.intFoodBankId,
-    f.strMunicipality,
+    t.intFoodBankDetailId,
+    f.strFoodBankName,
     t.intItemId,
     i.strItem,
     SUM(t.intQuantity) AS total_quantity
 FROM tbltrackdonation t
 JOIN tblitem i ON t.intItemId = i.intItemId
-JOIN tblfoodbank f ON t.intFoodBankId = f.intFoodBankId
-GROUP BY month, t.intFoodBankId, t.intItemId
-ORDER BY t.intItemId, t.intFoodBankId, month";
+JOIN tblfoodbankdetail f ON t.intFoodBankDetailId = f.intFoodBankDetailId
+GROUP BY month, t.intFoodBankDetailId, t.intItemId
+ORDER BY t.intItemId, t.intFoodBankDetailId, month";
 
 $result = $conn->query($sql);
 $data = [];
@@ -52,51 +52,44 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
   <?php include '../global/header.php'; ?>
 
 <main class="main">
-  <div class="page-title" data-aos="fade">
-    <nav class="breadcrumbs">
-      <div class="container-fluid">
-        <ol>
-          <li class="current">Admin</li>
-          <li><a href="dataAnalysisReport.php">Data Analysis And Reporting</a></li>
-        </ol>
-      </div>
-    </nav>
-  </div>
-     <div class="page-title" data-aos="fade">
+  <!-- Page Title -->
+    <div class="page-title" data-aos="fade">
       <div class="heading">
-
+        
       </div>
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Food Bank'; ?></li>
-            <li><a href="trackDonation.php">Track Donation</a></li>
+          <li class="current">Food Bank</li>
+            <li><a href="dashboard.php">Data Analysis And Reporting</a></li>
           </ol>
         </div>
       </nav>
     </div><!-- End Page Title -->
+
   <section id="service-details" class="service-details section">
     <div class="container-fluid">
       <div class="row gy-5">
         <!-- Sidebar -->
         <div class="col-lg-3 mt-0" data-aos="fade-up" data-aos-delay="100">
+
           <div class="service-box">
             <h4>Services List</h4>
             <div class="services-list">
-             <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
-                  <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
-                <?php } ?>
-                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
-                <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
-                <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
-                <a href="dataAnalysisReport.php" class="active"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
-                <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
-                <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
-                <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
+              <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+              <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
+                <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
+              <?php } ?>
+              <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
+              <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
+              <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
+              <a href="dataAnalysisReport.php" class="active"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
+              <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
+              <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
+              <a href="requestApproval.php" class=""><i class="bi bi-people"></i><span>Request for Approval</span></a>
+              <!--<a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>-->
             </div>
-          </div>
+          </div><!-- End Services List -->
 
           <div class="help-box d-flex flex-column justify-content-center align-items-center">
             <i class="bi bi-headset help-icon"></i>
@@ -253,14 +246,16 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
                 ?>
               </select>
             </div>
-            <div class="col-md-3">
+             <div class="col-md-3">
               <label for="donor" class="form-label" style="color:Black;">Donor</label>
               <select name="donor" id="donor" class="form-select">
                 <option value="">All Donors</option>
                 <?php
-                $result = $conn->query("SELECT DISTINCT intUserId, strDonorName FROM tbldonationmanagement");
+                $result = $conn->query("SELECT DISTINCT DM.intUserId, U.strFullName 
+                  FROM tbldonationmanagement DM
+                  JOIN tbluser U ON DM.intUserId = U.intUserId");
                 while ($row = $result->fetch_assoc()) {
-                  echo '<option value="' . $row['intUserId'] . '">' . htmlspecialchars($row['strDonorName']) . '</option>';
+                  echo '<option value="' . $row['intUserId'] . '">' . htmlspecialchars($row['strFullName']) . '</option>';
                 }
                 ?>
               </select>
