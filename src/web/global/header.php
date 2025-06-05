@@ -36,23 +36,13 @@ if (isset($_SESSION["intUserId"])) {
       $unreadCount = 0;
       if (isset($_SESSION["intUserId"])) {
         $stmt = $conn->prepare("
-          WITH RankedUsers AS (
-            SELECT 
-              TTD.intFoodBankDetailId,
-              TU.strFullName,
-              ROW_NUMBER() OVER (PARTITION BY TTD.intFoodBankDetailId ORDER BY TTD.intTrackDonationId) AS rn
-            FROM tbltrackdonation TTD
-            JOIN tbluser TU ON TTD.intUserId = TU.intUserId
-          )
-          SELECT TI.strItem, RU.strFullName 
-          FROM tblnotification TN
-          INNER JOIN tblinventory TINV ON TN.intSourceId = TINV.intDonationId
-          INNER JOIN tblitem TI ON TINV.intItemId = TI.intItemId
-          INNER JOIN tblfoodbankdetail TFBD ON TINV.intFoodBankDetailId = TFBD.intFoodBankDetailId
-          LEFT JOIN RankedUsers RU ON TFBD.intFoodBankDetailId = RU.intFoodBankDetailId AND RU.rn = 1
-          WHERE TN.ysnSeen = 0 AND TN.strSourceTable = 'tblinventory'
-          ORDER BY TN.dtmCreatedDate DESC LIMIT 5
-        ");
+          SELECT TN.intNotificationId, TI.strItem, TFBD.strFoodBankName 
+        FROM tblnotification TN
+        INNER JOIN tblinventory TINV ON TN.intSourceId = TINV.intDonationId
+        INNER JOIN tblitem TI ON TINV.intItemId = TI.intItemId
+        INNER JOIN tblfoodbankdetail TFBD ON TINV.intFoodBankDetailId = TFBD.intFoodBankDetailId
+        WHERE TN.ysnSeen = 0 AND TN.strSourceTable = 'tblinventory'
+        ORDER BY TN.dtmCreatedDate DESC LIMIT 5;");
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -86,10 +76,10 @@ if (isset($_SESSION["intUserId"])) {
             <?php foreach ($notifications as $notif): ?>
               <li>
                 <a href="#" class="dropdown-item text-wrap show-notif-modal"
-                   data-foodbank="<?= htmlspecialchars($notif['strMunicipality']) ?>"
-                   data-donor="<?= htmlspecialchars($notif['strFullName']) ?>"
+                   data-foodbank="<?= htmlspecialchars($notif['strFoodBankName']) ?>"
+                   data-id="<?= htmlspecialchars($notif['intNotificationId']) ?>"
                    data-item="<?= htmlspecialchars($notif['strItem']) ?>">
-                  On <b><?= htmlspecialchars($notif['strMunicipality']) ?></b>, <b><?= htmlspecialchars($notif['strFullName']) ?></b> donated <b><?= htmlspecialchars($notif['strItem']) ?></b>.
+                  On <b><?= htmlspecialchars($notif['strFoodBankName']) ?></b> </b> someone donated <b><?= htmlspecialchars($notif['strItem']) ?></b>.
                 </a>
               </li>
             <?php endforeach; ?>
@@ -132,25 +122,40 @@ if (isset($_SESSION["intUserId"])) {
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const notifLinks = document.querySelectorAll('.show-notif-modal');
-    const modalBody = document.getElementById('notificationModalBody');
+  const notifLinks = document.querySelectorAll('.show-notif-modal');
+  const modalBody = document.getElementById('notificationModalBody');
 
-    notifLinks.forEach(link => {
-      link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const foodbank = this.dataset.foodbank;
-        const donor = this.dataset.donor;
-        const item = this.dataset.item;
+  notifLinks.forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
 
-        modalBody.innerHTML = `
-          <p><strong>Food Bank:</strong> ${foodbank}</p>
-          <p><strong>Donor:</strong> ${donor}</p>
-          <p><strong>Item Donated:</strong> ${item}</p>
-        `;
+      const foodbank = this.dataset.foodbank;
+      const item = this.dataset.item;
+      const notifId = this.dataset.id;
 
-        const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-        modal.show();
-      });
+      // Update notification as seen via AJAX
+      fetch('../../../app/functions/update_notification.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `notification_id=${notifId}`
+      }).then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Optionally update the badge count here
+          }
+        });
+
+      modalBody.innerHTML = `
+        <p><strong>Food Bank:</strong> ${foodbank}</p>
+        <p><strong>Item Donated:</strong> ${item}</p>
+      `;
+
+      const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+      modal.show();
     });
   });
+});
+
 </script>
