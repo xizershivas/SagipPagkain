@@ -209,7 +209,7 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
                 <h2 class="text-center" style="color: #333;">Item Stock Map</h2>
             </div>
             <!-- DATA GRAPH -->
-            <div class="card p-3 shadow-sm">
+            <div class="card shadow-sm" style="margin-bottom: 3%;">
                 <div class="d-flex"> 
                     <div class="col-lg-9"> 
                        <div id="map"></div>
