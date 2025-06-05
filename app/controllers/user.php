@@ -19,16 +19,18 @@ if (!isset($_POST["_method"]) && $_SERVER["REQUEST_METHOD"] === "POST") {
     $strConfirmPassword = sanitize($_POST["confirmPassword"]);
     $strAccountType = sanitize($_POST["accountType"]);
     $ysnStatus = intval($_POST["status"]);
+    $intFoodBankDetailId = isset($_POST["foodBank"]) ? intval($_POST["foodBank"]) : "";
 
     $userData = [
-        'strFullName' => $strFullName,
-        'strEmail' => $strEmail,
-        'strContact' => $strContact,
-        'strUsername' => $strUsername,
-        'strPassword' => $strPassword,
-        'strConfirmPassword' => $strConfirmPassword,
-        'strAccountType' => $strAccountType,
-        'ysnStatus' => $ysnStatus
+        'strFullName' => $strFullName
+        , 'strEmail' => $strEmail
+        , 'strContact' => $strContact
+        , 'strUsername' => $strUsername
+        , 'strPassword' => $strPassword
+        , 'strConfirmPassword' => $strConfirmPassword
+        , 'strAccountType' => $strAccountType
+        , 'ysnStatus' => $ysnStatus
+        , "intFoodBankDetailId" => $intFoodBankDetailId
     ];
 
     addUser($conn, $userData);

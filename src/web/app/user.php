@@ -138,20 +138,35 @@ include "../../../app/functions/user.php";
                     </div>
                     <div class="col-12 col-md-6">
                       <label class="form-label fw-bold signup-form-label" for="accountType">Account Type</label>
-                      <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
-                        <option selected disabled value="">-- Select account type --</option>
+                      <select class="form-select" aria-label="Account Type" name="accountType" id="accountType" required>
+                        <option selected disabled value="">-- Select Account Type --</option>
                         <option value="admin">Admin</option>
                         <option value="donor">Donor</option>
-                        <option value="staff">Food Bank Staff</option>
+                        <option value="staff">Food Bank</option>
                         <option value="partner">Partner (NGO, Cooperative, etc.)</option>
+                        <option value="beneficiary">Beneficiary</option>
                       </select>
                     </div>
                     <div class="col-12 col-md-6">
                       <label class="form-label fw-bold signup-form-label" for="status">Status</label>
-                      <select class="form-select" aria-label="Large select example" name="status" id="status" required>
-                        <option selected disabled value="">-- Select status --</option>
+                      <select class="form-select" aria-label="Status" name="status" id="status" required>
+                        <option selected disabled value="">-- Select Status --</option>
                         <option value="1">Active</option>
                         <option value="0">Inactive</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-6 d-none" id="foodBankSelectContainer">
+                      <label class="form-label fw-bold signup-form-label" for="foodBank">Select Food Bank</label>
+                      <select class="form-select" aria-label="Food Bank" name="foodBank" id="foodBankSelect">
+                        <option selected disabled value="">-- Select Food Bank --</option>
+                        <?php
+                          $allAllFoodBanks = getFoodBanks($conn);
+                          while($foodBank = $allAllFoodBanks->fetch_object()) {
+                            ?>
+                              <option value="<?= $foodBank->intFoodBankDetailId ?>"><?= $foodBank->strFoodBankName ?></option>
+                            <?php
+                          }
+                        ?>
                       </select>
                     </div>
                   </form>
@@ -300,7 +315,7 @@ include "../../../app/functions/user.php";
                     <th scope="col">Active</th>
                     <th scope="col">Admin</th>
                     <th scope="col">Donor</th>
-                    <th scope="col">Staff</th>
+                    <th scope="col">Food Bank</th>
                     <th scope="col">Partner</th>
                     <th scope="col">Beneficiary</th>
                     <th scope="col" colspan="2">Action</th>

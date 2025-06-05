@@ -3,10 +3,17 @@ function getUserData($conn) {
     $allUserData = $conn->query("SELECT * FROM tbluser WHERE strUsername <> 'admin'");
     return $allUserData;
 }
+
 function getDonorDate($conn) {
     $allUserData = $conn->query("SELECT * FROM tbluser WHERE ysnDonor = 1");
     return $allUserData;
 }
+
+function getFoodBanks($conn) {
+    $allAllFoodBanks = $conn->query("SELECT * FROM tblfoodbankdetail");
+    return $allAllFoodBanks;
+}
+
 function addUser($conn, $userData) {
     header('Content-Type: application/json');
 
@@ -18,72 +25,76 @@ function addUser($conn, $userData) {
     $strConfirmPassword = $userData['strConfirmPassword'];
     $strAccountType = $userData['strAccountType'];
     $ysnStatus = $userData['ysnStatus'];
-
-    // Check if User already exists
-    $sql = $conn->prepare("SELECT strUsername FROM tbluser WHERE strUsername = ?");
-    $sql->bind_param("s", $strUsername);
-    $sql->execute();
-    $result = $sql->get_result();
-
-    if ($result->num_rows >= 1) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "The Username already exists, please choose a different Username"]]);
-        exit();
-    }
-    
-    // Password pattern
-    $pattern = "/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/";
-    $strSalt;
-
-    // Check password match
-    if ($strPassword != $strConfirmPassword) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "Passwords do not match"]]);
-        exit();
-    } else if (strlen($strPassword) < 8) {
-        http_response_code(400);
-        echo json_encode(["data" => ["message" => "Password must be 8 characters long"]]);
-        exit();
-    } else if (!preg_match($pattern, $strPassword)) {
-        http_response_code(406);
-        echo json_encode(["data" => ["message" => "Password must contain at least 1 capital letter, 1 number and 1 special character"]]);
-        exit();
-    } else {
-        $strSalt = bin2hex(random_bytes(22));
-        $strPassword = crypt($strPassword, $strSalt);
-    }
-
-    $query;
-    $stmt;
-    $ysn = $ysnStatus;
+    $intFoodBankDetailId = $userData['intFoodBankDetailId'];
 
     $conn->begin_transaction();
 
     try {
+        // Check if User already exists
+        $sql = $conn->prepare("SELECT strUsername FROM tbluser WHERE strUsername = ?");
+        $sql->bind_param("s", $strUsername);
+        $sql->execute();
+        $result = $sql->get_result();
+
+        if ($result->num_rows >= 1) {
+            throw new Exception("The Username already exists, please choose a different Username", 400);
+        }
+        
+        // Password pattern
+        $pattern = "/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/";
+        $strSalt;
+
+        // Check password match
+        if ($strPassword != $strConfirmPassword) {
+            throw new Exception("Passwords do not match", 400);
+        } else if (strlen($strPassword) < 8) {
+            throw new Exception("Password must be 8 characters long", 400);
+        } else if (!preg_match($pattern, $strPassword)) {
+            throw new Exception("Password must contain at least 1 capital letter, 1 number and 1 special character", 406);
+        } else {
+            $strSalt = bin2hex(random_bytes(22));
+            $strPassword = crypt($strPassword, $strSalt);
+        }
+
+        $query;
+        $stmt;
+        $ysn = 1;
+    
         switch ($strAccountType) {
         case "admin":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnAdmin) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnAdmin, ysnActive) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
+            if (!$stmt) throw new Exception("Database insert operation failed", 400);
+            $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus);
             break;
         case "donor":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnDonor) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnDonor, ysnActive) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
+            if (!$stmt) throw new Exception("Database insert operation failed", 400);
+            $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus);
             break;
         case "staff":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnStaff) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnStaff, ysnActive, intFoodBankDetailId) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
+            if (!$stmt) throw new Exception("Database insert operation failed", 400);
+            $stmt->bind_param("ssssssiii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus, $intFoodBankDetailId);
             break;
         case "partner":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnPartner) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnPartner, ysnActive) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
+            if (!$stmt) throw new Exception("Database insert operation failed", 400);
+            $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus);
+            break;
+        case "beneficiary":
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnBeneficiary, ysnActive) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            if (!$stmt) throw new Exception("Database insert operation failed", 400);
+            $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus);
             break;
         }
 
@@ -101,13 +112,14 @@ function addUser($conn, $userData) {
                 ]
             ]);
         } else {
-            throw new Exception($stmt->error);
+            throw new Exception($stmt->error, 500);
         }
 
         $conn->commit();
     } catch (Exception $ex) {
         $conn->rollback();
-        http_response_code(500);
+        $code = $ex->getCode();
+        http_response_code($code);
         echo json_encode(["data" => ["message" => "Failed to create new user. " . $ex->getMessage()]]);
     }
 

@@ -12,6 +12,9 @@ const uploadDocInput = document.querySelector('#uploadDocInput');
 const uploadDocPreview = document.querySelector('#uploadDocPreview');
 const btnViewDoc = document.querySelector('#btnViewDoc');
 const btnDownloadDoc = document.querySelector('#btnDownloadDoc');
+const accountType = document.querySelector('#accountType');
+const foodBankSelect = document.querySelector('#foodBankSelect');
+const foodBankSelectContainer = document.querySelector('#foodBankSelectContainer');
 let intUserId = 0;
 
 
@@ -179,6 +182,15 @@ function documentPreview() {
     }
 }
 
+function toggleFoodBankSelect(e) {
+    if (e.target.value === "staff") {
+        foodBankSelectContainer.classList.remove('d-none');
+    } else {
+        foodBankSelect.value = "";
+        foodBankSelectContainer.classList.add('d-none');
+    }
+}
+
 // Attach Event Handler for Editing User
 for (let btnEdit of btnEditUserList) {
     btnEdit.addEventListener('click', editUser);
@@ -196,3 +208,4 @@ for (let btnShowHide of btnShowHideList) {
 frmUser.addEventListener('submit', updateUser);
 frmAddUser.addEventListener('submit', addUser);
 uploadDocInput.addEventListener('change', documentPreview);
+accountType.addEventListener('change', toggleFoodBankSelect);
