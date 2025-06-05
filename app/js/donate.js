@@ -1,4 +1,7 @@
 const frmDonate = document.querySelector("#frmDonate");
+const itemSelect = document.querySelector("#itemSelect");
+const unitSelect = document.querySelector("#unitSelect");
+const categorySelect = document.querySelector("#categorySelect");
 
 function donate(e) {
     e.preventDefault();
@@ -31,4 +34,27 @@ function donate(e) {
     }
 }
 
+async function getItemDetails(e) {
+    const itemId = e.target.value
+    debugger;
+
+    try {
+        const res = await fetch(`../../../app/controllers/donate.php?itemId=${itemId}`, {
+            method: 'GET'
+        });
+
+        const resData = await res.json();
+
+        if (!res.ok) {
+            throw new Error(resData.data.message);
+        }
+
+        unitSelect.value = resData.data.intUnitId;
+        categorySelect.value = resData.data.intCategoryId;
+    } catch (e) {
+        alert(e.message);
+    }
+}
+
 frmDonate.addEventListener('submit', donate);
+itemSelect.addEventListener('change', getItemDetails);

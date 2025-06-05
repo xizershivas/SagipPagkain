@@ -144,7 +144,8 @@ if (isset($_SESSION["intUserId"])) {
               </div>
               <div class="col-md-4">
                 <label for="item" class="form-label">Item</label>
-                <select class="form-select" name="item" id="item">
+                <select class="form-select" name="item" id="itemSelect">
+                  <option selected disabled value=""></option>
                   <?php
                     $allItems = getItems($conn);
                     if ($allItems->num_rows > 0) {
@@ -169,7 +170,8 @@ if (isset($_SESSION["intUserId"])) {
               </div>
               <div class="col-md-3">
                 <label for="unit" class="form-label">Unit</label>
-                <select class="form-select" name="unit" id="unit">
+                <select class="form-select" name="unit" id="unitSelect">
+                  <option selected disabled value=""></option>
                   <?php
                     $units = getUnits($conn);
                     if ($units->num_rows > 0) {
@@ -187,7 +189,8 @@ if (isset($_SESSION["intUserId"])) {
               </div>
               <div class="col-md-3">
                 <label for="category" class="form-label">Category</label>
-                <select class="form-select" name="category" id="category">
+                <select class="form-select" name="category" id="categorySelect">
+                  <option selected disabled value=""></option>
                   <?php
                     $categories = getCategories($conn);
                     if ($categories->num_rows > 0) {

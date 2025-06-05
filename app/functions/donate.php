@@ -27,6 +27,45 @@ function getAllPurpose($conn) {
     $allPurpose = $conn->query("SELECT * FROM tblpurpose");
     return $allPurpose;
 }
+
+function getItemDetails($conn, $intItemId) {
+    header("Content-Type: application/json");
+
+    try {
+        
+        $sql = "SELECT I.intItemId
+            , I.strItem
+            , U.intUnitId
+            , U.strUnit
+            , C.intCategoryId
+            , C.strCategory
+            FROM tblitem I
+            INNER JOIN tblunit U ON I.intUnitId = U.intUnitId
+            INNER JOIN tblcategory C ON I.intCategoryId = C.intCategoryId
+            WHERE I.intItemId = ?";
+
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception("Database prepare statement failed " . $conn->error, 500);
+        }
+
+        $stmt->bind_param("i", $intItemId);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Database statement execution failed " . $stmt->error, 500);
+        }
+
+        $itemDetails = $stmt->get_result()->fetch_object();
+        echo json_encode(["data" => $itemDetails]);
+    } catch (Exception $ex) {
+        $code = $ex->getCode();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => $ex->getMessage()]]);
+    }
+
+    exit();
+}
  
 function processDocFileUpload($intUserId) {
     header("Content-Type: application/json");
