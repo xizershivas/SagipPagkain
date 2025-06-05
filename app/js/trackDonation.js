@@ -128,8 +128,8 @@ function setFoodBank({ foodBanks }) {
     // Food Bank Options
     foodBanks.forEach(fb => {
         const foodBankOption = document.createElement('option');
-        foodBankOption.value = fb.strMunicipality;
-        foodBankOption.setAttribute('data-id', fb.intFoodBankId);
+        foodBankOption.value = fb.strFoodBankName;
+        foodBankOption.setAttribute('data-id', fb.intFoodBankDetailId);
         foodBankOptions.append(foodBankOption);
     });
 }
@@ -166,7 +166,7 @@ function setData({ donors, /*foodBanks,*/ beneficiaries}) {
     // Donor Options
     donors.forEach(d => {
         const donorOption = document.createElement('option');
-        donorOption.value = d.strDonorName;
+        donorOption.value = d.strFullName;
         donorOption.setAttribute('data-id', d.intUserId);
         donorOptions.append(donorOption);
     });

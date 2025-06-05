@@ -5,6 +5,7 @@ function getAllTrackDonationData($conn) {
         ,U.intUserId
         ,U.strFullName
         ,FBD.intFoodBankDetailId
+        ,FBD.strFoodBankName
         ,I.intItemId
         ,I.strItem
         ,TD.intQuantity
@@ -28,10 +29,10 @@ function loadData($conn) {
 
     try {
         #BEGIN DONOR
-        $sqlDonor = "
-            SELECT DISTINCT D.intUserId, D.strDonorName FROM tbldonationmanagement D
-            INNER JOIN tblinventory I ON D.intDonationId = I.intDonationId
-        ";
+        $sqlDonor = "SELECT DISTINCT D.intUserId, U.strFullName FROM tbldonationmanagement D
+                    INNER JOIN tblinventory I ON D.intDonationId = I.intDonationId
+                    INNER JOIN tbluser U ON D.intUserId = U.intUserId
+                    ";
     
         $queryDonor = $conn->query($sqlDonor);
     
@@ -98,7 +99,7 @@ function getFoodBank($conn, $intUserId) {
     try {
         $sql = "SELECT DISTINCT FBD.intFoodBankDetailId, FBD.strFoodBankName FROM tbldonationmanagement DM
             INNER JOIN tblinventory IV ON DM.intDonationId = IV.intDonationId
-            INNER JOIN tblfoodbank FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             WHERE DM.intUserId = ?";
 
         $query = $conn->prepare($sql);
@@ -246,7 +247,7 @@ function saveTrackDonation($conn, $trackDonationData) {
         $unitResult = $conn->query("SELECT intUnitId FROM tblunit WHERE strUnit = '$strUnit'");
         $intUnitId = $unitResult->fetch_object()->intUnitId;
 
-        $sql = "INSERT INTO tbltrackdonation (intUserId, intFoodBankId, intItemId, intQuantity, intUnitId, intBeneficiaryId, ysnStatus)
+        $sql = "INSERT INTO tbltrackdonation (intUserId, intFoodBankDetailId, intItemId, intQuantity, intUnitId, intBeneficiaryId, ysnStatus)
         VALUES (?,?,?,?,?,?,?)";
 
         $query = $conn->prepare($sql);
@@ -323,7 +324,7 @@ function generateQRCode($conn, $intBeneficiaryId, $intFoodBankId, $intItemId, $i
     $itemResult = $itemQuery->get_result()->fetch_assoc();
 
     // Food Bank
-    $foodBankQuery = $conn->prepare("SELECT FB.strMunicipality FROM tblfoodbank FB WHERE FB.intFoodBankId = ?");
+    $foodBankQuery = $conn->prepare("SELECT FB.strFoodBankName FROM tblfoodbankdetail FB WHERE FB.intFoodBankDetailId = ?");
     $foodBankQuery->bind_param("i", $intFoodBankId);
     $foodBankQuery->execute();
     $foodBankResult = $foodBankQuery->get_result()->fetch_assoc();
@@ -335,7 +336,7 @@ function generateQRCode($conn, $intBeneficiaryId, $intFoodBankId, $intItemId, $i
     $donationResult = $donationQuery->get_result()->fetch_assoc();
 
     $data = "Name: " . $beneficiaryResult["strName"]
-        . "\nFood Bank: " . $foodBankResult["strMunicipality"]
+        . "\nFood Bank: " . $foodBankResult["strFoodBankName"]
         . "\nItem: " . $itemResult["strItem"]
         . "\nQty Received: " . $intSendQuantity . " " . $donationResult["strUnit"]
         . "\nDate Received: " . $donationResult["dtmDateReceived"];
