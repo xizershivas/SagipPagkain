@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo json_encode(["data" => ["message" => $ex->getMessage()]]);
   }
 }
-  
+$userId = $_SESSION["intUserId"];
 // Get food bank data with item counts
 $foodBankQuery = "SELECT fb.intFoodBankId, fbd.intFoodBankDetailId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
                   COUNT(DISTINCT i.intItemId) as itemCount,
@@ -124,7 +124,7 @@ $foodBankQuery = "SELECT fb.intFoodBankId, fbd.intFoodBankDetailId, fbd.strFoodB
                   LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodBankId
                   LEFT JOIN tblinventory i ON fbd.intFoodBankDetailId = i.intFoodBankDetailId
                   LEFT JOIN tbluser U ON fb.intFoodBankId = U.intFoodbankId
-				  WHERE fb.intFoodBankId = U.intFoodbankId
+				  WHERE fb.intFoodBankId = U.intFoodbankId AND U.intUserId = '$userId'
                   GROUP BY fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);
 

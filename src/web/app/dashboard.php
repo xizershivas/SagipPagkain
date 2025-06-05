@@ -12,7 +12,7 @@ if (!isset($_SESSION["intUserId"])) {
   header("Location: ../beneficiary/assistanceRequest.php");
 }
 
-$request = "SELECT COUNT(*) AS total FROM tblDonationManagement 
+$request = "SELECT COUNT(*) AS total FROM tbldonationmanagement 
                                      WHERE ysnStatus = 0";
 $resultRequest = $conn->query($request);
 
@@ -74,11 +74,11 @@ $sqlSurplus = "
         COUNT(ysnStatus) AS count,
         ROUND(COUNT(ysnStatus) * 100.0 / (
             SELECT COUNT(ysnStatus) 
-            FROM tblDonationManagement 
+            FROM tbldonationmanagement 
             WHERE ysnStatus = 1
         ), 2) AS percentage
     FROM 
-        tblDonationManagement
+        tbldonationmanagement
     WHERE 
         ysnStatus = 1
     GROUP BY 

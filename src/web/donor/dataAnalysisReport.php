@@ -301,7 +301,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
         const key = `${row.intItemId}-${row.intFoodBankId}`;
         if (!grouped[key]) grouped[key] = {
           description: row.strItem,
-          foodbank: row.strMunicipality,
+          foodbank: row.strFoodBankName,
           series: []
         };
         grouped[key].series.push({
