@@ -10,7 +10,7 @@ function getDonorDate($conn) {
 }
 
 function getFoodBanks($conn) {
-    $allAllFoodBanks = $conn->query("SELECT * FROM tblfoodbankdetail");
+    $allAllFoodBanks = $conn->query("SELECT * FROM tblfoodbank");
     return $allAllFoodBanks;
 }
 
@@ -25,7 +25,7 @@ function addUser($conn, $userData) {
     $strConfirmPassword = $userData['strConfirmPassword'];
     $strAccountType = $userData['strAccountType'];
     $ysnStatus = $userData['ysnStatus'];
-    $intFoodBankDetailId = $userData['intFoodBankDetailId'];
+    $intFoodBankId = $userData['intFoodBankId'];
 
     $conn->begin_transaction();
 
@@ -76,11 +76,11 @@ function addUser($conn, $userData) {
             $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus);
             break;
         case "staff":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnStaff, ysnActive, intFoodBankDetailId) 
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnStaff, ysnActive, intFoodBankId) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             if (!$stmt) throw new Exception("Database insert operation failed", 400);
-            $stmt->bind_param("ssssssiii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus, $intFoodBankDetailId);
+            $stmt->bind_param("ssssssiii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus, $intFoodBankId);
             break;
         case "partner":
             $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnPartner, ysnActive) 

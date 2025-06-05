@@ -11,65 +11,25 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $intBeneficiaryId = isset($_POST["beneficiaryId"]) ? $_POST["beneficiaryId"] : "";
+    $intBeneficiaryId = isset($_POST["beneficiaryId"]) ? intval($_POST["beneficiaryId"]) : "";
     $strName = sanitize($_POST["name"]);
     $strEmail = sanitize($_POST["email"]);
     $strContact = sanitize($_POST["contact"]);
     $strAddress = sanitize($_POST["address"]);
     $dblSalary =  sanitize($_POST["salary"]);
 
-    if (empty($intBeneficiaryId)) {
-        $query = $conn->prepare("INSERT INTO tblbeneficiary (strName, strEmail, strContact, strAddress, dblSalary) VALUES (?, ?, ?, ?, ?)");
-        $query->bind_param("ssssd", $strName, $strEmail, $strContact, $strAddress, $dblSalary);
+    $userData = [
+        "intBeneficiaryId" => $intBeneficiaryId
+        , "strName" => $strName
+        , "strEmail" => $strEmail
+        , "strContact" => $strContact
+        , "strAddress" => $strAddress
+        , "dblSalary" => $dblSalary
+    ];
 
-        if ($query->execute()) {
-            http_response_code(200);
-            echo json_encode(["data" => ["message" => "Successfully added new Beneficiary"]]);
-        } else {
-            http_response_code(500);
-            echo json_encode(["data" => ["message" => "An error has occurred on the server, cannot process request."]]);
-        }
+    updateBeneficiary($conn, $userData);
 
-        $query->close();
-        $conn->close();
-    } else {
-        $query = $conn->prepare("UPDATE tblbeneficiary SET strName = ?, strEmail = ?, strContact = ?, strAddress = ?, dblSalary = ? WHERE intBeneficiaryId = ?");
-        $query->bind_param("ssssdi"
-            ,$strName
-            ,$strEmail
-            ,$strContact
-            ,$strAddress
-            ,$dblSalary
-            ,$intBeneficiaryId
-        );
-
-        if ($query->execute()) {
-            if ($query->affected_rows > 0) {
-                $data = array(
-                    "beneficiaryId" => $intBeneficiaryId,
-                    "name" => $strName,
-                    "email" => $strEmail,
-                    "contact" => $strContact,
-                    "address" => $strAddress,
-                    "salary" => $dblSalary
-                );
-
-                http_response_code(200);
-                echo json_encode(["data" => $data]);
-            } else {
-                http_response_code(202);
-                echo json_encode(array("data" => array("message" => "No rows were affected")));
-            }
-        } else {
-            http_response_code(500);
-            echo json_encode(["data" => ["message" => $query->error]]);
-        }
-
-        $query->close();
-        $conn->close();
-    }
-
-    exit();
+    $conn->close();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "DELETE") {

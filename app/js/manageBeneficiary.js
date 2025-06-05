@@ -10,6 +10,7 @@ function setFormData({ data }) {
     frmBeneficiary.elements.contact.value = data.strContact;
     frmBeneficiary.elements.email.value = data.strEmail;
     frmBeneficiary.elements.address.value = data.strAddress;
+    frmBeneficiary.elements.salary.value = data.dblSalary;
 }
 
 function addBeneficiary(e) {
@@ -67,6 +68,7 @@ function updateBeneficiary(e) {
             const response = JSON.parse(this.responseText);
 
             if (this.status == 200 || this.status == 202) {
+                alert(response.data.message);
                 window.location.reload();
             } else {
                 alert(response.data.message);

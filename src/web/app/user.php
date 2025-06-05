@@ -163,7 +163,7 @@ include "../../../app/functions/user.php";
                           $allAllFoodBanks = getFoodBanks($conn);
                           while($foodBank = $allAllFoodBanks->fetch_object()) {
                             ?>
-                              <option value="<?= $foodBank->intFoodBankDetailId ?>"><?= $foodBank->strFoodBankName ?></option>
+                              <option value="<?= $foodBank->intFoodBankId ?>"><?= $foodBank->strMunicipality ?></option>
                             <?php
                           }
                         ?>

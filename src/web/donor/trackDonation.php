@@ -2,15 +2,8 @@
 session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/trackDonation.php";
-include "../../../app/functions/user.php";
-$allTrackDonationData = getAllTrackDonationData($conn);
-$userData;
-$user;
-if (isset($_SESSION["intUserId"])) {
-  $userData = getDonorDate($conn, $_SESSION["intUserId"]);
-  $user = $userData->fetch_object();
-}
 
+$allTrackDonationData = getAllTrackDonationData($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -189,7 +182,7 @@ if (isset($_SESSION["intUserId"])) {
                         ?>
                         <tr>
                           <td><?php echo $data->strFullName; ?></td>
-                          <td><?php echo $data->strMunicipality; ?></td>
+                          <td><?php echo $data->strFoodBankName; ?></td>
                           <td><?php echo $data->strItem; ?></td>
                           <td><?php echo $data->intQuantity; ?></td>
                           <td><?php echo $data->strUnit; ?></td>
