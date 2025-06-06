@@ -203,7 +203,7 @@ while ($rowSurplus = $resultSurplus->fetch_assoc()) {
                 </div>
             </div>
             
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="card p-3 shadow-sm" style="width: 95%;left: 12px;">
@@ -222,10 +222,63 @@ while ($rowSurplus = $resultSurplus->fetch_assoc()) {
                             <canvas id="forecastedSurplusChart"></canvas>
                         </div>
                     </div>
+                </div> -->
+
+            <div class="row g-4 mb-5">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">Top 5 Items mostly from Surplus</div>
+                <div class="card-body">
+                  <canvas id="surplusChart"></canvas>
                 </div>
+              </div>
+              <br>
+              <div class="card">
+                <div class="card-header">Top 5 beneficiaries</div>
+                <div class="card-body">
+                  <canvas id="beneficiaryChart"></canvas>
+                </div>
+              </div>
             </div>
-          <!-- END DATA GRAPH> -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">Top 5 Donors</div>
+                <div class="card-body">
+                  <canvas id="donorChart"></canvas>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">Best performing foodbank for this month</div>
+                <div class="card-body">
+                  <canvas id="performingFoodbankChart"></canvas>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div class="row g-4 mb-5">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">Top Requested Items by Area</div>
+                <div class="card-body">
+                  <canvas id="areaItemChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">Most Active Foodbanks</div>
+                <div class="card-body">
+                  <canvas id="foodbankChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+
+        </div>
+          <!-- END DATA GRAPH> -->
 
         </div>
 
@@ -300,6 +353,183 @@ while ($rowSurplus = $resultSurplus->fetch_assoc()) {
               }
           });
     </script>
+   <script>
+    const chartOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: 'white'
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: 'white'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: 'white'
+          }
+        }
+      }
+    };
+
+    new Chart(document.getElementById('surplusChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Bread', 'Canned Goods', 'Rice', 'Milk', 'Pasta'],
+        datasets: [{
+          label: 'Surplus Quantity',
+          data: [120, 10, 175, 60, 555],
+          backgroundColor: 'rgba(54, 162, 235, 0.7)'
+        }]
+      },
+      options: {
+      indexAxis: 'y', // This makes it horizontal
+      responsive: true,
+      scales: {
+        x: {
+          beginAtZero: true
+        }
+      }
+    }
+    });
+
+    new Chart(document.getElementById('beneficiaryChart'), {
+      type: 'bar',
+      data: {
+        labels: ['bene1', 'bene2', 'bene3', 'bene4', 'bene5'],
+        datasets: [{
+          label: 'top beneficiaries',
+          data: [120, 90, 75, 60, 45],
+          backgroundColor: 'rgba(226, 109, 40, 0.7)'
+        }]
+      },
+      options: {
+      indexAxis: 'y', // This makes it horizontal
+      responsive: true,
+      scales: {
+        x: {
+          beginAtZero: true
+        }
+      }
+    }
+    });
+
+      new Chart(document.getElementById('donorChart'), {
+      type: 'bar',
+      data: {
+      labels: ['Donor A', 'Donor B', 'Donor C', 'Donor D'],
+        datasets: [{
+          label: 'top donor',
+          data: [100, 150, 30, 975],
+          backgroundColor: 'rgba(201, 10, 10, 0.7)'
+        }]
+      },
+      options: {
+      indexAxis: 'y', // This makes it horizontal
+      responsive: true,
+      scales: {
+        x: {
+          beginAtZero: true
+        }
+      }
+    }
+    });
+
+    new Chart(document.getElementById('areaItemChart'), {
+      type: 'line',
+      data: {
+        labels: ['Zone 1', 'Zone 2', 'Zone 3', 'Zone 4'],
+        datasets: [{
+          label: 'Most Requested Items',
+          data: [50, 80, 30, 60],
+          borderColor: 'rgba(255, 99, 132, 0.8)',
+          tension: 0.4,
+          fill: false
+        }]
+      },
+      options: chartOptions
+    });
+
+    new Chart(document.getElementById('foodbankChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['FB A', 'FB B', 'FB C', 'FB D'],
+        datasets: [{
+          data: [200, 180, 150, 120],
+          backgroundColor: ['#9966FF', '#FF9F40', '#4BC0C0', '#FF6384']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: 'white'
+            }
+          }
+        }
+      }
+    });
+
+    const ctx = document.getElementById('performingFoodbankChart').getContext('2d');
+    const performingFoodbankChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['FoodBank A', 'FoodBank B', 'FoodBank C', 'FoodBank D', 'FoodBank E'],
+        datasets: [
+          {
+            label: 'Meals Served',
+            data: [5200, 4600, 4300, 3900, 3500],
+            backgroundColor: '#4caf50'
+          },
+          {
+            label: 'Donations Received ($)',
+            data: [3000, 2800, 2600, 2100, 1900],
+            backgroundColor: '#2196f3'
+          },
+          {
+            label: 'Volunteer Hours',
+            data: [1200, 1100, 950, 800, 750],
+            backgroundColor: '#ff9800'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Combined Performance Metrics'
+            }
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: ${context.parsed.y.toLocaleString()}`;
+              }
+            }
+          },
+          legend: {
+            position: 'top'
+          }
+        }
+      }
+    });
+  </script>
 
 </body>
 
