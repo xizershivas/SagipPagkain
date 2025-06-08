@@ -250,9 +250,9 @@ while ($row = mysqli_fetch_assoc($foodBankResult)) {
           <div class="col-lg-9 ps-lg-5 tbl table-donor mt-0" data-aos="fade-up" data-aos-delay="200">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="text-center" style="color: #333;">Item Stock Map</h2>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFoodBankModal">
+                <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFoodBankModal">
                     Add Food Bank
-                </button>
+                </button> -->
             </div>
             <!-- DATA GRAPH -->
             <div class="card shadow-sm" style="margin-bottom: 4%;">

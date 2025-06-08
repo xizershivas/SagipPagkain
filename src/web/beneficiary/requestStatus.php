@@ -215,7 +215,14 @@ if (isset($_SESSION["intUserId"])) {
                               <td><?= htmlspecialchars($row->dtmPickupDate) ?></td>
                               <td><?= htmlspecialchars($row->dtmCreatedDate) ?></td>
                               <td>
-                                  <?= ($row->intApproved == 0 && $row->ysnSubmitted == 1) ? "Waiting for Approval" : ($row->intApproved == 0 ? "Created" : ($row->intApproved == 1 ? "Approved" : "Rejected")) ?>
+                                  <?php
+                                    switch($row->intApproved) {
+                                      case 0: echo ($row->intApproved === 0 && $row->ysnSubmitted === 1) ? "Waiting for Approval" : "Created"; break;
+                                      case 1: echo "Approved"; break;
+                                      case 3: echo "Ready for Pickup"; break;
+                                      default: echo "Rejected"; break;
+                                    }
+                                  ?>
                               </td>
                               <td>
                                 <?php if (!$row->ysnSubmitted) { ?>
