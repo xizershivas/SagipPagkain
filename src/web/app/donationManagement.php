@@ -64,7 +64,7 @@ if (isset($_SESSION["intUserId"])) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-               <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
                   <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
                 <?php } ?>
@@ -109,9 +109,9 @@ if (isset($_SESSION["intUserId"])) {
                         while ($data = $allArchiveData->fetch_object()) {
                           ?>
                           <tr>
-                            <td><?php echo $data->strDonorName; ?></td>
+                            <td><?php echo $data->strFullName; ?></td>
                             <td>
-                              <a class="btn-archive-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>" data-archive="0">
+                              <a class="btn-unarchive-donation" href="javascript:void(0)" data-id="<?php echo $data->intDonationId; ?>">
                                 <i class="bi bi-archive-fill"></i>
                               </a>
                             </td>
