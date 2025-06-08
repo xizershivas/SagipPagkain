@@ -7,31 +7,17 @@ function getDonationData($conn, $user) {
     $ysnPartner = $user->ysnPartner;
     $allDonationData;
 
-    if ($ysnAdmin == 1) {
-        $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
-            , FBD.intFoodBankDetailId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory, P.strPurpose
-            FROM tbldonationmanagement D
-            INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
-            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
-            INNER JOIN tblitem I ON IV.intItemId = I.intItemId
-            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
-            INNER JOIN tbluser US ON D.intUserId = US.intUserId
-            INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId"
-        );
-    } else {
-        $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
-            , FBD.intFoodBankDetailId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory, P.strPurpose
-            FROM tbldonationmanagement D
-            INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
-            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
-            INNER JOIN tblitem I ON IV.intItemId = I.intItemId
-            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
-            INNER JOIN tbluser US ON D.intUserId = US.intUserId
-            INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId"
-        );
-    }
+    $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
+        , FBD.intFoodBankDetailId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory, P.strPurpose
+        FROM tbldonationmanagement D
+        INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
+        INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
+        INNER JOIN tblitem I ON IV.intItemId = I.intItemId
+        INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
+        INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
+        INNER JOIN tbluser US ON D.intUserId = US.intUserId
+        INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId
+        WHERE D.ysnArchive = 0");
 
     return $allDonationData;
 }
@@ -42,7 +28,12 @@ function getUserData($conn, $intUserId) {
 }
 
 function getArchiveData($conn) {
-    $allArchiveData = $conn->query("SELECT intDonationId, strDonorName FROM tbldonationarchive");
+    $sql = "SELECT DM.*, U.strFullName
+            FROM tbldonationmanagement DM
+            INNER JOIN tbluser U ON DM.intUserId = U.intUserId
+            WHERE ysnArchive = 1";
+    // $sql = "SELECT * FROM tbldonationarchive";
+    $allArchiveData = $conn->query($sql);
     return $allArchiveData;
 }
 
@@ -122,8 +113,11 @@ function processDocFileUpload($conn, $intDonationId) {
     if (empty($_FILES['verification']['name'][0])) {
         return;
     } else {
+        $isLocal = $_SERVER['HTTP_HOST'] === 'localhost' || str_contains($_SERVER['HTTP_HOST'], '127.0.0.1');
+        $basePath = $isLocal ? 'SagipPagkain' : '';
+
         $targetDir = $_SERVER["DOCUMENT_ROOT"] 
-            . DIRECTORY_SEPARATOR . "SagipPagkain" 
+            . DIRECTORY_SEPARATOR . $basePath 
             . DIRECTORY_SEPARATOR . "app" 
             . DIRECTORY_SEPARATOR . "storage" 
             . DIRECTORY_SEPARATOR . "media"
@@ -281,38 +275,26 @@ function updateDonation($conn, $donationData) {
 }
 
 function archiveDonation($conn, $intDonationId) {
-    // Start a transaction
+    $ysnArchive = 1;
+
     $conn->begin_transaction();
 
     try {
-        // Insert into tbldonationarchive
-        $query1 = $conn->prepare("INSERT INTO tbldonationarchive SELECT * FROM tbldonationmanagement WHERE intDonationId = ?");
-        $query1->bind_param("s", $intDonationId);
+        $stmt = $conn->prepare("UPDATE tbldonationmanagement SET ysnArchive = ? WHERE intDonationId = ?");
+        $stmt->bind_param("ii", $ysnArchive, $intDonationId);
 
-        if (!$query1->execute()) {
-            throw new Exception("Error inserting into archive: " . $query1->error);
+        if (!$stmt->execute()) {
+            throw new Exception("Error updating donation archive status: " . $stmt->error, 500);
         }
 
-        // Delete the donation record from tbldonationmanagement
-        $query2 = $conn->prepare("DELETE FROM tbldonationmanagement WHERE intDonationId = ?");
-        $query2->bind_param("s", $intDonationId);
-
-        if (!$query2->execute()) {
-            throw new Exception("Error deleting from tbldonationmanagement: " . $query2->error);
-        }
-
-        // Commit the transaction if both queries succeeded
         $conn->commit();
 
-        // Return success response
         http_response_code(200);
-        echo json_encode(["data" => ["message" => "Donation record moved from donation to archive"]]);
-    } catch (Exception $e) {
-        // Rollback the transaction in case of any error
+        echo json_encode(["data" => ["message" => "Donation record moved to archive"]]);
+    } catch (Exception $ex) {
         $conn->rollback();
-
-        // Return error response
-        http_response_code(400);
+        $code = $ex->getCode();
+        http_response_code($code);
         echo json_encode(["data" => ["message" => $e->getMessage()]]);
     }
 
@@ -320,38 +302,26 @@ function archiveDonation($conn, $intDonationId) {
 }
 
 function unarchiveDonation($conn, $intDonationId) {
-    // Start a transaction
+    $ysnArchive = 0;
+
     $conn->begin_transaction();
 
     try {
-        // Insert into tbldonationmanagement
-        $query1 = $conn->prepare("INSERT INTO tbldonationmanagement SELECT * FROM tbldonationarchive WHERE intDonationId = ?");
-        $query1->bind_param("s", $intDonationId);
+        $stmt = $conn->prepare("UPDATE tbldonationmanagement SET ysnArchive = ? WHERE intDonationId = ?");
+        $stmt->bind_param("ii", $ysnArchive, $intDonationId);
 
-        if (!$query1->execute()) {
-            throw new Exception("Error moving archive into donation: " . $query1->error);
+        if (!$stmt->execute()) {
+            throw new Exception("Error updating donation archive status: " . $stmt->error, 500);
         }
 
-        // Delete the donation record from tbldonationarchive
-        $query2 = $conn->prepare("DELETE FROM tbldonationarchive WHERE intDonationId = ?");
-        $query2->bind_param("s", $intDonationId);
-
-        if (!$query2->execute()) {
-            throw new Exception("Error deleting from tbldonationarchive: " . $query2->error);
-        }
-
-        // Commit the transaction if both queries succeeded
         $conn->commit();
 
-        // Return success response
         http_response_code(200);
-        echo json_encode(["data" => ["message" => "Donation record moved from archive to donation"]]);
-    } catch (Exception $e) {
-        // Rollback the transaction in case of any error
+        echo json_encode(["data" => ["message" => "Donation record moved to donation data"]]);
+    } catch (Exception $ex) {
         $conn->rollback();
-
-        // Return error response
-        http_response_code(400);
+        $code = $ex->getCode();
+        http_response_code($code);
         echo json_encode(["data" => ["message" => $e->getMessage()]]);
     }
 

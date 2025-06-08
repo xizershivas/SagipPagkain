@@ -13,17 +13,17 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $inputData = file_get_contents("php://input");
     $data = json_decode($inputData);
+    $intDonationId = isset($data->intDonationId) ? intval($data->intDonationId) : '';
+    $_method = isset($data->_method) ? sanitize($data->_method) : '';
+    $ysnArchive = isset($data->ysnArchive) ? intval($data->ysnArchive) : '';
 
-    if ($data) {
-        $intDonationId = intval($data->intDonationId);
-        $ysnArchive = $data->ysnArchive;
-
-        if ($intDonationId && $ysnArchive) {
-            archiveDonation($conn, $intDonationId);
-        } else if ($intDonationId && !$ysnArchive) {
-            unarchiveDonation($conn, $intDonationId);
-        }
-    } else {
+    if ($intDonationId && $_method && $_method == "PUT" && $ysnArchive) {
+        archiveDonation($conn, $intDonationId);
+    }
+    else if ($intDonationId && $_method && $_method === "PUT" && !$ysnArchive) {
+        unarchiveDonation($conn, $intDonationId);
+    }
+    else {
         $intDonationId = intval($_POST["donationId"]);
         $strFullName = sanitize($_POST["donor"]);
         $dtmDate = sanitize($_POST["date"]);

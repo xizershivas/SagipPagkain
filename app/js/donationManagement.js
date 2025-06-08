@@ -2,6 +2,7 @@ const frmDonation = document.querySelector('#frmDonation');
 const btnEditDonationList = document.getElementsByClassName('btn-edit-donation');
 // const btnDeleteDonationList = document.getElementsByClassName('btn-delete-donation');
 const btnArchiveDonationList = document.getElementsByClassName('btn-archive-donation');
+const btnUnarchiveDonationList = document.getElementsByClassName('btn-unarchive-donation');
 const transportStatus = document.querySelector('#transportStatus');
 const labelTransportStatus = document.querySelector('#labelTransportStatus');
 const verification = document.querySelector('#verification');
@@ -188,40 +189,61 @@ function updateDonation(e) {
 //     }
 // }
 
-function archiveDonation(e) {
+async function archiveDonation(e) {
+    if (!confirm('Are you sure you want to archive this donation record?')) return;
+
     intDonationId = parseInt(e.currentTarget.getAttribute('data-id'));
-    let ysnArchive = parseInt(e.currentTarget.getAttribute('data-archive')) == 0 ? false : true;
-    let ysnConfirmed;
+    const _method = "PUT";
+    const ysnArchive = 1;
 
-    const xmlhttp = new XMLHttpRequest();
+    try {
+      const res = await fetch('../../../app/controllers/donationManagement.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ intDonationId, _method, ysnArchive })
+      });
 
-    if (!ysnArchive) {
-        ysnConfirmed = window.confirm('Are you sure you want to unarchive this donation record?');
-    } else {
-        ysnConfirmed = window.confirm('Are you sure you want to archive this donation record?');
+      const resData = await res.json();
+
+      if (!res.ok) {
+        throw new Error(resData.data.message);
+      }
+
+      alert(resData.data.message);
+      window.location.reload();
+    } catch (e) {
+      alert(e.message);
     }
+}
 
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4) {
-            const response = JSON.parse(this.responseText);
+async function unarchiveDonation(e) {
+    if (!confirm('Are you sure you want to unarchive this donation record?')) return;
 
-            if (this.status == 200) {
-                alert(response.data.message);
-                window.location.reload();
-            } else {
-                alert(response.data.message);
-            }
-        }
-    };
+    intDonationId = parseInt(e.currentTarget.getAttribute('data-id'));
+    const _method = "PUT";
+    const ysnArchive = 0;
 
-    if (ysnConfirmed && !ysnArchive) {
-        xmlhttp.open('POST', `../../../app/controllers/donationManagement.php`, true);
-        xmlhttp.setRequestHeader('Content-Type', 'application/json');
-        xmlhttp.send(JSON.stringify({ intDonationId: intDonationId, ysnArchive: ysnArchive }));
-    } else {
-        xmlhttp.open('POST', `../../../app/controllers/donationManagement.php`, true);
-        xmlhttp.setRequestHeader('Content-Type', 'application/json');
-        xmlhttp.send(JSON.stringify({ intDonationId: intDonationId, ysnArchive: true }));
+    try {
+      const res = await fetch('../../../app/controllers/donationManagement.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ intDonationId, _method, ysnArchive })
+      });
+
+      const resData = await res.json();
+
+      if (!res.ok) {
+        throw new Error(resData.data.message);
+      }
+
+      alert(resData.data.message);
+      window.location.reload();
+    } catch (e) {
+      alert(e.message);
     }
 }
 
@@ -236,6 +258,10 @@ for (let btnEdit of btnEditDonationList) {
 
 for (let btnArchive of btnArchiveDonationList) {
     btnArchive.addEventListener('click', archiveDonation);
+}
+
+for (let btnUnarchive of btnUnarchiveDonationList) {
+    btnUnarchive.addEventListener('click', unarchiveDonation);
 }
 
 verification.addEventListener('change', mediaSelected);

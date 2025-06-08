@@ -44,8 +44,12 @@ function uploadRequestDocument($beneficiaryId) {
         $fileInfo = pathinfo($fileName);
         $fileBaseName = $fileInfo["filename"];
         $fileExtension = $fileInfo["extension"];
+
+        $isLocal = $_SERVER['HTTP_HOST'] === 'localhost' || str_contains($_SERVER['HTTP_HOST'], '127.0.0.1');
+        $basePath = $isLocal ? 'SagipPagkain' : '';
+
         $targetDir = $_SERVER["DOCUMENT_ROOT"] 
-        . DIRECTORY_SEPARATOR . "SagipPagkain" 
+        . DIRECTORY_SEPARATOR . $basePath 
         . DIRECTORY_SEPARATOR . "app" 
         . DIRECTORY_SEPARATOR . "storage" 
         . DIRECTORY_SEPARATOR . "documents" . DIRECTORY_SEPARATOR;
@@ -58,8 +62,7 @@ function uploadRequestDocument($beneficiaryId) {
         }
  
         $allowedTypes = [
-            'application/pdf',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            'application/pdf'
         ];
  
         if (!in_array($fileType, $allowedTypes)) {
