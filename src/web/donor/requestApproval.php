@@ -64,7 +64,6 @@ include "../../../app/functions/requestApproval.php";
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <a href="trackDonation.php"><i class="bi bi-trophy"></i><span>Track Donation</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
@@ -74,7 +73,6 @@ include "../../../app/functions/requestApproval.php";
                 <!--<a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>-->
                 <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a>
                 <a href="requestApproval.php" class="active"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
-              </div>
               </div>
             </div><!-- End Services List -->
 
@@ -129,15 +127,29 @@ include "../../../app/functions/requestApproval.php";
                                 <td><?= htmlspecialchars($row->strDescription) ?></td>
                                 <td><?= htmlspecialchars($row->strNotes) ?></td>
                                 <td>
-                                    <?= ($row->intApproved == 0 && $row->ysnSubmitted == 1) ? "Waiting for Approval" : ""?>
+                                    <?php
+                                      switch($row->intApproved) {
+                                        case 0: echo "Waiting for Approval"; break;
+                                        case 1: echo "Approved"; break;
+                                        case 3: echo "Ready for Pickup"; break;
+                                        default: echo "Rejected"; break;
+                                      }
+                                    ?>
                                 </td>
                                 <td><?= htmlspecialchars($row->strPurpose) ?></td>
                                 <td><?= htmlspecialchars($row->dtmCreatedDate) ?></td>
                                 <td>
-                                    <?php if ($row->intApproved == 0 && $row->ysnSubmitted) { ?>
-                                    <a class="btn btn-success btn-sm btn-approve-req" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
-                                        Approve Request
-                                    </a>
+                                    <?php if ($row->intApproved == 0) { ?>
+                                      <a class="btn btn-warning btn-sm btn-approve-req mb-1" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
+                                        Approve
+                                      </a>
+                                      <a class="btn btn-danger btn-sm btn-reject-req" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
+                                        Reject
+                                      </a>
+                                    <?php } else if ($row->intApproved == 1) { ?>
+                                      <a class="btn btn-success btn-sm btn-ready-req" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
+                                        Ready for Pickup
+                                     </a>
                                     <?php } ?>
                                 </td>
                                 </tr>
