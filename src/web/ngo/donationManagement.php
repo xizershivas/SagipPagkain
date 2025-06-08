@@ -64,18 +64,14 @@ if (isset($_SESSION["intUserId"])) {
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-               <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-                <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
-                  <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
-                <?php } ?>
+                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <a href="donationManagement.php" class="active"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>
-                <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
+                <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
                 <a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
                 <a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>
-                <a href="requestApproval.php" class=""><i class="bi bi-people"></i><span>Request for Approval</span></a>
-                <!--<a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>-->
+                <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
               </div>
             </div><!-- End Services List -->
 

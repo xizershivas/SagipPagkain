@@ -13,13 +13,14 @@ $sql = "SELECT
     DATE_FORMAT(t.dtmCreatedDate, '%Y-%m') AS month,
     t.intFoodBankDetailId,
     f.strFoodBankName,
+    fb.strMunicipality,
     t.intItemId,
     i.strItem,
     SUM(t.intQuantity) AS total_quantity
 FROM tbltrackdonation t
 JOIN tblitem i ON t.intItemId = i.intItemId
 JOIN tblfoodbankdetail f ON t.intFoodBankDetailId = f.intFoodBankDetailId
-WHERE t.intUserId = $userId
+JOIN tblfoodbank fb ON f.intFoodBankId = fb.intFoodBankId
 GROUP BY month, t.intFoodBankDetailId, t.intItemId
 ORDER BY t.intItemId, t.intFoodBankDetailId, month";
 
@@ -89,7 +90,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
                 <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
                 <!--<a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>-->
                 <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a>
-                <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a>
+                <!-- <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a> -->
             </div>
           </div>
 
@@ -301,7 +302,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
         const key = `${row.intItemId}-${row.intFoodBankId}`;
         if (!grouped[key]) grouped[key] = {
           description: row.strItem,
-          foodbank: row.strFoodBankName,
+          foodbank: row.strMunicipality,
           series: []
         };
         grouped[key].series.push({
@@ -401,7 +402,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
         dataPoints.push(forecastValue);
 
         datasets.push({
-          label: `${group.description} @ ${group.foodbank}`,
+          label: `${group.description} @ ${group.foodbank} Food Bank`,
           data: dataPoints,
           borderColor: colors[colorIndex % colors.length],
           backgroundColor: colors[colorIndex % colors.length],

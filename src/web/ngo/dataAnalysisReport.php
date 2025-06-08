@@ -3,6 +3,8 @@ session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
 
+$intUserId = $_SESSION['intUserId'];
+
 $sql = "SELECT 
     DATE_FORMAT(t.dtmCreatedDate, '%Y-%m') AS month,
     t.intFoodBankDetailId,
@@ -13,6 +15,8 @@ $sql = "SELECT
 FROM tbltrackdonation t
 JOIN tblitem i ON t.intItemId = i.intItemId
 JOIN tblfoodbankdetail f ON t.intFoodBankDetailId = f.intFoodBankDetailId
+JOIN tbluser u ON f.intFoodBankId = u.intFoodBankId
+WHERE u.intUserId = $intUserId
 GROUP BY month, t.intFoodBankDetailId, t.intItemId
 ORDER BY t.intItemId, t.intFoodBankDetailId, month";
 
@@ -399,7 +403,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
         dataPoints.push(forecastValue);
 
         datasets.push({
-          label: `${group.description} @ ${group.foodbank}`,
+          label: `${group.description}`,
           data: dataPoints,
           borderColor: colors[colorIndex % colors.length],
           backgroundColor: colors[colorIndex % colors.length],

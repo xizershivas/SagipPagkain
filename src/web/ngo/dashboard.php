@@ -52,8 +52,8 @@ $userCount = $resultotalUsers->fetch_assoc()['totalUser'];
 // }
  
 $sql = "SELECT DATE_FORMAT(donor.dtmDate, '%b %Y') AS month, COUNT(*) AS total
-        FROM tbluser user
-        INNER JOIN tbldonationmanagement donor ON user.intUserId = donor.intUserId
+        FROM tbldonationmanagement donor
+        INNER JOIN tbluser user ON donor.intUserId = user.intUserId
         WHERE user.intUserId = $intUserId
         AND user.ysnPartner = 1
         GROUP BY month
