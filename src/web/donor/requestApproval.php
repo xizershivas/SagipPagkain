@@ -112,7 +112,7 @@ include "../../../app/functions/requestApproval.php";
                             </thead>
                             <tbody>
                             <?php
-                            $allBeneficiaryRequests = getAllBeneficiaryRequests($conn);
+                            $allBeneficiaryRequests = getAllBeneficiaryRequests($conn, $_SESSION['intUserId']);
 
                             while ($row = $allBeneficiaryRequests->fetch_object()) {
                             ?>

@@ -1,5 +1,5 @@
 <?php
-function getAllBeneficiaryRequests($conn) {
+function getAllBeneficiaryRequests($conn, $intUserId) {
     $sql = "SELECT 
             BR.*
             , B.strName
@@ -9,7 +9,14 @@ function getAllBeneficiaryRequests($conn) {
                 ON BR.intBeneficiaryId = B.intBeneficiaryId
             INNER JOIN tblpurpose P
                 ON BR.intPurposeId = P.intPurposeId
+            INNER JOIN tblfoodbankdetail FBD
+                ON BR.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tblfoodbank FB
+                ON FBD.intFoodBankId = FB.intFoodBankId
+            INNER JOIN tbluser U
+            	ON FB.intFoodBankId = U.intFoodBankId
             WHERE BR.ysnSubmitted = 1
+            AND U.intUserId = $intUserId
         ";
 
     $allBeneficiaryRequests = $conn->query($sql);
