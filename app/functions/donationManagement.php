@@ -7,7 +7,21 @@ function getDonationData($conn, $user) {
     $ysnPartner = $user->ysnPartner;
     $allDonationData;
 
-    $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
+    if ($ysnAdmin) {
+        $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
+            , FBD.intFoodBankDetailId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory, P.strPurpose
+            FROM tbldonationmanagement D
+            INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tblitem I ON IV.intItemId = I.intItemId
+            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
+            INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
+            INNER JOIN tbluser US ON D.intUserId = US.intUserId
+            INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId
+            WHERE D.ysnArchive = 0");
+    }
+    else {
+        $allDonationData = $conn->query("SELECT D.*, US.strFullName, FBD.strFoodBankName
         , FBD.intFoodBankDetailId, I.strItem, IV.intQuantity, U.strUnit, C.strCategory, P.strPurpose
         FROM tbldonationmanagement D
         INNER JOIN tblinventory IV ON D.intDonationId = IV.intDonationId
@@ -15,9 +29,10 @@ function getDonationData($conn, $user) {
         INNER JOIN tblitem I ON IV.intItemId = I.intItemId
         INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
         INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
-        INNER JOIN tbluser US ON D.intUserId = US.intUserId
+        INNER JOIN tbluser US ON FBD.intFoodBankId = US.intFoodBankId
         INNER JOIN tblpurpose P ON D.intPurposeId = P.intPurposeId
-        WHERE D.ysnArchive = 0");
+        WHERE D.ysnArchive = 0 AND US.intUserId = $intUserId");
+    }
 
     return $allDonationData;
 }
