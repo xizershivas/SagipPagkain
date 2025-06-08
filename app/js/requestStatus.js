@@ -21,8 +21,9 @@ function updateUIRequestStatus({ data }) {
 
     const steps = [
       { label: "Request Created" },
-      { label: intApproved === 0 || intApproved === 1 ? "Waiting for Approval" : "Rejected" },
-      { label: "Approved - Ready for Pick Up" }
+      { label: intApproved === 0 || intApproved === 1 || intApproved === 3 ? "Waiting for Approval" : "Rejected" },
+      { label: "Approved" },
+      { label: "Ready for Pick Up" }
     ];
 
     steps.forEach((step, index) => {
@@ -32,16 +33,25 @@ function updateUIRequestStatus({ data }) {
       let lineClass = "";
 
       if (step.label === "Request Created") {
-        if (intApproved === 2) 
+        if (intApproved === 2) // 2 = Rejected
             circleClass = "step-complete"
         else
-            circleClass = (intApproved === 0 && ysnSubmitted === 0) || (intApproved === 0 && ysnSubmitted === 1) || (intApproved === 1 && ysnSubmitted === 1) ? "step-complete" : "step-pending";
+            circleClass = (intApproved === 0 && ysnSubmitted === 0) 
+              || (intApproved === 0 && ysnSubmitted === 1) 
+              || (intApproved === 1 && ysnSubmitted === 1) 
+              || (intApproved === 3 && ysnSubmitted === 1) ? "step-complete" : "step-pending";
       }
       else if (step.label === "Waiting for Approval") {
-        circleClass = (intApproved === 0 && ysnSubmitted === 1) || (intApproved === 1 && ysnSubmitted === 1) ? "step-complete" : "step-pending";
+        circleClass = (intApproved === 0 && ysnSubmitted === 1) 
+          || (intApproved === 1 && ysnSubmitted === 1) 
+          || (intApproved === 3 && ysnSubmitted === 1) ? "step-complete" : "step-pending";
+      }
+      else if (step.label === "Approved") {
+        circleClass = (intApproved === 1 && ysnSubmitted === 1) 
+          || (intApproved === 3 && ysnSubmitted === 1) ? "step-complete" : "step-pending";
       }
       else {
-        circleClass = intApproved === 1 && ysnSubmitted === 1 ? "step-complete" : "step-pending";
+        circleClass = intApproved === 3 && ysnSubmitted === 1 ? "step-complete" : "step-pending";
       }
 
       if (step.label === "Request Created" && intApproved === 2) {
@@ -50,7 +60,7 @@ function updateUIRequestStatus({ data }) {
         if (step.label === "Request Created" && intApproved === 0 && ysnSubmitted === 1) {
             lineClass = "line-complete";
         }
-        else if ((step.label === "Request Created" || step.label === "Waiting for Approval") && intApproved === 1 && ysnSubmitted === 1) {
+        else if ((step.label === "Request Created" || step.label === "Waiting for Approval" || step.label === "Approved") && (intApproved === 1 || intApproved === 3) && ysnSubmitted === 1) {
             lineClass = "line-complete";
         }
         else {

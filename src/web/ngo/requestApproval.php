@@ -128,15 +128,29 @@ include "../../../app/functions/requestApproval.php";
                                 <td><?= htmlspecialchars($row->strDescription) ?></td>
                                 <td><?= htmlspecialchars($row->strNotes) ?></td>
                                 <td>
-                                    <?= ($row->intApproved == 0 && $row->ysnSubmitted == 1) ? "Waiting for Approval" : ""?>
+                                    <?php
+                                      switch($row->intApproved) {
+                                        case 0: echo "Waiting for Approval"; break;
+                                        case 1: echo "Approved"; break;
+                                        case 3: echo "Ready for Pickup"; break;
+                                        default: echo "Rejected"; break;
+                                      }
+                                    ?>
                                 </td>
                                 <td><?= htmlspecialchars($row->strPurpose) ?></td>
                                 <td><?= htmlspecialchars($row->dtmCreatedDate) ?></td>
                                 <td>
-                                    <?php if ($row->intApproved == 0 && $row->ysnSubmitted) { ?>
-                                    <a class="btn btn-success btn-sm btn-approve-req" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
-                                        Approve Request
-                                    </a>
+                                    <?php if ($row->intApproved == 0) { ?>
+                                      <a class="btn btn-warning btn-sm btn-approve-req mb-1" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
+                                        Approve
+                                      </a>
+                                      <a class="btn btn-danger btn-sm btn-reject-req" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
+                                        Reject
+                                      </a>
+                                    <?php } else if ($row->intApproved == 1) { ?>
+                                      <a class="btn btn-success btn-sm btn-ready-req" href="javascript:void(0)" data-id="<?= $row->intBeneficiaryRequestId ?>">
+                                        Ready for Pickup
+                                     </a>
                                     <?php } ?>
                                 </td>
                                 </tr>
