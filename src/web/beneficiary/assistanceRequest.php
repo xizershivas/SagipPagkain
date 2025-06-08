@@ -177,7 +177,7 @@ if (isset($_SESSION["intUserId"])) {
                       <h2 class="card-title">Submit Form</h2>
                       <div class="mb-3">
                         <label for="purpose" class="form-label">Purpose</label>
-                      <select class="form-select border-warning" name="purpose" id="purpose" aria-label="Select purpose">
+                      <select class="form-select border-warning" name="purpose" id="purpose" aria-label="Select purpose" required>
                           <option value="" selected disabled>-- Select Purpose --</option>
                           <option value="1">Human Consumption</option>
                           <option value="2">Animal Consumption</option>

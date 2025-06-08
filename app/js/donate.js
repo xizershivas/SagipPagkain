@@ -2,6 +2,7 @@ const frmDonate = document.querySelector("#frmDonate");
 const itemSelect = document.querySelector("#itemSelect");
 const unitSelect = document.querySelector("#unitSelect");
 const categorySelect = document.querySelector("#categorySelect");
+const foodbankNameSelect = document.querySelector("#foodbankNameSelect");
 
 function donate(e) {
     e.preventDefault();
@@ -55,5 +56,26 @@ async function getItemDetails(e) {
     }
 }
 
+async function getFoodbank(e) {
+    const itemId = e.target.value
+
+    try {
+        const res = await fetch(`../../../app/controllers/donate.php?itemId=${itemId}&ex=1`, {
+            method: 'GET'
+        });
+
+        const resData = await res.json();
+
+        if (!res.ok) {
+            throw new Error(resData.data.message);
+        }
+
+        foodbankNameSelect.value = resData.data.intFoodBankDetailId;
+    } catch (e) {
+        alert(e.message);
+    }
+}
+
 frmDonate.addEventListener('submit', donate);
 itemSelect.addEventListener('change', getItemDetails);
+itemSelect.addEventListener('change', getFoodbank);

@@ -24,9 +24,11 @@ if (isset($_SESSION["intUserId"])) {
   <?php include '../global/stylesheet.php'; ?>
   <style>
     #unitSelect
-    , #categorySelect {
+    , #categorySelect
+    , #foodbankNameSelect{
       pointer-events: none;
   }
+
   </style>
 </head>
 
@@ -103,17 +105,18 @@ if (isset($_SESSION["intUserId"])) {
               </div>
               <div class="col-md-4">
                 <label for="foodBank" class="form-label">Food Bank (Drop Off Location)</label>
-                <select class="form-select" name="foodBank" id="foodBank" aria-label="Food Bank selection">
+                 <select class="form-select" name="unit" id="foodbankNameSelect">
+                  <option selected disabled value=""></option>
                   <?php
-                  $foodBanks = getFoodBanks($conn);
-                  if ($foodBanks->num_rows > 0) {
-                    while($foodBank = $foodBanks->fetch_object()) {
-                    ?>
-                      <option value="<?php echo $foodBank->intFoodBankDetailId; ?>"><?php echo $foodBank->strFoodBankName; ?></option>
-                    <?php
+                    $foodbanks = getFoodBanks($conn);
+                    if ($foodbanks->num_rows > 0) {
+                      while($foodbank = $foodbanks->fetch_object()) {
+                      ?>
+                        <option value="<?php echo $foodbank->intFoodBankDetailId; ?>"><?php echo $foodbank->strFoodBankName; ?></option>
+                      <?php
+                      }
                     }
-                  }
-                  ?>
+                    ?>
                 </select>
                 <div class="invalid-feedback">
                   Food Bank is required

@@ -3,7 +3,11 @@ include "../config/db_connection.php";
 include "../functions/donate.php";
 include "../utils/sanitize.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["itemId"])) {
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["itemId"]) && isset($_GET["ex"])) {
+    $intItemId = intval($_GET["itemId"]);
+    getFoodbank($conn, $intItemId);
+    $conn->close();
+} else{
     $intItemId = intval($_GET["itemId"]);
     getItemDetails($conn, $intItemId);
     $conn->close();
@@ -22,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $intUnitId = intval($_POST["unit"]);
     $dtmExpirationDate = sanitize($_POST["date2"]);
 
-    // File upload JPG/PNG
+    // File upload JPG/PNG 
     $strDocFilePath = processDocFileUpload($intUserId);
 
     $donationData = [

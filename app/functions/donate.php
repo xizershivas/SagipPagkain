@@ -66,6 +66,40 @@ function getItemDetails($conn, $intItemId) {
 
     exit();
 }
+
+function getFoodbank($conn, $intItemId) {
+    header("Content-Type: application/json");
+
+    try {
+        
+        $sql = "SELECT FB.intFoodBankDetailId, FB.strFoodBankName, COALESCE(I.intQuantity, 0) AS intQuantity
+                 FROM tblfoodbankdetail FB
+                 LEFT JOIN tblinventory I ON FB.intFoodbankDetailId = I.intFoodbankDetailId AND I.intItemId = ?
+                 ORDER BY I.intQuantity ASC
+                 LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception("Database prepare statement failed " . $conn->error, 500);
+        }
+
+        $stmt->bind_param("i", $intItemId);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Database statement execution failed " . $stmt->error, 500);
+        }
+
+        $foodbanks = $stmt->get_result()->fetch_object();
+        echo json_encode(["data" => $foodbanks]);
+    } catch (Exception $ex) {
+        $code = $ex->getCode();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => $ex->getMessage()]]);
+    }
+
+    exit();
+}
  
 function processDocFileUpload($intUserId) {
     header("Content-Type: application/json");
