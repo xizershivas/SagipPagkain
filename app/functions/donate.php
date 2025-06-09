@@ -67,14 +67,17 @@ function getItemDetails($conn, $intItemId) {
     exit();
 }
 
-function getFoodbank($conn, $intItemId) {
+function getFoodbank($conn, $intItemId, $intUserId) {
     header("Content-Type: application/json");
 
     try {
         
         $sql = "SELECT FB.intFoodBankDetailId, FB.strFoodBankName, COALESCE(I.intQuantity, 0) AS intQuantity
                  FROM tblfoodbankdetail FB
+                 INNER JOIN tblfoodbank F ON FB.intFoodBankId = F.intFoodBankId
+                 INNER JOIN tbluser U ON F.intFoodBankId = U.intFoodBankId
                  LEFT JOIN tblinventory I ON FB.intFoodbankDetailId = I.intFoodbankDetailId AND I.intItemId = ?
+                 WHERE U.intUserId = ?
                  ORDER BY I.intQuantity ASC
                  LIMIT 1";
 
@@ -84,7 +87,7 @@ function getFoodbank($conn, $intItemId) {
             throw new Exception("Database prepare statement failed " . $conn->error, 500);
         }
 
-        $stmt->bind_param("i", $intItemId);
+        $stmt->bind_param("ii", $intItemId, $intUserId);
 
         if (!$stmt->execute()) {
             throw new Exception("Database statement execution failed " . $stmt->error, 500);

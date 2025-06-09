@@ -160,7 +160,7 @@ function editUser($conn, $intUserId) {
                         , U.ysnBeneficiary
                         , U.strDocument
                         , B.intBeneficiaryId
-                        , B.strAddress
+                        , U.strAddress
                         , B.dblSalary
                         FROM tbluser U
                         LEFT JOIN tblbeneficiary B

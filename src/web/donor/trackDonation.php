@@ -3,7 +3,8 @@ session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/trackDonation.php";
 
-$allTrackDonationData = getAllTrackDonationData($conn);
+$intUserId = intval($_SESSION["intUserId"]);
+$allTrackDonationData = getAllTrackDonationData($conn, $intUserId);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -152,12 +153,10 @@ $allTrackDonationData = getAllTrackDonationData($conn);
 
               <!-- DONATION PROCESSED TABLE -->
               <h2 class="text-black pt-3">Processed Donations</h2>
-              <?php
-              if ($allTrackDonationData && $allTrackDonationData->num_rows > 0) {
-              ?>
                 <table id="trackDonationDataTable" class="display table table-striped">
                   <thead>
                     <tr>
+                      <th class="col">Donation No</th>
                       <th class="col">Donor</th>
                       <th class="col">Food Bank</th>
                       <th class="col">Item</th>
@@ -165,6 +164,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                       <th class="col">Unit</th>
                       <th class="col">Beneficiary</th>
                       <th class="col">Status</th>
+                      <th class="col">Date</th>
                       <th class="col">QR Code</th>
                     </tr>
                   </thead>
@@ -176,6 +176,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                       while($data = $allTrackDonationData->fetch_object()) {
                         ?>
                         <tr>
+                          <td><?php echo $data->strTrackDonationNo; ?></td>
                           <td><?php echo $data->strFullName; ?></td>
                           <td><?php echo $data->strFoodBankName; ?></td>
                           <td><?php echo $data->strItem; ?></td>
@@ -183,6 +184,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                           <td><?php echo $data->strUnit; ?></td>
                           <td><?php echo $data->strName; ?></td>
                           <td><?php echo $data->ysnStatus == 1 ? 'Received' : ''; ?></td>
+                          <td><?php echo $data->dtmCreatedDate; ?></td>
                           <td>
                             <?php if (!empty($data->strQRCode)) { ?>
                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#QRImage-<?php echo $ctr; ?>">
@@ -215,9 +217,6 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                     ?>
                   </tbody>
                 </table><!-- END DONATION PROCESSED TABLE -->
-              <?php
-              }
-              ?>
 
             </div>
           </div>

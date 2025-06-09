@@ -3,11 +3,13 @@ include "../config/db_connection.php";
 include "../functions/donate.php";
 include "../utils/sanitize.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["itemId"]) && isset($_GET["ex"])) {
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["itemId"]) && isset($_GET["ex"]) && isset($_GET["uid"])) {
     $intItemId = intval($_GET["itemId"]);
-    getFoodbank($conn, $intItemId);
+    $intUserId = intval($_GET["uid"]);
+    getFoodbank($conn, $intItemId, $intUserId);
     $conn->close();
-} else{
+} 
+else if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["itemId"])) {
     $intItemId = intval($_GET["itemId"]);
     getItemDetails($conn, $intItemId);
     $conn->close();

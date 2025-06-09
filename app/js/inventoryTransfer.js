@@ -62,6 +62,11 @@ function showItemDetails(e, dataId = null) {
 async function processInventoryTransfer(e) {
     e.preventDefault();
 
+    if (transferQty.value < 50) {
+        alert("Cannot transfer below 50 quantity");
+        return;
+    }
+
     const formData = new FormData(e.target);
 
     try {

@@ -66,17 +66,17 @@ $allTrackDonationData = getAllTrackDonationData($conn);
             <div class="service-box">
               <h4>Services List</h4>
               <div class="services-list">
-                <a href="dashboard.php" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+                <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <?php if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1)  { ?>
                   <a href="user.php"><i class="bi bi-person-gear"></i><span>User Management</span></a>
                 <?php } ?>
                 <a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Donation Management</span></a>
-                <!--<a href="trackDonation.php"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>-->
+                <a href="trackDonation.php" class="active"><i class="bi bi-arrow-left-right"></i></i><span>Track Donation</span></a>
                 <!-- <a href="volunteerManagement.php" class=""><i class="bi bi-people"></i><span>Volunteer Management</span></a> -->
                 <a href="foodBankCenter.php"><i class="bi bi-basket-fill"></i><span>Food Bank Center</span></a>
                 <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
                 <!--<a href="findFood.php"><i class="bi bi-box-seam"></i><span>Request Food</span></a>-->
-                <!--<a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>-->
+                <a href="manageBeneficiary.php"><i class="bi bi-person-heart"></i><span>Manage Beneficiaries</span></a>
                 <!--<a href="inventoryManagement.php"><i class="bi bi-clipboard-data"></i><span>Inventory Management</span></a>-->
               </div>
             </div><!-- End Services List -->
@@ -166,6 +166,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                 <table id="trackDonationDataTable" class="display table table-striped">
                   <thead>
                     <tr>
+                      <th class="col">Donation No</th>
                       <th class="col">Donor</th>
                       <th class="col">Food Bank</th>
                       <th class="col">Item</th>
@@ -173,6 +174,7 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                       <th class="col">Unit</th>
                       <th class="col">Beneficiary</th>
                       <th class="col">Status</th>
+                      <th class="col">Date</th>
                       <th class="col">QR Code</th>
                     </tr>
                   </thead>
@@ -184,13 +186,15 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                       while($data = $allTrackDonationData->fetch_object()) {
                         ?>
                         <tr>
+                          <td><?php echo $data->strTrackDonationNo; ?></td>
                           <td><?php echo $data->strFullName; ?></td>
-                          <td><?php echo $data->strMunicipality; ?></td>
+                          <td><?php echo $data->strFoodBankName; ?></td>
                           <td><?php echo $data->strItem; ?></td>
                           <td><?php echo $data->intQuantity; ?></td>
                           <td><?php echo $data->strUnit; ?></td>
                           <td><?php echo $data->strName; ?></td>
                           <td><?php echo $data->ysnStatus == 1 ? 'Received' : ''; ?></td>
+                          <td><?php echo $data->dtmCreatedDate; ?></td>
                           <td>
                             <?php if (!empty($data->strQRCode)) { ?>
                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#QRImage-<?php echo $ctr; ?>">
@@ -214,7 +218,6 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                               </div>
                             </div><!-- END QR CODE MODAL -->
                             <?php } ?>
-
                           </td>
                         </tr>
                         <?php

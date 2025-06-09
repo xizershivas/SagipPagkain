@@ -46,6 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $latitude = $coords['latitude'];
         $longitude = $coords['longitude'];
         $dblSalary = floatval($_POST["monthlyincome"]);   
+    } else if ($strAccountType == "donor") {
+        $strAddress = sanitize($_POST["address"]);
     }
 
     $uploadFilePath = uploadRequestDocument($strUsername);

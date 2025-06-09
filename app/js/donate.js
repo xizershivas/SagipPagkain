@@ -3,9 +3,15 @@ const itemSelect = document.querySelector("#itemSelect");
 const unitSelect = document.querySelector("#unitSelect");
 const categorySelect = document.querySelector("#categorySelect");
 const foodbankNameSelect = document.querySelector("#foodbankNameSelect");
+const userId = document.querySelector("#userId");
 
 function donate(e) {
     e.preventDefault();
+
+    if (!this.checkValidity()) {
+        this.classList.add('was-validated');
+        return;
+    }
 
     const formData = new FormData(this);
     const xmlhttp = new XMLHttpRequest();
@@ -58,9 +64,10 @@ async function getItemDetails(e) {
 
 async function getFoodbank(e) {
     const itemId = e.target.value
+    const uid = userId.value;
 
     try {
-        const res = await fetch(`../../../app/controllers/donate.php?itemId=${itemId}&ex=1`, {
+        const res = await fetch(`../../../app/controllers/donate.php?itemId=${itemId}&ex=1&uid=${uid}`, {
             method: 'GET'
         });
 

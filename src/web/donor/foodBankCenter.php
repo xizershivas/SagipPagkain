@@ -75,13 +75,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = "Could not get coordinates for the address.";
     }
 }
+
+$intUserId = intval($_SESSION["intUserId"]);
+
+// Get the beneficiary address
+$beneficiaryStmt = $conn->query("SELECT strAddress FROM tbluser WHERE intUserId = $intUserId LIMIT 1");
+$strAddress = $beneficiaryStmt->fetch_object()->strAddress;
+
+// Get the matching food bank by checking if strMunicipality is part of strAddress
+$foodbankStmt = $conn->query("SELECT * FROM tblfoodbank WHERE INSTR('$strAddress', strMunicipality) > 0 LIMIT 1");
+
+if ($foodbank = $foodbankStmt->fetch_object()) {
+    $strMunicipality = $foodbank->strMunicipality;
+    $intFoodBankId = intval($foodbank->intFoodBankId);
+} else {
+    // Handle no match
+    $intFoodBankId = 0;
+}
   
 // Get food bank data with item counts
 $foodBankQuery = "SELECT fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude, fbd.strAddress,
                   COUNT(DISTINCT i.intItemId) as itemCount,
                   SUM(i.intQuantity) as totalStock
                   FROM tblfoodbank fb
-                  LEFT JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodBankId
+                  INNER JOIN tblfoodbankdetail fbd on fb.intFoodBankId = fbd.intFoodBankId AND fbd.intFoodBankId = $intFoodBankId
                   LEFT JOIN tblinventory i ON fbd.intFoodBankDetailId = i.intFoodBankDetailId
                   GROUP BY fb.intFoodBankId, fbd.strFoodBankName, fbd.dblLatitude, fbd.dblLongitude";
 $foodBankResult = mysqli_query($conn, $foodBankQuery);

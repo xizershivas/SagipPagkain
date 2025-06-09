@@ -231,8 +231,9 @@
         addressField.style.display = "";
         incomeField.style.display = "";
         Docu.style.display = "";
+      
       } else {
-        addressField.style.display = "none";
+        addressField.style.display = this.value === "donor" ? "" : "none";
         incomeField.style.display = "none";
         Docu.style.display = "none";
       }

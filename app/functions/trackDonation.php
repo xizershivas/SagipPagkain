@@ -1,26 +1,64 @@
 <?php
-function getAllTrackDonationData($conn) {
-    $allTrackDonationData = $conn->query("
-        SELECT TD.intTrackDonationId
-        ,U.intUserId
-        ,U.strFullName
-        ,FBD.intFoodBankDetailId
-        ,FBD.strFoodBankName
-        ,I.intItemId
-        ,I.strItem
-        ,TD.intQuantity
-        ,UT.strUnit
-        ,B.intBeneficiaryId
-        ,B.strName
-        ,TD.ysnStatus
-        ,TD.strQRCode
-        FROM tbltrackdonation TD
-        INNER JOIN tbluser U ON TD.intUserId = U.intUserId
-        INNER JOIN tblfoodbankdetail FBD ON TD.intFoodBankDetailId = FBD.intFoodBankDetailId
-        INNER JOIN tblitem I ON TD.intItemId = I.intItemId
-        INNER JOIN tblunit UT ON TD.intUnitId = UT.intUnitId
-        INNER JOIN tblbeneficiary B ON TD.intBeneficiaryId = B.intBeneficiaryId"
-    );
+function getAllTrackDonationData($conn, $intUserId = "") {
+    $ysnDonor;
+    
+    if (!empty($intUserId)) {
+        $stmt = $conn->query("SELECT ysnDonor FROM tbluser WHERE intUserId = $intUserId LIMIT 1");
+        $ysnDonor = $stmt->fetch_object()->ysnDonor;
+    }
+
+    if ($ysnDonor) {
+        $allTrackDonationData = $conn->query("
+            SELECT TD.intTrackDonationId
+            ,TD.strTrackDonationNo
+            ,U.intUserId
+            ,U.strFullName
+            ,FBD.intFoodBankDetailId
+            ,FBD.strFoodBankName
+            ,I.intItemId
+            ,I.strItem
+            ,TD.intQuantity
+            ,UT.strUnit
+            ,B.intBeneficiaryId
+            ,B.strName
+            ,TD.ysnStatus
+            ,TD.strQRCode
+            ,DATE_FORMAT(TD.dtmCreatedDate, '%Y-%m-%d') AS dtmCreatedDate
+            FROM tbltrackdonation TD
+            INNER JOIN tbluser U ON TD.intUserId = U.intUserId
+            INNER JOIN tblfoodbankdetail FBD ON TD.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tblitem I ON TD.intItemId = I.intItemId
+            INNER JOIN tblunit UT ON TD.intUnitId = UT.intUnitId
+            INNER JOIN tblbeneficiary B ON TD.intBeneficiaryId = B.intBeneficiaryId
+            WHERE TD.intUserId = $intUserId"
+        );
+    }
+    else {
+        $allTrackDonationData = $conn->query("
+            SELECT TD.intTrackDonationId
+            ,TD.strTrackDonationNo
+            ,U.intUserId
+            ,U.strFullName
+            ,FBD.intFoodBankDetailId
+            ,FBD.strFoodBankName
+            ,I.intItemId
+            ,I.strItem
+            ,TD.intQuantity
+            ,UT.strUnit
+            ,B.intBeneficiaryId
+            ,B.strName
+            ,TD.ysnStatus
+            ,TD.strQRCode
+            ,DATE_FORMAT(TD.dtmCreatedDate, '%Y-%m-%d') AS dtmCreatedDate
+            FROM tbltrackdonation TD
+            INNER JOIN tbluser U ON TD.intUserId = U.intUserId
+            INNER JOIN tblfoodbankdetail FBD ON TD.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tblitem I ON TD.intItemId = I.intItemId
+            INNER JOIN tblunit UT ON TD.intUnitId = UT.intUnitId
+            INNER JOIN tblbeneficiary B ON TD.intBeneficiaryId = B.intBeneficiaryId"
+        );
+    }
+
     return $allTrackDonationData;
 }
 
@@ -263,6 +301,20 @@ function saveTrackDonation($conn, $trackDonationData) {
         }
 
         $lastInsertId = $conn->insert_id;
+
+        $donationNoSql = "UPDATE tbltrackdonation SET strTrackDonationNo = ? WHERE intTrackDonationId = ?";
+        $stmtDonationNo = $conn->prepare($donationNoSql);
+
+        if (!$stmtDonationNo) {
+            throw new Exception("Database update tbltrackdonation query failed", 500);
+        }
+
+        $strTrackDonationNo = "DNT-" . $lastInsertId;
+        $stmtDonationNo->bind_param("si", $strTrackDonationNo, $lastInsertId);
+
+        if (!$stmtDonationNo->execute()) {
+            throw new Exception("Failed to update track donation no.", 400);
+        }
         #END Add Record to tbltrackdonation
 
         #BEGIN Update Inventory Item Quantity

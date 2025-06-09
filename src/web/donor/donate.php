@@ -89,7 +89,7 @@ if (isset($_SESSION["intUserId"])) {
             <!-- DONATION FORM -->
             <form class="row g-3 needs-validation text-black" id="frmDonate" enctype="multipart/form-data" novalidate>
               <div class="col-md-4">
-                <input type="hidden" name="userId" value="<?php if (isset($user)) { echo $user->intUserId; }?>">
+                <input type="hidden" name="userId" id="userId" value="<?php if (isset($user)) { echo $user->intUserId; }?>">
                 <label for="fullname" class="form-label">Full Name</label>
                 <input type="text" class="form-control" name="fullname" id="fullname" value="<?php if (isset($user)) { echo $user->strFullName; }?>" readonly>
                 <div class="invalid-feedback">
@@ -105,7 +105,7 @@ if (isset($_SESSION["intUserId"])) {
               </div>
               <div class="col-md-4">
                 <label for="foodBank" class="form-label">Food Bank (Drop Off Location)</label>
-                 <select class="form-select" name="unit" id="foodbankNameSelect">
+                 <select class="form-select" name="foodBank" id="foodbankNameSelect">
                   <option selected disabled value=""></option>
                   <?php
                     $foodbanks = getFoodBanks($conn);

@@ -38,13 +38,26 @@ function register($conn, $strUsername, $strFullName, $strContact, $strEmail, $st
         $stmt;
         $stmt2;
         $ysn = 1;
+        $intFoodBankId;
+
+        if ($strAccountType === "donor") {
+            // Get Food Bank from Address provided
+            $allFoodBanks = $conn->query("SELECT * FROM tblfoodbank");
+
+            while($foodbank = $allFoodBanks->fetch_object()) {
+                if (strpos($strAddress, $foodbank->strMunicipality) !== false) {
+                    $intFoodBankId = $foodbank->intFoodBankId;
+                    break;
+                }
+            }
+        }
 
         switch ($strAccountType) {
             case "donor":
-                $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnDonor) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $query = "INSERT INTO tbluser (strUsername, strFullName, strAddress, strContact, strEmail, strPassword, strSalt, ysnDonor, intFoodBankId) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($query);
-                $stmt->bind_param("ssssssi", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn);
+                $stmt->bind_param("sssssssii", $strUsername, $strFullName, $strAddress, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $intFoodBankId);
                 break;
             case "partner":
                 $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnPartner) 
