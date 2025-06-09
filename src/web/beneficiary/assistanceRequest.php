@@ -157,7 +157,7 @@ if (isset($_SESSION["intUserId"])) {
                       <input type="hidden" name="recommendedFoodBankId" id="recommendedFoodBankId" value="">
                   </div>
 
-                  <div class="card mb-4">
+                  <!-- <div class="card mb-4">
                     <div class="card-body">
                       <h2 class="card-title">Upload Documents</h2>
                       <div class="mb-3">
@@ -168,16 +168,16 @@ if (isset($_SESSION["intUserId"])) {
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control border-warning" name="description" id="description" placeholder="Enter Description" rows="3"></textarea>
                       </div>
-
                     </div>
-                  </div>
+                  </div> -->
 
                   <div class="card mb-4">
+                    
                     <div class="card-body">
-                      <h2 class="card-title">Submit Form</h2>
+                      <!-- <h2 class="card-title">Submit Form</h2> -->
                       <div class="mb-3">
                         <label for="purpose" class="form-label">Purpose</label>
-                      <select class="form-select border-warning" name="purpose" id="purpose" aria-label="Select purpose" required>
+                        <select class="form-select border-warning" name="purpose" id="purpose" aria-label="Select purpose" required>
                           <option value="" selected disabled>-- Select Purpose --</option>
                           <option value="1">Human Consumption</option>
                           <option value="2">Animal Consumption</option>
@@ -189,6 +189,7 @@ if (isset($_SESSION["intUserId"])) {
                         <button type="submit" class="btn btn-warning text-white px-4">Submit</button>
                       </div>
                     </div>
+
                   </div>
                 </form>
               </div>

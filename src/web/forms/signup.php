@@ -74,7 +74,7 @@
             <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
               <option selected disabled value="">-- Select account type --</option>
               <option value="donor">Donor</option>
-              <option value="partner">Partner (NGO, Cooperative, Youth Org.)</option>
+              <option value="partner">Food Bank</option>
               <option value="beneficiary">Beneficiary</option>
             </select>
           </div>
@@ -114,7 +114,7 @@
             </div>
           </div>
          <div class="col-12">
-           <label class="form-label fw-bold signup-form-label" for="uploadDocu">Upload Document</label>
+           <label class="form-label fw-bold signup-form-label" for="uploadDocu">Upload Document (Certificate of Indigency)</label>
            <div class="input-group">
              <span class="input-group-text signup-form-icon" id="addon-uploadDocu"><i class="bi bi-cash-stack"></i></span>
              <input type="file" class="form-control" name="uploadDocu" id="uploadDocu" aria-label="contact" aria-describedby="addon-uploadDocu" accept=".pdf">
@@ -234,6 +234,7 @@
       } else {
         addressField.style.display = "none";
         incomeField.style.display = "none";
+        Docu.style.display = "none";
       }
     });
   });

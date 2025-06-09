@@ -68,12 +68,12 @@ $allTrackDonationData = getAllTrackDonationData($conn);
               <div class="services-list">
                 <a href="dashboard.php"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
                 <a href="trackDonation.php" class="active"><i class="bi bi-trophy"></i><span>Track Donation</span></a>
-                <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a>
+                <!-- <a href="dataAnalysisReport.php"><i class="bi bi-pie-chart-fill"></i><span>Data Analysis And Reporting</span></a> -->
                 <a href="donate.php" class=""><i class="bi bi-gift"></i><span>Donate</span></a>
                 <!--<a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>-->
                 <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
                 <!--<a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>-->
-                <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a>
+                <!-- <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a> -->
                 <!-- <a href="requestApproval.php"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a> -->
               </div>
             </div><!-- End Services List -->
@@ -87,9 +87,9 @@ $allTrackDonationData = getAllTrackDonationData($conn);
           </div>
 
              <div class="col-lg-9 tbl table-donor pe-2 mt-0" data-aos="fade-up" data-aos-delay="200">
-              <h2 class="text-black">Process Beneficiary</h2>
+              <!-- <h2 class="text-black">Process Beneficiary</h2> -->
               <!-- TRACK DONATION TABLE -->
-              <table id="trackDonationTable" class="display table table-striped">
+              <!--<table id="trackDonationTable" class="display table table-striped">
                 <thead>
                   <tr>
                     <th scope="col">Donor</th>
@@ -146,14 +146,9 @@ $allTrackDonationData = getAllTrackDonationData($conn);
                         <i class="bi bi-floppy-fill fs-4 text-success"></i>
                       </a>
                     </td>
-                    <!-- <td title="Delete">
-                      <a href="javascript:void(0)" id="btnDelete">
-                        <i class="bi bi-trash-fill fs-4 text-danger"></i>
-                      </a>
-                    </td> -->
                   </tr>
                 </tbody>
-              </table><!-- END TRACK DONATION TABLE -->
+              </table> --><!-- END TRACK DONATION TABLE -->
 
               <!-- DONATION PROCESSED TABLE -->
               <h2 class="text-black pt-3">Processed Donations</h2>

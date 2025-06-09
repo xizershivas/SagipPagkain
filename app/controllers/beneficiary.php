@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $itemsNeeded = $_POST['itemsNeeded'];
     $urgencyLevel = sanitize($_POST['urgencyLevel']);
     $pickupDate = $_POST['pickupDate'];
-    $description = sanitize($_POST['description']);
+    // $description = sanitize($_POST['description']);
     $purpose = sanitize($_POST['purpose']);
     $foodbankId = intval($_POST['foodbankId']);
     $uploadFilePath = uploadRequestDocument($beneficiaryId);
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'urgencyLevel' => $urgencyLevel,
         'pickupDate' => $pickupDate,
         'document' => $uploadFilePath,
-        'description' => $description,
+        // 'description' => $description,
         'purpose' => $purpose,
         'foodbankId'=> $foodbankId
     ];

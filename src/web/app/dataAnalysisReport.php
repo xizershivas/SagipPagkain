@@ -114,11 +114,11 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
                 <i class="fa-solid fa-list" style="color: black;"></i> Food Demand
               </button>
             </li>
-            <li class="nav-item" role="presentation">
+            <!-- <li class="nav-item" role="presentation">
               <button style="color: black;" class="nav-link" id="surplus-tab" data-bs-toggle="tab" data-bs-target="#surplus" type="button" role="tab" aria-controls="surplus" aria-selected="false">
                 <i class="fa-solid fa-check-circle" style="color: black;"></i> Food Surplus
               </button>
-            </li>
+            </li> -->
           </ul>
 
           <!-- Tab Contents -->

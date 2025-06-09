@@ -71,7 +71,7 @@ include "../../../app/functions/requestApproval.php";
                 <!--<a href="donationManagement.php"><i class="bi bi-hand-thumbs-up"></i><span>Food Donation Management</span></a>-->
                 <a href="foodBankCenter.php"><i class="bi bi-box-seam"></i><span>Food Bank Center</span></a>
                 <!--<a href="reward.php"><i class="bi bi-trophy"></i><span>Reward System</span></a>-->
-                <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a>
+                <!-- <a href="inventoryManagement.php"><i class="bi bi-trophy"></i><span>Inventory Management</span></a> -->
                 <!-- <a href="requestApproval.php" class="active"><i class="bi bi-trophy"></i><span>Requests for Approval</span></a> -->
               </div>
             </div><!-- End Services List -->
