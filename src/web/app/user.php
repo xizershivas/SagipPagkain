@@ -142,8 +142,7 @@ include "../../../app/functions/user.php";
                         <option selected disabled value="">-- Select Account Type --</option>
                         <option value="admin">Admin</option>
                         <option value="donor">Donor</option>
-                        <option value="staff">Food Bank</option>
-                        <!-- <option value="partner">Partner (NGO, Cooperative, etc.)</option> -->
+                        <option value="foodbank">Food Bank</option>
                         <option value="beneficiary">Beneficiary</option>
                       </select>
                     </div>
@@ -255,12 +254,8 @@ include "../../../app/functions/user.php";
                               <label class="form-check-label" for="donor">Donor access</label>
                             </div>
                             <div class="form-check form-switch">
-                              <input class="form-check-input" type="checkbox" role="switch" name="staff" id="staff">
-                              <label class="form-check-label" for="staff">Staff access</label>
-                            </div>
-                            <div class="form-check form-switch">
-                              <input class="form-check-input" type="checkbox" role="switch" name="partner" id="partner">
-                              <label class="form-check-label" for="partner">Partner access</label>
+                              <input class="form-check-input" type="checkbox" role="switch" name="foodbank" id="foodbank">
+                              <label class="form-check-label" for="foodbank">Food Bank access</label>
                             </div>
                             <div class="form-check form-switch">
                               <input class="form-check-input" type="checkbox" role="switch" name="beneficiary" id="beneficiary">
@@ -305,6 +300,22 @@ include "../../../app/functions/user.php";
               </div>
               <!-- END EDIT USER FORM -->
 
+              <!-- FILTER USER -->
+              <form class="row g-3 mt-2 mb-3 align-items-center">
+                <div class="col-auto py-0 text-black">
+                  <label for="userTypeFilter">Filter By</label>
+                </div>
+                <div class="col-auto">
+                  <select class="form-select" name="userTypeFilter" id="userTypeFilter">
+                    <option value="" selected>-- Select User Type --</option>
+                    <option value="admin">Admin</option>
+                    <option value="donor">Donor</option>
+                    <option value="foodbank">Food Bank</option>
+                    <option value="beneficiary">Beneficiary</option>
+                  </select>
+                </div>
+              </form>
+              <!-- END FILTER USER -->
 
               <!-- DATA TABLE -->
               <table id="userDataTable" class="display table table-striped">
@@ -316,9 +327,8 @@ include "../../../app/functions/user.php";
                     <th scope="col">Admin</th>
                     <th scope="col">Donor</th>
                     <th scope="col">Food Bank</th>
-                    <th scope="col">Partner</th>
                     <th scope="col">Beneficiary</th>
-                    <th scope="col" colspan="2">Action</th>
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -331,14 +341,12 @@ include "../../../app/functions/user.php";
                       <tr>
                         <td><?php echo $user->strUsername; ?></td>
                         <td><?php echo $user->strEmail; ?></td>
-                        <td><?php echo $user->ysnActive ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>"; ?></td>
-                        <td><?php echo $user->ysnAdmin ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnDonor ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnStaff ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnPartner ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
-                        <td><?php echo $user->ysnBeneficiary ? "<span class='ysn-true'>True</span>" : "<span class='ysn-false'>False</span>";  ?></td>
+                        <td><?php echo $user->ysnActive ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>"; ?></td>
+                        <td><?php echo $user->ysnAdmin ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>";  ?></td>
+                        <td><?php echo $user->ysnDonor ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>";  ?></td>
+                        <td><?php echo $user->ysnFoodBank ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>";  ?></td>
+                        <td><?php echo $user->ysnBeneficiary ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>";  ?></td>
                         <td><a class="btn-edit-user" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class='bi bi-pencil-square'></i></a></td>
-                        <td><a class="btn-delete-user" href="javascript:void(0)" value="<?php echo $user->intUserId; ?>"><i class="bi bi-trash-fill"></i></a></td>
                       </tr>
                       <?php
                     }
@@ -381,9 +389,10 @@ include "../../../app/functions/user.php";
   <script src="../../../app/js/app.js"></script>
   <script src="../../../app/js/user.js"></script>
   <script>
-    $(document).ready(function() {
-    new DataTable('#userDataTable', {
+    let userTable;
 
+    $(document).ready(function () {
+      userTable = $('#userDataTable').DataTable({
       lengthMenu: [10, 20, 30, 50, 100]
     });
   });

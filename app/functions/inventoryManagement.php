@@ -1,8 +1,11 @@
 <?php
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+function getUserData($conn, $intUserId) {
+    $userData = $conn->query("SELECT * FROM tbluser WHERE intUserId = $intUserId");
+    return $userData;
+}
 
 // Populate input datalist
-function getDataListOptions($conn, $filter = "strCategory", $search = "", $page = 1, $limit = 5) {
+function getDataListOptions($conn, $intUserId, $filter = "strCategory", $search = "", $page = 1, $limit = 5) {
     header("Content-Type: application/json");
 
     try {
@@ -11,18 +14,29 @@ function getDataListOptions($conn, $filter = "strCategory", $search = "", $page 
         switch($filter) {
             case "strItem": $dbTable = "tblitem"; break;
             case "strUnit": $dbTable = "tblunit"; break;
-            case "strMunicipality": $dbTable = "tblfoodbank"; break;
+            case "strFoodBankName": $dbTable = "tblfoodbankdetail"; break;
             default: $dbTable = "tblcategory"; break;
         }
 
-        $query = $conn->query("SELECT * FROM $dbTable");
+        if ($filter === "strFoodBankName") {
+            $query = $conn->query("SELECT
+                      FBD.*
+                      FROM $dbTable FBD
+                      INNER JOIN tbluser U ON FBD.intFoodBankId = U.intFoodBankId
+                      WHERE U.intUserId = $intUserId"
+                    );
+        }
+        else {
+            $query = $conn->query("SELECT * FROM $dbTable");
+        }
+
         $dataListOptions = [];
 
         while($row = $query->fetch_object()) {
             $dataListOptions[] = $row;
         }
 
-        getInventoryData($conn, $dataListOptions, $filter, $search, $page, $limit);
+        getInventoryData($conn, $intUserId, $dataListOptions, $filter, $search, $page, $limit);
     } catch (Exception $ex) {
         http_response_code(500);
         echo json_encode(["data" => ["message" => "Internal server error, ".$ex->getMessage()]]);
@@ -31,7 +45,7 @@ function getDataListOptions($conn, $filter = "strCategory", $search = "", $page 
     exit();
 }
 
-function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page, $limit) {
+function getInventoryData($conn, $intUserId, $dataListOptions = "", $filter, $search, $page, $limit) {
     header("Content-Type: application/json");
 
     $totalQuery = $conn->query("SELECT COUNT(*) AS total FROM tblinventory WHERE intQuantity > 0");
@@ -60,10 +74,11 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             FROM tblinventory IV
             INNER JOIN tbldonationmanagement D ON IV.intDonationId = D.intDonationId
             INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tbluser US ON FBD.intFoodBankId = US.intFoodBankId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            WHERE IV.intQuantity > 0
+            WHERE IV.intQuantity > 0 AND US.intUserId = $intUserId
             LIMIT $limit OFFSET $offset";
 
             $query = $conn->query($sql);
@@ -99,7 +114,7 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             switch($filter) {
                 case "strItem": $dbTable = "I"; break;
                 case "strUnit": $dbTable = "U"; break;
-                case "strMunicipality": $dbTable = "FB"; break;
+                case "strFoodBankName": $dbTable = "FBD"; break;
                 default: $dbTable = "C"; break;
             }
     
@@ -117,11 +132,12 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             ,DATE_FORMAT(IV.dtmExpirationDate, '%M %d, %Y') AS dtmExpirationDate
             FROM tblinventory IV
             INNER JOIN tbldonationmanagement D ON IV.intDonationId = D.intDonationId
-            INNER JOIN tblfoodbank FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
+            INNER JOIN tbluser US ON FBD.intFoodBankId = US.intFoodBankId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
             INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
-            WHERE $dbTable.$filter LIKE ?
+            WHERE $dbTable.$filter LIKE ? AND US.intUserId = $intUserId
             LIMIT $limit OFFSET $offset";
     
             $query = $conn->prepare($sql);
@@ -152,7 +168,7 @@ function getInventoryData($conn, $dataListOptions = "", $filter, $search, $page,
             http_response_code(200);
             echo json_encode(["data" => [
                 "dataListOptions" => $dataListOptions, 
-                "inventoryData" => $inventoryData, 
+                "inventoryData" => $responseData, 
                 "totalRecords" => $totalRecords
             ]]);
         }

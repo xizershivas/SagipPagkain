@@ -4,10 +4,12 @@ include "../../../app/config/db_connection.php";
 
 if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
-  header("Location: ../donor/profile.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnPartner"]) && $_SESSION["ysnPartner"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnFoodBank"]) && $_SESSION["ysnFoodBank"] == 1) {
   header("Location: ../ngo/profile.php");
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
+  header("Location: ../donor/profile.php");
 }
 ?>
 <!DOCTYPE html>

@@ -4,11 +4,14 @@ include "../../../app/config/db_connection.php";
 
 if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
-  header("Location: ../donor/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnPartner"]) && $_SESSION["ysnPartner"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnFoodBank"]) && $_SESSION["ysnFoodBank"] == 1) {
   header("Location: ../ngo/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
+  header("Location: ../donor/dashboard.php");
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
   header("Location: ../beneficiary/assistanceRequest.php");
 }
 
@@ -129,7 +132,7 @@ while ($rowSurplus = $resultSurplus->fetch_assoc()) {
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-          <li><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Admin'; ?></li>
+          <li><?php echo isset($_SESSION['ysnFoodBank']) && $_SESSION['ysnFoodBank'] == 1 ? 'Food Bank' : 'Admin'; ?></li>
           <li><a href="dashboard.php">Dashboard</a></li>
           </ol>
         </div>

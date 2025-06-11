@@ -2,18 +2,17 @@
 session_start();
 include "../../../app/config/db_connection.php";
 include "../../../app/functions/user.php";
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
+
 if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
   header("Location: ../app/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnDonor"]) && $_SESSION["ysnDonor"] == 1) {
   header("Location: ../donor/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnStaff"]) && $_SESSION["ysnStaff"] == 1) {
-  header("Location: ../app/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
   header("Location: ../beneficiary/assistanceRequest.php");
 }
  
@@ -55,7 +54,7 @@ $sql = "SELECT DATE_FORMAT(donor.dtmDate, '%b %Y') AS month, COUNT(*) AS total
         FROM tbldonationmanagement donor
         INNER JOIN tbluser user ON donor.intUserId = user.intUserId
         WHERE user.intUserId = $intUserId
-        AND user.ysnPartner = 1
+        AND user.ysnFoodBank = 1
         GROUP BY month
         ORDER BY donor.dtmDate ASC";
  

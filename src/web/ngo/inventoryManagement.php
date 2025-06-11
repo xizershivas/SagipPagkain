@@ -1,7 +1,15 @@
 <?php
 session_start();
 include "../../../app/config/db_connection.php";
+include "../../../app/functions/inventoryManagement.php";
 include "../../../app/functions/inventoryTransfer.php";
+
+$userData;
+$user;
+if (isset($_SESSION["intUserId"])) {
+  $userData = getUserData($conn, $_SESSION["intUserId"]);
+  $user = $userData->fetch_object();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +44,7 @@ include "../../../app/functions/inventoryTransfer.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Food Bank'; ?></li>
+            <li><?php echo isset($_SESSION['ysnFoodBank']) && $_SESSION['ysnFoodBank'] == 1 ? 'Food Bank' : 'Food Bank'; ?></li>
             <li><a href="inventoryManagement.php">Inventory Management</a></li>
           </ol>
         </div>
@@ -111,6 +119,7 @@ include "../../../app/functions/inventoryTransfer.php";
             </div>
 
             <!-- TABLE INVENTORY -->
+            <input type="hidden" name="userId" id="userId" value="<?= $user->intUserId ?>">
             <table class="table table-bordered table-hover">
               <thead class="text-center">
                 <tr>

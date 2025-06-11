@@ -3,9 +3,16 @@ include "../config/db_connection.php";
 include "../functions/user.php";
 include "../utils/sanitize.php";
 
+// GET
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["intUserId"])) {
     $intUserId = intval(sanitize($_GET["intUserId"]));
     editUser($conn, $intUserId);
+    $conn->close();
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["userType"])) {
+    $strUserType = sanitize($_GET["userType"]);
+    filterUserType($conn, $strUserType);
     $conn->close();
 }
 
@@ -50,8 +57,7 @@ if (isset($_POST["_method"]) && $_POST["_method"] === "PUT") {
     $ysnActive = isset($_POST["active"]) ? 1 : 0;
     $ysnAdmin = isset($_POST["admin"]) ? 1 : 0;
     $ysnDonor = isset($_POST["donor"]) ? 1 : 0;
-    $ysnStaff = isset($_POST["staff"]) ? 1 : 0;
-    $ysnPartner = isset($_POST["partner"]) ? 1 : 0;
+    $ysnFoodBank = isset($_POST["foodbank"]) ? 1 : 0;
     $ysnBeneficiary = isset($_POST["beneficiary"]) ? 1 : 0;
 
     $userData = [
@@ -65,8 +71,7 @@ if (isset($_POST["_method"]) && $_POST["_method"] === "PUT") {
         , "ysnActive" => $ysnActive
         , "ysnAdmin" => $ysnAdmin
         , "ysnDonor" => $ysnDonor
-        , "ysnStaff" => $ysnStaff
-        , "ysnPartner" => $ysnPartner
+        , "ysnFoodBank" => $ysnFoodBank
         , "ysnBeneficiary" => $ysnBeneficiary
     ];
 

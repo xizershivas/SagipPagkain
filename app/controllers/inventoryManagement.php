@@ -9,7 +9,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"
     && (!isset($_GET["page"]) || empty($_GET["page"]))
 ) {
     $filter = sanitize($_GET["filter"]);
-    getDataListOptions($conn, $filter);
+    $intUserId = intval($_GET["uid"]);
+    getDataListOptions($conn, $intUserId, $filter);
     $conn->close();
 }
 else if ($_SERVER["REQUEST_METHOD"] == "GET" 
@@ -18,7 +19,8 @@ else if ($_SERVER["REQUEST_METHOD"] == "GET"
 ) {
     $filter = sanitize($_GET["filter"]);
     $search = sanitize($_GET["search"]);
-    getDataListOptions($conn, $filter, $search);
+    $intUserId = intval($_GET["uid"]);
+    getDataListOptions($conn, $intUserId, $filter, $search);
     $conn->close();
 }
 else if ($_SERVER["REQUEST_METHOD"] == "GET" 
@@ -31,7 +33,8 @@ else if ($_SERVER["REQUEST_METHOD"] == "GET"
     $search = sanitize($_GET["search"]);
     $page = intval($_GET["page"]);
     $limit = intval($_GET["limit"]);
-    getDataListOptions($conn, $filter, $search, $page, $limit);
+    $intUserId = intval($_GET["uid"]);
+    getDataListOptions($conn, $intUserId, $filter, $search, $page, $limit);
     $conn->close();
 }
 ?>

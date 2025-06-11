@@ -25,9 +25,8 @@ function login($conn, $userData) {
                 "ysnActive" => $user->ysnActive,
                 "ysnAdmin" => $user->ysnAdmin,
                 "ysnBeneficiary" => $user->ysnBeneficiary,
-                "ysnStaff" => $user->ysnStaff,
                 "ysnDonor" => $user->ysnDonor,
-                "ysnPartner" => $user->ysnPartner,
+                "ysnFoodBank" => $user->ysnFoodBank,
                 "success" => true
             ]];
         }

@@ -63,7 +63,7 @@ echo "<script>const uniqueItems = " . json_encode($uniqueItems) . ";</script>";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-          <li><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Admin'; ?></li>
+          <li><?php echo isset($_SESSION['ysnFoodBank']) && $_SESSION['ysnFoodBank'] == 1 ? 'Food Bank' : 'Admin'; ?></li>
           <li><a href="dashboard.php">Data Analysis And Reporting</a></li>
           </ol>
         </div>

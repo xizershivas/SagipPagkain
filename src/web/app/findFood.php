@@ -39,7 +39,7 @@ include "../../../app/functions/donationManagement.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Admin'; ?></li>
+            <li class="current"><?php echo isset($_SESSION['ysnFoodBank']) && $_SESSION['ysnFoodBank'] == 1 ? 'Food Bank' : 'Admin'; ?></li>
             <li><a href="findFood.php">Find Food</a></li>
           </ol>
         </div>

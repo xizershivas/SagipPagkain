@@ -36,7 +36,7 @@ include "../../../app/functions/manageBeneficiary.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Food Bank'; ?></li>
+            <li><?php echo isset($_SESSION['ysnFoodBank']) && $_SESSION['ysnFoodBank'] == 1 ? 'Food Bank' : 'Food Bank'; ?></li>
             <li><a href="manageBeneficiary.php">Manage Beneficiaries</a></li>
           </ol>
         </div>

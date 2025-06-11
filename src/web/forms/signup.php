@@ -74,7 +74,6 @@
             <select class="form-select" aria-label="Large select example" name="accountType" id="accountType" required>
               <option selected disabled value="">-- Select account type --</option>
               <option value="donor">Donor</option>
-              <option value="partner">Food Bank</option>
               <option value="beneficiary">Beneficiary</option>
             </select>
           </div>

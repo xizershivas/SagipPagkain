@@ -7,14 +7,11 @@ if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
 } else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnDonor"] == 1) {
   header("Location: src/web/donor/dashboard.php");
   exit();
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnFoodBank"] == 1) {
+  header("Location: src/web/ngo/dashboard.php");
+  exit();
 } else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnBeneficiary"] == 1) {
   header("Location: src/web/beneficiary/assistanceRequest.php");
-  exit();
-} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnStaff"] == 1) {
-  header("Location: src/web/app/dashboard.php");
-  exit();
-} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnPartner"] == 1) {
-  header("Location: src/web/ngo/dashboard.php");
   exit();
 }
 ?>

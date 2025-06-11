@@ -36,7 +36,7 @@ include "../../../app/functions/inventoryTransfer.php";
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Donor'; ?></li>
+            <li><?php echo isset($_SESSION['ysnFoodBank']) && $_SESSION['ysnFoodBank'] == 1 ? 'Food Bank' : 'Donor'; ?></li>
             <li><a href="inventoryManagement.php">Inventory Management</a></li>
           </ol>
         </div>

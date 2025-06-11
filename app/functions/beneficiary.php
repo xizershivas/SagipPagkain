@@ -21,7 +21,8 @@ function getAllInventoryItems($conn) {
             INNER JOIN tblfoodbankdetail FBD ON IV.intFoodBankDetailId = FBD.intFoodBankDetailId
             INNER JOIN tblitem I ON IV.intItemId = I.intItemId
             INNER JOIN tblcategory C ON IV.intCategoryId = C.intCategoryId
-            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId";
+            INNER JOIN tblunit U ON IV.intUnitId = U.intUnitId
+            WHERE IV.intQuantity > 0";
  
     $allInventoryData = $conn->query($sql);
     return $allInventoryData;

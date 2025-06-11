@@ -3,6 +3,7 @@ const searchItem = document.querySelector("#searchItem");
 const filterOptions = document.querySelector('#filterOptions');
 const tableBody = document.querySelector('#tableBody');
 const entriesPerPageSelect = document.querySelector('#entriesPerPageSelect');
+const uid = document.querySelector('#userId').value;
 let currentPage = 1;
 
 function renderPagination(totalRecords, currentPage, limit) {
@@ -129,7 +130,7 @@ function inputSearch(e) {
         }
     };
  
-    xmlhttp.open('GET', `../../../app/controllers/inventoryManagement.php?filter=${filter}&search=${search}&page=${page}&limit=${limit}`, true);
+    xmlhttp.open('GET', `../../../app/controllers/inventoryManagement.php?filter=${filter}&search=${search}&page=${currentPage}&limit=${limit}&uid=${uid}`, true);
     xmlhttp.send(); 
 }
  
@@ -141,7 +142,7 @@ function setDataListOptions({ dataListOptions }, filter) {
         switch(filter) {
             case 'strItem': option.value = r.strItem; break;
             case 'strUnit': option.value = r.strUnit; break;
-            case 'strMunicipality': option.value = r.strMunicipality; break;
+            case 'strFoodBankName': option.value = r.strFoodBankName; break;
             default: option.value = r.strCategory; break;
         }
         filterOptions.append(option);
@@ -166,7 +167,7 @@ function filterOption(e) {
         }
     };
  
-    xmlhttp.open('GET', `../../../app/controllers/inventoryManagement.php?filter=${filter}`, true);
+    xmlhttp.open('GET', `../../../app/controllers/inventoryManagement.php?filter=${filter}&uid=${uid}`, true);
     xmlhttp.send();
 }
 
@@ -209,7 +210,7 @@ async function getEntriesPerPage(page = 1) {
     const limit = entriesPerPageSelect.value;
 
     try {
-        const res = await fetch(`../../../app/controllers/inventoryManagement.php?filter=${filter}&search=${search}&page=${page}&limit=${limit}`, {
+        const res = await fetch(`../../../app/controllers/inventoryManagement.php?filter=${filter}&search=${search}&page=${page}&limit=${limit}&uid=${uid}`, {
             method: 'GET'
         });
 

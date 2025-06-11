@@ -5,14 +5,15 @@ include "../../../app/functions/user.php";
 
 if (!isset($_SESSION["intUserId"])) {
   header("Location: ../forms/login.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnAdmin"]) && $_SESSION["ysnAdmin"] == 1) {
   header("Location: ../app/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnPartner"]) && $_SESSION["ysnPartner"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnFoodBank"]) && $_SESSION["ysnFoodBank"] == 1) {
   header("Location: ../ngo/dashboard.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
+}
+else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnBeneficiary"]) && $_SESSION["ysnBeneficiary"] == 1) {
   header("Location: ../beneficiary/assistanceRequest.php");
-} else if (isset($_SESSION["intUserId"]) && isset($_SESSION["ysnStaff"]) && $_SESSION["ysnStaff"] == 1) {
-  header("Location: ../app/dashboard.php");
 }
 
 $intUserId = $_SESSION['intUserId']; 

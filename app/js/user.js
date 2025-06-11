@@ -15,6 +15,8 @@ const btnDownloadDoc = document.querySelector('#btnDownloadDoc');
 const accountType = document.querySelector('#accountType');
 const foodBankSelect = document.querySelector('#foodBankSelect');
 const foodBankSelectContainer = document.querySelector('#foodBankSelectContainer');
+const userTypeFilter = document.querySelector('#userTypeFilter');
+const userDataTableBody = document.querySelector('#userDataTable tbody');
 let intUserId = 0;
 
 
@@ -29,8 +31,7 @@ function setFormData({ data }) {
     frmUser.elements.active.checked = data.ysnActive ? true : false;
     frmUser.elements.admin.checked = data.ysnAdmin ? true : false;
     frmUser.elements.donor.checked = data.ysnDonor ? true : false;
-    frmUser.elements.staff.checked = data.ysnStaff ? true : false;
-    frmUser.elements.partner.checked = data.ysnPartner ? true : false;
+    frmUser.elements.foodbank.checked = data.ysnFoodBank ? true : false;
     frmUser.elements.beneficiary.checked = data.ysnBeneficiary ? true : false;
     // PDF Preview
     uploadDocPreview.src = "";
@@ -183,11 +184,48 @@ function documentPreview() {
 }
 
 function toggleFoodBankSelect(e) {
-    if (e.target.value === "staff") {
+    if (e.target.value === "foodbank") {
         foodBankSelectContainer.classList.remove('d-none');
     } else {
         foodBankSelect.value = "";
         foodBankSelectContainer.classList.add('d-none');
+    }
+}
+
+function setTableData({ data }) {
+    userTable.clear();
+
+    const newRows = data.map(user => [
+        user.strUsername,
+        user.strEmail,
+        user.ysnActive ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>",
+        user.ysnAdmin ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>",
+        user.ysnDonor ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>",
+        user.ysnFoodBank ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>",
+        user.ysnBeneficiary ? "<span class='ysn-true'>Yes</span>" : "<span class='ysn-false'>No</span>",
+        `<a class="btn-edit-user" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="javascript:void(0)" value="${user.intUserId}"><i class='bi bi-pencil-square'></i></a>`
+    ]);
+
+    userTable.rows.add(newRows).draw();
+}
+
+async function filterUserType(e) {
+    const userType = e.target.value;
+    debugger;
+
+    try {
+        const res = await fetch(`../../../app/controllers/user.php?userType=${userType}`, {
+            method: 'GET'
+        });
+
+        const resData = await res.json();
+
+        if (!res.ok) {
+            throw new Error(resData.data.message);
+        }
+        setTableData(resData);
+    } catch (e) {
+        alert(e.message);
     }
 }
 
@@ -209,3 +247,4 @@ frmUser.addEventListener('submit', updateUser);
 frmAddUser.addEventListener('submit', addUser);
 uploadDocInput.addEventListener('change', documentPreview);
 accountType.addEventListener('change', toggleFoodBankSelect);
+userTypeFilter.addEventListener('change', filterUserType);

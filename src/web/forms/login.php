@@ -4,7 +4,10 @@ session_start();
 if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 1) {
   header("Location: ../../../dashboard.php");
   exit();
-} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0) {
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnFoodBank"]) {
+  header("Location: ../ngo/dashboard.php");
+  exit();
+} else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnDonor"]) {
   header("Location: ../donor/dashboard.php");
   exit();
 } else if (isset($_SESSION["intUserId"]) && $_SESSION["ysnAdmin"] == 0 && $_SESSION["ysnBeneficiary"]) {

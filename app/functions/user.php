@@ -75,15 +75,8 @@ function addUser($conn, $userData) {
             if (!$stmt) throw new Exception("Database insert operation failed", 400);
             $stmt->bind_param("ssssssii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus);
             break;
-        case "staff":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnStaff, ysnActive, intFoodBankId) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            if (!$stmt) throw new Exception("Database insert operation failed", 400);
-            $stmt->bind_param("ssssssiii", $strUsername, $strFullName, $strContact, $strEmail, $strPassword, $strSalt, $ysn, $ysnStatus, $intFoodBankId);
-            break;
-        case "partner":
-            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnPartner, ysnActive) 
+        case "foodbank":
+            $query = "INSERT INTO tbluser (strUsername, strFullName, strContact, strEmail, strPassword, strSalt, ysnFoodBank, ysnActive) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             if (!$stmt) throw new Exception("Database insert operation failed", 400);
@@ -155,8 +148,7 @@ function editUser($conn, $intUserId) {
                         , U.ysnActive
                         , U.ysnAdmin
                         , U.ysnDonor
-                        , U.ysnStaff
-                        , U.ysnPartner
+                        , U.ysnFoodBank
                         , U.ysnBeneficiary
                         , U.strDocument
                         , B.intBeneficiaryId
@@ -177,8 +169,7 @@ function editUser($conn, $intUserId) {
                         , U.ysnActive
                         , U.ysnAdmin
                         , U.ysnDonor
-                        , U.ysnStaff
-                        , U.ysnPartner
+                        , U.ysnFoodBank
                         , U.ysnBeneficiary
                         , B.intBeneficiaryId
                         , B.strAddress
@@ -220,7 +211,7 @@ function editUser($conn, $intUserId) {
             $query->close();
         }
     } catch (Exception $ex) {
-        $code = $ex->getCose();
+        $code = $ex->getCode();
         http_response_code($code);
         echo json_encode(["data" => ["message" => $ex->getMessage()]]);
     }
@@ -291,8 +282,8 @@ function updateUser($conn, $userData) {
     $ysnActive = $userData["ysnActive"];
     $ysnAdmin = $userData["ysnAdmin"];
     $ysnDonor = $userData["ysnDonor"];
-    $ysnStaff = $userData["ysnStaff"];
-    $ysnPartner = $userData["ysnPartner"];
+    $ysnFoodBank = $userData["ysnFoodBank"];
+    $ysnBeneficiary = $userData["ysnBeneficiary"];
 
     try {
         $result = getUserAccessLevel($conn, $intUserId);
@@ -316,8 +307,8 @@ function updateUser($conn, $userData) {
                         , U.ysnActive = ?
                         , U.ysnAdmin = ?
                         , U.ysnDonor = ?
-                        , U.ysnStaff = ?
-                        , U.ysnPartner = ? 
+                        , U.ysnFoodBank = ? 
+                        , U.ysnBeneficiary = ?
                     WHERE U.intUserId = ?";
         } 
         // Beneficiary
@@ -337,8 +328,8 @@ function updateUser($conn, $userData) {
                         , U.ysnActive = ?
                         , U.ysnAdmin = ?
                         , U.ysnDonor = ?
-                        , U.ysnStaff = ?
-                        , U.ysnPartner = ? 
+                        , U.ysnFoodBank = ? 
+                        , U.ysnBeneficiary = ?
                     WHERE U.intUserId = ?";
         }
 
@@ -359,8 +350,8 @@ function updateUser($conn, $userData) {
             , $ysnActive
             , $ysnAdmin
             , $ysnDonor
-            , $ysnStaff
-            , $ysnPartner
+            , $ysnFoodBank
+            , $ysnBeneficiary
             , $intUserId
         );
 
@@ -414,5 +405,54 @@ function deleteUser($conn, $intUserId) {
 
     $query->close();
     exit();
+}
+
+function filterUserType($conn, $strUserType) {
+    header("Content-Type: application/json");
+
+    try {
+        $ysnColumn = "";
+
+        switch ($strUserType) {
+            case "admin": $ysnColumn = "ysnAdmin"; break;
+            case "donor": $ysnColumn = "ysnDonor"; break;
+            case "foodbank": $ysnColumn = "ysnFoodBank"; break;
+            case "beneficiary": $ysnColumn = "ysnBeneficiary"; break;
+        }
+
+        if (empty($ysnColumn)) {
+            $sql = "SELECT * FROM tbluser WHERE strUsername <> 'admin'";
+            $stmt = $conn->prepare($sql);
+        }
+        else {
+            $sql = "SELECT * FROM tbluser WHERE $ysnColumn = ? AND strUsername <> 'admin'";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $active);
+            $active = 1;
+        }
+
+        if (!$stmt) {
+            throw new Exception("Database select operation failed", 500);
+        }
+
+        if (!$stmt->execute()) {
+            throw new Exception("Statement execution failed", 500);
+        }
+        
+        $result = $stmt->get_result();
+
+        $data = [];
+
+        while ($row = $result->fetch_object()) {
+            $data[] = $row;
+        }
+
+        http_response_code(200);
+        echo json_encode(["data" => $data]);
+    } catch (Exception $ex) {
+        $code = $ex->getCode();
+        http_response_code($code);
+        echo json_encode(["data" => ["message" => $ex->getMessage()]]);
+    }
 }
 ?>

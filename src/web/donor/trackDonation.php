@@ -48,7 +48,7 @@ $allTrackDonationData = getAllTrackDonationData($conn, $intUserId);
       <nav class="breadcrumbs">
         <div class="container-fluid">
           <ol>
-            <li class="current"><?php echo isset($_SESSION['ysnStaff']) && $_SESSION['ysnStaff'] == 1 ? 'Staff' : 'Donor'; ?></li>
+            <li class="current"><?php echo isset($_SESSION['ysnFoodBank']) && $_SESSION['ysnFoodBank'] == 1 ? 'Food Bank' : 'Donor'; ?></li>
             <li><a href="trackDonation.php">Track Donation</a></li>
           </ol>
         </div>

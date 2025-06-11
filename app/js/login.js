@@ -21,12 +21,10 @@ function login(e) {
                     window.location.href = 'src/web/app/dashboard.php';
                 } else if (response.data.ysnDonor) {
                     window.location.href = 'src/web/donor/dashboard.php';
-                } else if (response.data.ysnPartner) {
+                } else if (response.data.ysnFoodBank) {
                     window.location.href = 'src/web/ngo/dashboard.php';
                 } else if (response.data.ysnBeneficiary) {
                     window.location.href = 'src/web/beneficiary/assistanceRequest.php';
-                } else if (response.data.ysnStaff) {
-                    window.location.href = 'src/web/app/dashboard.php';
                 }
             } else {
                 alert(response.data.message);

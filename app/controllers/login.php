@@ -21,14 +21,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($responseData["data"]["ysnAdmin"] == 1) {
             $_SESSION['ysnAdmin'] = $responseData["data"]["ysnAdmin"];
+        } else if ($responseData["data"]["ysnFoodBank"] == 1) {
+            $_SESSION['ysnFoodBank'] = $responseData["data"]["ysnFoodBank"];
         } else if ($responseData["data"]["ysnDonor"] == 1) {
             $_SESSION['ysnDonor'] = $responseData["data"]["ysnDonor"];
-        } else if ($responseData["data"]["ysnPartner"] == 1) {
-            $_SESSION['ysnPartner'] = $responseData["data"]["ysnPartner"];
         } else if ($responseData["data"]["ysnBeneficiary"] == 1) {
             $_SESSION['ysnBeneficiary'] = $responseData["data"]["ysnBeneficiary"];
-        } else if ($responseData["data"]["ysnStaff"] == 1) {
-            $_SESSION['ysnStaff'] = $responseData["data"]["ysnStaff"];
         }
 
         http_response_code(200);
