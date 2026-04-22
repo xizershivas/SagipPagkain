@@ -1,0 +1,6 @@
+@SagipPagkain.API_HostAddress = http://localhost:5198
+
+GET {{SagipPagkain.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

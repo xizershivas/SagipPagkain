@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(dotnet --version)",
+      "Bash(dotnet new *)",
+      "Bash(dotnet restore *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet list *)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(sqlcmd *)",
+      "Bash(dotnet run *)",
+      "Bash(taskkill /F /IM dotnet.exe)",
+      "Bash(taskkill //F //IM dotnet.exe)",
+      "Bash(curl *)",
+      "Bash(docker --version)",
+      "Bash(docker compose *)"
+    ]
+  }
+}
